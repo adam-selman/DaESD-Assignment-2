@@ -8,4 +8,5 @@ This project is authored by the following students:
 |Sonia Tadlaoui        | 21039395 |
 |Daniel Victor-Sajowa  |19043780 |
 |Tim Chapman           |19027149 |
+|Aaron Wearne          |ADD STUDENT ID HERE |
 
