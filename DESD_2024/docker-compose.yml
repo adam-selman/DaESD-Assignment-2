@@ -1,0 +1,33 @@
+version: '3'
+services:
+  db:
+    image: mysql:latest
+    container_name: MYsql
+    restart: always
+    volumes:
+      - data:/var/lib/mysql
+    env_file:
+      - .env 
+      
+    ports:
+      - "3306:3306"
+   
+  
+  django:
+    build: .
+    links:
+      - db
+    container_name: Django
+    command: sh -c " cd /code/SmartCare/ && python manage.py runserver 0.0.0.0:8000"
+    restart: always
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    
+    depends_on:
+      - db
+
+
+volumes:
+  data:
