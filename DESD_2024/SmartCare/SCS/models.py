@@ -3,22 +3,15 @@ from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
     userID = models.AutoField(primary_key=True)
-    userName = models.CharField(max_length=100)
     
-
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    isPatient = models.BooleanField()
-    isDoctor = models.BooleanField()
-    isPartTime = models.BooleanField()
-    isNurse = models.BooleanField()
-    isNHSTrust = models.BooleanField()
-
-#class UserAuth(models.Model):
-#    authID = models.AutoField(primary_key=True)
-#    username = models.CharField(max_length=100)
-#    password = models.CharField(max_length=100)
-#    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_auth')
+    isPatient = models.BooleanField(default = False)
+    isDoctor = models.BooleanField(default = False)
+    isPartTime = models.BooleanField(default = False)
+    isNurse = models.BooleanField(default = False)
+    isAdmin = models.BooleanField(default = False)
+    isNHSTrust = models.BooleanField(default = False)
 
 class ContactInfo(models.Model):
     contactID = models.AutoField(primary_key=True)
