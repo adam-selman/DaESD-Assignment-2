@@ -3,28 +3,90 @@
 - [1. Assignment 2 Planning](#1-assignment-2-planning)
 - [2. Requirements from Specification](#2-requirements-from-specification)
   - [2.1. User Roles and Access Control](#21-user-roles-and-access-control)
+    - [2.1.1. Functional Requirements](#211-functional-requirements)
+    - [2.1.2. Non-functional Requirements](#212-non-functional-requirements)
+    - [2.1.3. Notes (Temporary)](#213-notes-temporary)
   - [2.2. Scheduling and Work Scheme](#22-scheduling-and-work-scheme)
+    - [2.2.1. Functional Requirements](#221-functional-requirements)
+    - [2.2.2. Non-functional Requirements](#222-non-functional-requirements)
+    - [2.2.3. Notes (Temporary)](#223-notes-temporary)
   - [2.3. Billing and Invoicing](#23-billing-and-invoicing)
+    - [2.3.1. Functional Requirements](#231-functional-requirements)
+    - [2.3.2. Non-functional Requirements](#232-non-functional-requirements)
+    - [2.3.3. Notes (Temporary)](#233-notes-temporary)
   - [2.4. User Functionalities](#24-user-functionalities)
     - [2.4.1. Doctors and Nurses](#241-doctors-and-nurses)
+      - [2.4.1.1. Functional Requirements](#2411-functional-requirements)
+      - [2.4.1.2. Non-functional Requirements](#2412-non-functional-requirements)
+      - [2.4.1.3. Notes (Temporary)](#2413-notes-temporary)
     - [2.4.2. Patients](#242-patients)
+      - [2.4.2.1. Functional Requirements](#2421-functional-requirements)
+      - [2.4.2.2. Non-functional Requirements](#2422-non-functional-requirements)
+      - [2.4.2.3. Notes (Temporary)](#2423-notes-temporary)
     - [2.4.3. Admin](#243-admin)
+      - [2.4.3.1. Functional Requirements](#2431-functional-requirements)
+      - [2.4.3.2. Non-functional Requirements](#2432-non-functional-requirements)
+      - [2.4.3.3. Notes (Temporary)](#2433-notes-temporary)
   - [2.5. System Collaboration](#25-system-collaboration)
+      - [2.5.0.1. Functional Requirements](#2501-functional-requirements)
+      - [2.5.0.2. Non-functional Requirements](#2502-non-functional-requirements)
+      - [2.5.0.3. Notes (Temporary)](#2503-notes-temporary)
   - [2.6. Integration with External Services](#26-integration-with-external-services)
+    - [2.6.1. Functional Requirements](#261-functional-requirements)
+    - [2.6.2. Non-functional Requirements](#262-non-functional-requirements)
+    - [2.6.3. Notes (Temporary)](#263-notes-temporary)
   - [2.7. Security](#27-security)
+    - [2.7.1. Functional Requirements](#271-functional-requirements)
+    - [2.7.2. Non-functional Requirements](#272-non-functional-requirements)
+    - [2.7.3. Notes (Temporary)](#273-notes-temporary)
 - [3. Requirements from Expectations](#3-requirements-from-expectations)
   - [3.1. Pages](#31-pages)
+    - [3.1.1. Notes (Temporary)](#311-notes-temporary)
   - [3.2. Navigation](#32-navigation)
+    - [3.2.1. Notes (Temporary)](#321-notes-temporary)
   - [3.3. Authentication and Session Management](#33-authentication-and-session-management)
+    - [3.3.1. Notes (Temporary)](#331-notes-temporary)
   - [3.4. External Services Integration](#34-external-services-integration)
+    - [3.4.1. Notes (Temporary)](#341-notes-temporary)
   - [3.5. Database Deployment](#35-database-deployment)
+    - [3.5.1. Notes (Temporary)](#351-notes-temporary)
   - [3.6. Collaboration with Advanced Artificial Intelligence (AAI) Module](#36-collaboration-with-advanced-artificial-intelligence-aai-module)
+    - [3.6.1. Notes (Temporary)](#361-notes-temporary)
   - [3.7. Technology Stack](#37-technology-stack)
+    - [3.7.1. Notes (Temporary)](#371-notes-temporary)
+- [4. References](#4-references)
 
 
 # 2. Requirements from Specification
 
+The requirements below are separated into functional and non-functional requirements. Each shall be given a unique identifier. Functional requirements in the form FR.XXX.Y where FR indicates a functional requirement, XXX is replaced with a number and Y is replaced by a letter from the MoSCoW acronym. Non-functional requirements shall take the same form, using NFR to signify a nonfunctional requirement. The easy approach to requirements syntax (EARS) (Mavin et al., 2009) shall be followed for requirement descriptions to ensure they are clear and concise.
+
 ## 2.1. User Roles and Access Control
+
+### 2.1.1. Functional Requirements
+
+| Requirement ID | Description | MoSCoW |
+|------|------|------|
+| FR.XXX.M   | The database shall track if a user is a Doctor  | M  |
+| FR.XXX.M   | If a user is a Doctor, then the database shall track if they work full time or part time.  | M |
+| FR.XXX.M   | The database shall track if a user is a Nurse  | M |
+| FR.XXX.M   | The database shall track if a user is a Patient  | M |
+| FR.XXX.M   | The database shall track if a user is an Admin  | M |
+| FR.XXX.M   | When a user is successfully authenticated the system shall re-direct them to their designated dhasboard. |  |
+| FR.XXX.M   | If a user has not been authenticated, then the system shall prevent them from accessing the application. |  |
+| FR.XXX.M   | If a user has not been authenticated and they attempt to access the site, then the system shall re-direct them to the login/registration page. |  |
+| FR.XXX.M   |  |  |
+| FR.XXX.M   |  |  |
+| FR.XXX.M   | The system shall allow the user to logout. |  |
+| FR.XXX.M   | When a user has been inactive for 5 minutes the system shall log them out.  |  |
+| FR.XXX.M   |  |  |
+| FR.XXX.M   |  |  |
+| FR.XXX.M   |  |  |
+
+### 2.1.2. Non-functional Requirements
+
+
+### 2.1.3. Notes (Temporary)
 
 - Doctor (full-time and part-time)
 - Nurse (part-time)
@@ -36,6 +98,12 @@
 
 ## 2.2. Scheduling and Work Scheme
 
+### 2.2.1. Functional Requirements
+
+### 2.2.2. Non-functional Requirements
+
+### 2.2.3. Notes (Temporary)
+
 - Calendar functionality for booking surgery appointments.
 - Doctors and nurses should be able to see daily timetables of patients.
 - Patients should be able to book appointments and request re-issuance of repeating prescriptions online.
@@ -44,6 +112,12 @@
 - Rest of the week: 2 doctors
 
 ## 2.3. Billing and Invoicing
+
+### 2.3.1. Functional Requirements
+
+### 2.3.2. Non-functional Requirements
+
+### 2.3.3. Notes (Temporary)
 
 - Charges per consultation based on the length (standard consultation slot is 10 minutes).
 - Invoices issued based on consultation length.
@@ -57,28 +131,64 @@
 
 ### 2.4.1. Doctors and Nurses
 
+#### 2.4.1.1. Functional Requirements
+
+#### 2.4.1.2. Non-functional Requirements
+
+#### 2.4.1.3. Notes (Temporary)
+
 - Issue prescriptions at the end of each consultation and surgery.
 
 ### 2.4.2. Patients
+
+#### 2.4.2.1. Functional Requirements
+
+#### 2.4.2.2. Non-functional Requirements
+
+#### 2.4.2.3. Notes (Temporary)
 
 - Book appointments.
 - Request re-issue of repeating prescriptions online.
 
 ### 2.4.3. Admin
 
+#### 2.4.3.1. Functional Requirements
+
+#### 2.4.3.2. Non-functional Requirements
+
+#### 2.4.3.3. Notes (Temporary)
+
 - Manage records and user operations.
 
 ## 2.5. System Collaboration
+
+#### 2.5.0.1. Functional Requirements
+
+#### 2.5.0.2. Non-functional Requirements
+
+#### 2.5.0.3. Notes (Temporary)
 
 - Collaboration with other GP services for exchanging patients and forwarding nurse operations.
 - Future version should support collaborative operations with other GP services.
 
 ## 2.6. Integration with External Services
 
+### 2.6.1. Functional Requirements
+
+### 2.6.2. Non-functional Requirements
+
+### 2.6.3. Notes (Temporary)
+
 - Calendar functionality can be invoked from an existing calendar service (e.g., Google Calendar API).
 - Address lookup can be handled through another web service (e.g., Google Map Services).
 
 ## 2.7. Security
+
+### 2.7.1. Functional Requirements
+
+### 2.7.2. Non-functional Requirements
+
+### 2.7.3. Notes (Temporary)
 
 - Access to functionalities requires user authentication and authorization.
 - Substantial login system to ensure security.
@@ -87,6 +197,8 @@
 # 3. Requirements from Expectations
 
 ## 3.1. Pages
+
+### 3.1.1. Notes (Temporary)
 
 - Main (home) page for user type and action selection.
 - Login/registration page for member users.
@@ -97,31 +209,47 @@
 
 ## 3.2. Navigation
 
+### 3.2.1. Notes (Temporary)
+
 - Users should navigate smoothly between pages.
 - Access to the user's dashboard and the home page from any page.
 
 ## 3.3. Authentication and Session Management
+
+### 3.3.1. Notes (Temporary)
 
 - Users remain logged in until the session times out or they are changed/logged out.
 - Secured access to different members' dashboards.
 
 ## 3.4. External Services Integration
 
+### 3.4.1. Notes (Temporary)
+
 - Use of external calendar services (e.g., Google Calendar or any calendar service/API) for booking appointments with doctors or nurses.
 - Use of another web service (e.g., Google Map services) for automatic address lookup.
 
 ## 3.5. Database Deployment
+
+### 3.5.1. Notes (Temporary)
 
 - Database deployment should be separate and connected via Docker containers.
 - Reuse of work done for the Advanced Databases module is allowed.
 
 ## 3.6. Collaboration with Advanced Artificial Intelligence (AAI) Module
 
+### 3.6.1. Notes (Temporary)
+
 - Work for the AAI module assessment can be deployed on a separate container and accessed via web/restful services.
 
 ## 3.7. Technology Stack
+
+### 3.7.1. Notes (Temporary)
 
 - Python Django following MVC (MVT) patterns.
 - Separate deployment of a database system (e.g., MySQL, PostgreSQL).
 - Deployment conducted via Docker containers.
 - Django Restful Framework (DRF) used with Docker for creating, deploying, and accessing services.
+
+# 4. References
+
+Mavin, A., Wilkinson, P., Harwood, A. and Novak, M. (2009) Easy Approach to Requirements Syntax (EARS). In: 2009 17th IEEE International Requirements Engineering Conference [online]. 2009 17th IEEE International Requirements Engineering Conference (RE). Atlanta, Georgia, USA, IEEE, pp. 317–322. Available from: http://ieeexplore.ieee.org/document/5328509/ [Accessed 7 February 2024].
