@@ -28,6 +28,7 @@ class Address(models.Model):
     county = models.CharField(max_length=100)
     postcode = models.CharField(max_length=8)
     country = models.CharField(max_length=16)
+    description = models.CharField(max_length=100)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='addresses')
 
 class Appointment(models.Model):
