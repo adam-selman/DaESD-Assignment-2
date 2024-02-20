@@ -20,7 +20,7 @@ class ContactInfo(models.Model):
     description = models.CharField(max_length=100)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='contact_infos')
 
-class Addresse(models.Model):
+class Address(models.Model):
     number = models.IntegerField()
     buildingName = models.CharField(max_length=100)
     streetName = models.CharField(max_length=100)
@@ -32,8 +32,7 @@ class Addresse(models.Model):
 
 class Appointment(models.Model):
     appointmentID = models.AutoField(primary_key=True)
-    date = models.DateField()
-    time = models.TimeField()
+    dateTime = models.DateTimeField()
     duration = models.TimeField()
     status = models.CharField(max_length=100)
     patient = models.OneToOneField(User, on_delete=models.CASCADE, related_name='patient_appointment')
