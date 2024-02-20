@@ -79,7 +79,6 @@ The requirements below are separated into functional and non-functional requirem
 | FR.145.M   | The system shall create a weekly work scheme that ensures there is 1 doctor and 1 nurse on Monday and Friday.   | M  |
 | FR.150.M   | The system shall create a weekly work scheme that ensures there are 2 doctors on Tuesday, Wednesday, Thursday, Saturday and Sunday.   | M  |
 | FR.155.M   | The system shall return a timetable of appointments for nurse users.   | M  |
-| FR.160.M   | The system shall return a timetable of appointments for nurse users.   | M  |
 
 ### 2.2.2. Non-functional Requirements
 
@@ -96,20 +95,19 @@ The requirements below are separated into functional and non-functional requirem
 
 | Requirement ID | Description | MoSCoW |
 |------|------|------|
-| FR.165.M   | The system shall calculate appointment cost based on the duration of the appointment.   | M  |
-| FR.170.M   | The system shall calculate appointment cost based on whether a doctor or nurse attended.   | M  |
-| FR.175.M   | The system shall automatically produce an invoice after each appointment is marked as completed.   | M  |
-| FR.180.M   | The system shall allow invoices to be exported in a pdf format.   | M  |
-| FR.185.M   | The system shall allow invoices to be sent directly to the NHS.   | M  |
-| FR.190.M   | The system shall allow invoices to be sent directly to private healthcare providers.   | M  |
-| FR.195.M   | The system shall allow admin users to produce a report containing patient turnover, private payments and payments sent to the NHS.   | M  |
+| FR.160.M   | The system shall calculate appointment cost based on the duration of the appointment.   | M  |
+| FR.165.M   | The system shall calculate appointment cost based on whether a doctor or nurse attended.   | M  |
+| FR.170.M   | The system shall automatically produce an invoice after each appointment is marked as completed.   | M  |
+| FR.175.M   | The system shall allow invoices to be exported in a pdf format.   | M  |
+| FR.180.M   | The system shall allow invoices to be sent directly to the NHS.   | M  |
+| FR.185.M   | The system shall allow invoices to be sent directly to private healthcare providers.   | M  |
+| FR.190.M   | The system shall allow admin users to produce a report containing patient turnover, private payments and payments sent to the NHS.   | M  |
 
 ### 2.3.2. Non-functional Requirements
 
 | Requirement ID | Description | MoSCoW |
 |------|------|------|
 | NFR.040.S   | Invoices shall be transferred to external services using secure protocols. | S  |
-| NFR.045.S   | Invoices shall be transferred to external services using secure protocols. | S  |
 
 
 ## 2.4. System Collaboration
@@ -118,15 +116,15 @@ The requirements below are separated into functional and non-functional requirem
 
 | Requirement ID | Description | MoSCoW |
 |------|------|------|
-| FR.200.M   | The system shall allow nurse operations to be forward to other GP practices.   | M  |
-| FR.205.M   | The system shall facilitate collaboration with other GP practices via APIs.   | M  |
+| FR.195.M   | The system shall allow nurse operations to be forward to other GP practices.   | M  |
+| FR.200.M   | The system shall facilitate collaboration with other GP practices via APIs.   | M  |
 
 #### 2.4.0.2. Non-functional Requirements
 
 | Requirement ID | Description | MoSCoW |
 |------|------|------|
-| NFR.050.S   | Invoices shall facilitate secure communication with to other GP practices using secure protocols. | S  |
-| NFR.055.S   | Invoices shall facilitate secure communication with to other GP practices 24 hours a day, 7 days a week. | S  |
+| NFR.045.S   | Invoices shall facilitate secure communication with to other GP practices using secure protocols. | S  |
+| NFR.050.S   | Invoices shall facilitate secure communication with to other GP practices 24 hours a day, 7 days a week. | S  |
 
 ## 2.5. Pages
 
@@ -134,20 +132,20 @@ The requirements below are separated into functional and non-functional requirem
 
 | Requirement ID | Description | MoSCoW |
 |------|------|------|
-| FR.210.M   | The system shall have a main home page.   | M  |
-| FR.215.M   | The system shall have a login page.   | M  |
-| FR.220.M   | The system shall have a user registration page.   | M  |
-| FR.225.M   | The system shall have a doctor dashboard page.   | M  |
-| FR.230.M   | The system shall have a nurse dashboard page.   | M  |
-| FR.235.M   | The system shall have a patient dashboard page.   | M  |
-| FR.240.M   | The system shall have an admin dashboard page.   | M  |
+| FR.205.M   | The system shall have a main home page.   | M  |
+| FR.210.M   | The system shall have a login page.   | M  |
+| FR.215.M   | The system shall have a user registration page.   | M  |
+| FR.220.M   | The system shall have a doctor dashboard page.   | M  |
+| FR.225.M   | The system shall have a nurse dashboard page.   | M  |
+| FR.230.M   | The system shall have a patient dashboard page.   | M  |
+| FR.235.M   | The system shall have an admin dashboard page.   | M  |
 
 ### 2.5.2. Non-functional Requirements
 
 | Requirement ID | Description | MoSCoW |
 |------|------|------|
-| NFR.060.S   | The system shall provide a user interface that allows the user to reach any page within 5 clicks. | S  |
-| NFR.065.S   | The system shall allow a user to access their dashboard from any page on the site in one click. | S  |
+| NFR.055.S   | The system shall provide a user interface that allows the user to reach any page within 5 clicks. | S  |
+| NFR.060.S   | The system shall allow a user to access their dashboard from any page on the site in one click. | S  |
 
 ## 2.6. Full Requirements List
 
@@ -186,23 +184,22 @@ The requirements below are separated into functional and non-functional requirem
 | FR.145.M   | The system shall create a weekly work scheme that ensures there is 1 doctor and 1 nurse on Monday and Friday.   | M  |
 | FR.150.M   | The system shall create a weekly work scheme that ensures there are 2 doctors on Tuesday, Wednesday, Thursday, Saturday and Sunday.   | M  |
 | FR.155.M   | The system shall return a timetable of appointments for nurse users.   | M  |
-| FR.160.M   | The system shall return a timetable of appointments for nurse users.   | M  |
-| FR.165.M   | The system shall calculate appointment cost based on the duration of the appointment.   | M  |
-| FR.170.M   | The system shall calculate appointment cost based on whether a doctor or nurse attended.   | M  |
-| FR.175.M   | The system shall automatically produce an invoice after each appointment is marked as completed.   | M  |
-| FR.180.M   | The system shall allow invoices to be exported in a pdf format.   | M  |
-| FR.185.M   | The system shall allow invoices to be sent directly to the NHS.   | M  |
-| FR.190.M   | The system shall allow invoices to be sent directly to private healthcare providers.   | M  |
-| FR.195.M   | The system shall allow admin users to produce a report containing patient turnover, private payments and payments sent to the NHS.   | M  |
-| FR.200.M   | The system shall allow nurse operations to be forward to other GP practices.   | M  |
-| FR.205.M   | The system shall facilitate collaboration with other GP practices via APIs.   | M  |
-| FR.210.M   | The system shall have a main home page.   | M  |
-| FR.215.M   | The system shall have a login page.   | M  |
-| FR.220.M   | The system shall have a user registration page.   | M  |
-| FR.225.M   | The system shall have a doctor dashboard page.   | M  |
-| FR.230.M   | The system shall have a nurse dashboard page.   | M  |
-| FR.235.M   | The system shall have a patient dashboard page.   | M  |
-| FR.240.M   | The system shall have an admin dashboard page.   | M  |
+| FR.160.M   | The system shall calculate appointment cost based on the duration of the appointment.   | M  |
+| FR.165.M   | The system shall calculate appointment cost based on whether a doctor or nurse attended.   | M  |
+| FR.170.M   | The system shall automatically produce an invoice after each appointment is marked as completed.   | M  |
+| FR.175.M   | The system shall allow invoices to be exported in a pdf format.   | M  |
+| FR.180.M   | The system shall allow invoices to be sent directly to the NHS.   | M  |
+| FR.185.M   | The system shall allow invoices to be sent directly to private healthcare providers.   | M  |
+| FR.190.M   | The system shall allow admin users to produce a report containing patient turnover, private payments and payments sent to the NHS.   | M  |
+| FR.195.M   | The system shall allow nurse operations to be forward to other GP practices.   | M  |
+| FR.200.M   | The system shall facilitate collaboration with other GP practices via APIs.   | M  |
+| FR.205.M   | The system shall have a main home page.   | M  |
+| FR.210.M   | The system shall have a login page.   | M  |
+| FR.215.M   | The system shall have a user registration page.   | M  |
+| FR.220.M   | The system shall have a doctor dashboard page.   | M  |
+| FR.225.M   | The system shall have a nurse dashboard page.   | M  |
+| FR.230.M   | The system shall have a patient dashboard page.   | M  |
+| FR.235.M   | The system shall have an admin dashboard page.   | M  |
 
 ### 2.5.2. Non-functional Requirements
 
@@ -217,11 +214,10 @@ The requirements below are separated into functional and non-functional requirem
 | NFR.030.S   | The system shall allow patients to book appointments 24 hours a day, 7 days a week.   | S  |
 | NFR.035.S   | The system shall allow patients to request prescription re-issuance 24 hours a day, 7 days a week.   | S  |
 | NFR.040.S   | Invoices shall be transferred to external services using secure protocols. | S  |
-| NFR.045.S   | Invoices shall be transferred to external services using secure protocols. | S  |
-| NFR.050.S   | Invoices shall facilitate secure communication with to other GP practices using secure protocols. | S  |
-| NFR.055.S   | Invoices shall facilitate secure communication with to other GP practices 24 hours a day, 7 days a week. | S  |
-| NFR.060.S   | The system shall provide a user interface that allows the user to reach any page within 5 clicks. | S  |
-| NFR.065.S   | The system shall allow a user to access their dashboard from any page on the site in one click. | S  |
+| NFR.045.S   | Invoices shall facilitate secure communication with to other GP practices using secure protocols. | S  |
+| NFR.050.S   | Invoices shall facilitate secure communication with to other GP practices 24 hours a day, 7 days a week. | S  |
+| NFR.055.S   | The system shall provide a user interface that allows the user to reach anypage within 5 clicks. | S  |
+| NFR.060.S   | The system shall allow a user to access their dashboard from any page on the site in one click. | S  |
 
 
 
