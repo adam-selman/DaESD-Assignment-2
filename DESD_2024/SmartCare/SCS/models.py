@@ -3,6 +3,9 @@ from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
     userID = models.AutoField(primary_key=True)
+    dob = models.DateField()
+    gender = models.CharField(max_length = 100)
+    allergies = models.BooleanField(default = False)
     
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
@@ -45,7 +48,7 @@ class Invoice(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(max_length=100)
     dateIssued = models.DateField()
-    appointmentID = models.ForeignKey(Appointment, on_delete=models.CASCADE, related_name='invoices')
+    appointmentID = models.OneToOneField(Appointment, on_delete=models.CASCADE, related_name='invoices')
     patient = models.OneToOneField(User, on_delete=models.CASCADE, related_name='patient_invoice')
     billingParty = models.BooleanField()
 
@@ -87,3 +90,14 @@ class Timetable(models.Model):
     day = models.CharField(max_length=100)
     startTime = models.TimeField()
     endTime = models.TimeField()
+
+class Allergy(models.Model):
+    allergyID = models.AutoField(primary_key=True)
+    name = models.CharField(max_length = 100)
+
+class UserAllergy(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    allergy = models.ForeignKey(Allergy, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ['user', 'allergy']

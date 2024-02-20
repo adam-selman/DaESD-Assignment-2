@@ -19,16 +19,33 @@ def run_migrations():
     execute_from_command_line(['manage.py', 'makemigrations'])
     execute_from_command_line(['manage.py', 'migrate'])
 
+def confirm_action(prompt):
+    while True:
+        response = input(prompt).lower()
+        if response == 'y':
+            return True
+        elif response == 'n':
+            print('Action canceled.')
+            sys.exit(0)
+        else:
+            print('Invalid input. Please enter y or n.')
+
+def confirm_rebuild():
+    if not confirm_action('This will drop and recreate the database. Are you sure you want to continue? (y/n): '):
+        return False
+    if not confirm_action('Are you absolutely certain? (y/n): '):
+        return False
+    return True
+
 # Main function to run the script
 def main():
     # Prompt for confirmation
-    confirm = input('This will drop and recreate the database. Are you sure you want to continue? (y/n): ')
-    if confirm.lower() != 'y':
-        print('Rebuild cancelled.')
-        sys.exit(0)
+    if confirm_rebuild():
+        print("Rebuilding database...")
+    else:
+        print("Rebuild canceled.")
 
     # Rebuild the database
-    print('Rebuilding database...')
     rebuild_database()
     print('Database rebuilt.')
     # Run the migrations
