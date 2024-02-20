@@ -18,8 +18,8 @@
     - [2.5.1. Functional Requirements](#251-functional-requirements)
     - [2.5.2. Non-functional Requirements](#252-non-functional-requirements)
   - [2.6. Full Requirements List](#26-full-requirements-list)
-    - [Functional Requirements](#functional-requirements)
-    - [2.5.2. Non-functional Requirements](#252-non-functional-requirements-1)
+    - [2.6.1. Functional Requirements](#261-functional-requirements)
+    - [2.6.2. Non-functional Requirements](#262-non-functional-requirements)
 - [3. References](#3-references)
 
 
@@ -149,7 +149,7 @@ The requirements below are separated into functional and non-functional requirem
 
 ## 2.6. Full Requirements List
 
-### Functional Requirements
+### 2.6.1. Functional Requirements
 
 | Requirement ID | Description | MoSCoW |
 |------|------|------|
@@ -201,7 +201,7 @@ The requirements below are separated into functional and non-functional requirem
 | FR.230.M   | The system shall have a patient dashboard page.   | M  |
 | FR.235.M   | The system shall have an admin dashboard page.   | M  |
 
-### 2.5.2. Non-functional Requirements
+### 2.6.2. Non-functional Requirements
 
 | Requirement ID | Description | MoSCoW |
 |------|------|------|
