@@ -42,17 +42,17 @@ The requirements below are separated into functional and non-functional requirem
 | FR.030.M   | If a user has not been authenticated, then the system shall prevent them from accessing the application. |M  |
 | FR.035.M   | If a user has not been authenticated and they attempt to access the site, then the system shall re-direct them to the login/registration page. | M |
 | FR.040.M   | The system shall allow new users to register their details to create an account. | M |
-| FR.040.M   | When creating a new user account address information shall be retrieved using an external web service. | M |
-| FR.045.M   | The system shall allow users to request their account be deleted. |M  |
-| FR.050.M   | The system shall allow the user to logout. | M |
-| FR.055.M   | When a user has been inactive for 5 minutes the system shall log them out.  | M |
-| FR.055.M   | When a user attempts to access a dashboard their right to access it shall be authenticated.   | M |
-| FR.060.M   | If the user is an admin, then the system shall allow them to register new doctor users  | M |
-| FR.065.M   | If the user is an admin, then the system shall allow them to register new nurse users  | M|
-| FR.065.M   | If the user is an admin, then the system shall allow them to perform create operations on stored records.  | M|
-| FR.065.M   | If the user is an admin, then the system shall allow them to perform read operations on stored records.  | M|
-| FR.065.M   | If the user is an admin, then the system shall allow them to perform update operations on stored records.  | M|
-| FR.065.M   | If the user is an admin, then the system shall allow them to perform delete operations on stored records.  | M|
+| FR.045.M   | When creating a new user account address information shall be retrieved using an external web service. | M |
+| FR.050.M   | The system shall allow users to request their account be deleted. |M  |
+| FR.055.M   | The system shall allow the user to logout. | M |
+| FR.060.M   | When a user has been inactive for 5 minutes the system shall log them out.  | M |
+| FR.065.M   | When a user attempts to access a dashboard their right to access it shall be authenticated.   | M |
+| FR.070.M   | If the user is an admin, then the system shall allow them to register new doctor users  | M |
+| FR.075.M   | If the user is an admin, then the system shall allow them to register new nurse users  | M|
+| FR.080.M   | If the user is an admin, then the system shall allow them to perform create operations on stored records.  | M|
+| FR.085.M   | If the user is an admin, then the system shall allow them to perform read operations on stored records.  | M|
+| FR.090.M   | If the user is an admin, then the system shall allow them to perform update operations on stored records.  | M|
+| FR.095.M   | If the user is an admin, then the system shall allow them to perform delete operations on stored records.  | M|
 
 ### 2.1.2. Non-functional Requirements
 | Requirement ID | Description | MoSCoW |
@@ -68,18 +68,18 @@ The requirements below are separated into functional and non-functional requirem
 
 | Requirement ID | Description | MoSCoW |
 |------|------|------|
-| FR.065.M   | The system shall return a timetable of appointments for doctor users.   | M  |
-| FR.070.M   | The system shall return a timetable of appointments for nurse users.   | M  |
-| FR.075.M   | The system shall allow doctor and nurse users to mark an appointment as complete.   | M  |
-| FR.080.M   | The system shall allow doctor and nurse users to issue a prescription after an appointment is marked as complete.   | M  |
-| FR.080.M   | The system shall allow doctor and nurse users to forward a patient to a hospital after an appointment is marked as complete.   | M  |
-| FR.085.M   | The system shall provide an appointment booking form for patient users.   | M  |
-| FR.090.M   | The system shall integrate appointments with an external calendar service.   | M  |
-| FR.095.M   | The system shall allow patient users to request prescrition re-issuance.   | M  |
-| FR.100.M   | The system shall create a weekly work scheme that ensures there is 1 doctor and 1 nurse on Monday and Friday.   | M  |
-| FR.105.M   | The system shall create a weekly work scheme that ensures there are 2 doctors on Tuesday, Wednesday, Thursday, Saturday and Sunday.   | M  |
+| FR.100.M   | The system shall return a timetable of appointments for doctor users.   | M  |
 | FR.110.M   | The system shall return a timetable of appointments for nurse users.   | M  |
-| FR.115.M   | The system shall return a timetable of appointments for nurse users.   | M  |
+| FR.115.M   | The system shall allow doctor and nurse users to mark an appointment as complete.   | M  |
+| FR.120.M   | The system shall allow doctor and nurse users to issue a prescription after an appointment is marked as complete.   | M  |
+| FR.125.M   | The system shall allow doctor and nurse users to forward a patient to a hospital after an appointment is marked as complete.   | M  |
+| FR.130.M   | The system shall provide an appointment booking form for patient users.   | M  |
+| FR.135.M   | The system shall integrate appointments with an external calendar service.   | M  |
+| FR.140.M   | The system shall allow patient users to request prescrition re-issuance.   | M  |
+| FR.145.M   | The system shall create a weekly work scheme that ensures there is 1 doctor and 1 nurse on Monday and Friday.   | M  |
+| FR.150.M   | The system shall create a weekly work scheme that ensures there are 2 doctors on Tuesday, Wednesday, Thursday, Saturday and Sunday.   | M  |
+| FR.155.M   | The system shall return a timetable of appointments for nurse users.   | M  |
+| FR.160.M   | The system shall return a timetable of appointments for nurse users.   | M  |
 
 ### 2.2.2. Non-functional Requirements
 
@@ -96,13 +96,13 @@ The requirements below are separated into functional and non-functional requirem
 
 | Requirement ID | Description | MoSCoW |
 |------|------|------|
-| FR.120.M   | The system shall calculate appointment cost based on the duration of the appointment.   | M  |
-| FR.125.M   | The system shall calculate appointment cost based on whether a doctor or nurse attended.   | M  |
-| FR.130.M   | The system shall automatically produce an invoice after each appointment is marked as completed.   | M  |
-| FR.135.M   | The system shall allow invoices to be exported in a pdf format.   | M  |
-| FR.140.M   | The system shall allow invoices to be sent directly to the NHS.   | M  |
-| FR.145.M   | The system shall allow invoices to be sent directly to private healthcare providers.   | M  |
-| FR.150.M   | The system shall allow admin users to produce a report containing patient turnover, private payments and payments sent to the NHS.   | M  |
+| FR.165.M   | The system shall calculate appointment cost based on the duration of the appointment.   | M  |
+| FR.170.M   | The system shall calculate appointment cost based on whether a doctor or nurse attended.   | M  |
+| FR.175.M   | The system shall automatically produce an invoice after each appointment is marked as completed.   | M  |
+| FR.180.M   | The system shall allow invoices to be exported in a pdf format.   | M  |
+| FR.185.M   | The system shall allow invoices to be sent directly to the NHS.   | M  |
+| FR.190.M   | The system shall allow invoices to be sent directly to private healthcare providers.   | M  |
+| FR.195.M   | The system shall allow admin users to produce a report containing patient turnover, private payments and payments sent to the NHS.   | M  |
 
 ### 2.3.2. Non-functional Requirements
 
@@ -118,8 +118,8 @@ The requirements below are separated into functional and non-functional requirem
 
 | Requirement ID | Description | MoSCoW |
 |------|------|------|
-| FR.120.M   | The system shall allow nurse operations to be forward to other GP practices.   | M  |
-| FR.120.M   | The system shall facilitate collaboration with other GP practices via APIs.   | M  |
+| FR.200.M   | The system shall allow nurse operations to be forward to other GP practices.   | M  |
+| FR.205.M   | The system shall facilitate collaboration with other GP practices via APIs.   | M  |
 
 #### 2.4.0.2. Non-functional Requirements
 
@@ -134,13 +134,13 @@ The requirements below are separated into functional and non-functional requirem
 
 | Requirement ID | Description | MoSCoW |
 |------|------|------|
-| FR.155.M   | The system shall have a main home page.   | M  |
-| FR.160.M   | The system shall have a login page.   | M  |
-| FR.165.M   | The system shall have a user registration page.   | M  |
-| FR.170.M   | The system shall have a doctor dashboard page.   | M  |
-| FR.175.M   | The system shall have a nurse dashboard page.   | M  |
-| FR.180.M   | The system shall have a patient dashboard page.   | M  |
-| FR.185.M   | The system shall have an admin dashboard page.   | M  |
+| FR.210.M   | The system shall have a main home page.   | M  |
+| FR.215.M   | The system shall have a login page.   | M  |
+| FR.220.M   | The system shall have a user registration page.   | M  |
+| FR.225.M   | The system shall have a doctor dashboard page.   | M  |
+| FR.230.M   | The system shall have a nurse dashboard page.   | M  |
+| FR.235.M   | The system shall have a patient dashboard page.   | M  |
+| FR.240.M   | The system shall have an admin dashboard page.   | M  |
 
 ### 2.5.2. Non-functional Requirements
 
@@ -164,43 +164,45 @@ The requirements below are separated into functional and non-functional requirem
 | FR.030.M   | If a user has not been authenticated, then the system shall prevent them from accessing the application. |M  |
 | FR.035.M   | If a user has not been authenticated and they attempt to access the site, then the system shall re-direct them to the login/registration page. | M |
 | FR.040.M   | The system shall allow new users to register their details to create an account. | M |
-| FR.040.M   | When creating a new user account address information shall be retrieved using an external web service. | M |
-| FR.045.M   | The system shall allow users to request their account be deleted. |M  |
-| FR.050.M   | The system shall allow the user to logout. | M |
-| FR.055.M   | When a user has been inactive for 5 minutes the system shall log them out.  | M |
-| FR.055.M   | When a user attempts to access a dashboard their right to access it shall be authenticated.   | M |
-| FR.060.M   | If the user is an admin, then the system shall allow them to register new doctor users  | M |
-| FR.065.M   | If the user is an admin, then the system shall allow them to register new nurse users  | M|
-| FR.070.M   | If the user is an admin, then the system shall allow them to perform create operations on stored records.  | M|
-| FR.075.M   | If the user is an admin, then the system shall allow them to perform read operations on stored records.  | M|
-| FR.080.M   | If the user is an admin, then the system shall allow them to perform update operations on stored records.  | M|
-| FR.085.M   | If the user is an admin, then the system shall allow them to perform delete operations on stored records.  | M|
-| FR.090.M   | The system shall return a timetable of appointments for doctor users.   | M  |
-| FR.095.M   | The system shall return a timetable of appointments for nurse users.   | M  |
-| FR.100.M   | The system shall allow doctor and nurse users to mark an appointment as complete.   | M  |
-| FR.115.M   | The system shall allow doctor and nurse users to issue a prescription after an appointment is marked as complete.   | M  |
-| FR.110.M   | The system shall allow doctor and nurse users to forward a patient to a hospital after an appointment is marked as complete.   | M  |
-| FR.115.M   | The system shall provide an appointment booking form for patient users.   | M  |
-| FR.120.M   | The system shall integrate appointments with an external calendar service.   | M  |
-| FR.125.M   | The system shall allow patient users to request prescrition re-issuance.   | M  |
-| FR.130.M   | The system shall create a weekly work scheme that ensures there is 1 doctor and 1 nurse on Monday and Friday.   | M  |
-| FR.135.M   | The system shall create a weekly work scheme that ensures there are 2 doctors on Tuesday, Wednesday, Thursday, Saturday and Sunday.   | M  |
-| FR.140.M   | The system shall return a timetable of appointments for nurse users.   | M  |
-| FR.145.M   | The system shall return a timetable of appointments for nurse users.   | M  |
-| FR.150.M   | The system shall calculate appointment cost based on the duration of the appointment.   | M  |
-| FR.155.M   | The system shall calculate appointment cost based on whether a doctor or nurse attended.   | M  |
-| FR.160.M   | The system shall automatically produce an invoice after each appointment is marked as completed.   | M  |
-| FR.165.M   | The system shall allow invoices to be exported in a pdf format.   | M  |
-| FR.170.M   | The system shall allow invoices to be sent directly to the NHS.   | M  |
-| FR.175.M   | The system shall allow invoices to be sent directly to private healthcare providers.   | M  |
-| FR.180.M   | The system shall allow admin users to produce a report containing patient turnover, private payments and payments sent to the NHS.   | M  |
-| FR.185.M   | The system shall have a main home page.   | M  |
-| FR.190.M   | The system shall have a login page.   | M  |
-| FR.195.M   | The system shall have a user registration page.   | M  |
-| FR.200.M   | The system shall have a doctor dashboard page.   | M  |
-| FR.205.M   | The system shall have a nurse dashboard page.   | M  |
-| FR.210.M   | The system shall have a patient dashboard page.   | M  |
-| FR.215.M   | The system shall have an admin dashboard page.   | M  |
+| FR.045.M   | When creating a new user account address information shall be retrieved using an external web service. | M |
+| FR.050.M   | The system shall allow users to request their account be deleted. |M  |
+| FR.055.M   | The system shall allow the user to logout. | M |
+| FR.060.M   | When a user has been inactive for 5 minutes the system shall log them out.  | M |
+| FR.065.M   | When a user attempts to access a dashboard their right to access it shall be authenticated.   | M |
+| FR.070.M   | If the user is an admin, then the system shall allow them to register new doctor users  | M |
+| FR.075.M   | If the user is an admin, then the system shall allow them to register new nurse users  | M|
+| FR.080.M   | If the user is an admin, then the system shall allow them to perform create operations on stored records.  | M|
+| FR.085.M   | If the user is an admin, then the system shall allow them to perform read operations on stored records.  | M|
+| FR.090.M   | If the user is an admin, then the system shall allow them to perform update operations on stored records.  | M|
+| FR.095.M   | If the user is an admin, then the system shall allow them to perform delete operations on stored records.  | M|
+| FR.100.M   | The system shall return a timetable of appointments for doctor users.   | M  |
+| FR.110.M   | The system shall return a timetable of appointments for nurse users.   | M  |
+| FR.115.M   | The system shall allow doctor and nurse users to mark an appointment as complete.   | M  |
+| FR.120.M   | The system shall allow doctor and nurse users to issue a prescription after an appointment is marked as complete.   | M  |
+| FR.125.M   | The system shall allow doctor and nurse users to forward a patient to a hospital after an appointment is marked as complete.   | M  |
+| FR.130.M   | The system shall provide an appointment booking form for patient users.   | M  |
+| FR.135.M   | The system shall integrate appointments with an external calendar service.   | M  |
+| FR.140.M   | The system shall allow patient users to request prescrition re-issuance.   | M  |
+| FR.145.M   | The system shall create a weekly work scheme that ensures there is 1 doctor and 1 nurse on Monday and Friday.   | M  |
+| FR.150.M   | The system shall create a weekly work scheme that ensures there are 2 doctors on Tuesday, Wednesday, Thursday, Saturday and Sunday.   | M  |
+| FR.155.M   | The system shall return a timetable of appointments for nurse users.   | M  |
+| FR.160.M   | The system shall return a timetable of appointments for nurse users.   | M  |
+| FR.165.M   | The system shall calculate appointment cost based on the duration of the appointment.   | M  |
+| FR.170.M   | The system shall calculate appointment cost based on whether a doctor or nurse attended.   | M  |
+| FR.175.M   | The system shall automatically produce an invoice after each appointment is marked as completed.   | M  |
+| FR.180.M   | The system shall allow invoices to be exported in a pdf format.   | M  |
+| FR.185.M   | The system shall allow invoices to be sent directly to the NHS.   | M  |
+| FR.190.M   | The system shall allow invoices to be sent directly to private healthcare providers.   | M  |
+| FR.195.M   | The system shall allow admin users to produce a report containing patient turnover, private payments and payments sent to the NHS.   | M  |
+| FR.200.M   | The system shall allow nurse operations to be forward to other GP practices.   | M  |
+| FR.205.M   | The system shall facilitate collaboration with other GP practices via APIs.   | M  |
+| FR.210.M   | The system shall have a main home page.   | M  |
+| FR.215.M   | The system shall have a login page.   | M  |
+| FR.220.M   | The system shall have a user registration page.   | M  |
+| FR.225.M   | The system shall have a doctor dashboard page.   | M  |
+| FR.230.M   | The system shall have a nurse dashboard page.   | M  |
+| FR.235.M   | The system shall have a patient dashboard page.   | M  |
+| FR.240.M   | The system shall have an admin dashboard page.   | M  |
 
 ### 2.5.2. Non-functional Requirements
 
