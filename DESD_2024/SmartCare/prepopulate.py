@@ -8,6 +8,9 @@ django.setup()
 
 from SCS.models import *
 
+def parse_bool(value):
+    return value.lower() == 'true'
+
 def populate_users():
     with open('data/users.csv', 'r') as file:
         reader = csv.DictReader(file)
@@ -19,8 +22,8 @@ def populate_users():
                                         last_name = row['lastname'],
                                         dob = row['date of birth'],
                                         gender = row['gender'],
-                                        allergies = row['allergies'],
-                                        is_active = row['active'], 
+                                        allergies = parse_bool(row['allergies']),
+                                        is_active = parse_bool(row['active']), 
                                         date_joined = timezone.now())
 
 def populate_profiles():
@@ -36,12 +39,12 @@ def populate_profiles():
                 return
             
             profile = Profile.objects.create(user = user,
-                                            isPatient = row['patient'],
-                                            isDoctor = row['doctor'],
-                                            isPartTime = row['part time'],
-                                            isNurse = row['nurse'],
-                                            isAdmin = row['admin'],
-                                            isNHSTrust = row['trust'])
+                                            isPatient = parse_bool(row['patient']),
+                                            isDoctor = parse_bool(row['doctor']),
+                                            isPartTime = parse_bool(row['part time']),
+                                            isNurse = parse_bool(row['nurse']),
+                                            isAdmin = parse_bool(row['admin']),
+                                            isNHSTrust = parse_bool(row['trust']))
 
 if __name__ == '__main__':
     print("Starting to populate the database... ")
