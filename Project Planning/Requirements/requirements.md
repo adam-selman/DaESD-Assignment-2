@@ -239,7 +239,7 @@ The requirements below are separated into functional and non-functional requirem
 |------|------|------|
 | NFR.055.S   | The system shall provide a user interface that allows the user to reach any page within 5 clicks. | S  |
 | NFR.060.S   | The system shall allow a user to access their dashboard from any page on the site in one click. | S  |
-| NFR.060.S   | The system shall allow a user to logout from any page on the site in one click. | S  |
+| NFR.065.S   | The system shall allow a user to logout from any page on the site in one click. | S  |
 
 ### 1.2.7. Full Requirements List
 
@@ -343,6 +343,7 @@ The requirements below are separated into functional and non-functional requirem
 | NFR.050.S   | Invoices shall facilitate secure communication with to other GP practices 24 hours a day, 7 days a week. | S  |
 | NFR.055.S   | The system shall provide a user interface that allows the user to reach any page within 5 clicks. | S  |
 | NFR.060.S   | The system shall allow a user to access their dashboard from any page on the site in one click. | S  |
+| NFR.065.S   | The system shall allow a user to logout from any page on the site in one click. | S  |
 
 ### 1.2.8. References
 
