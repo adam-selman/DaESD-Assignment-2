@@ -129,12 +129,12 @@ The requirements below are separated into functional and non-functional requirem
 | FR.100.M   | The system shall return a daily timetable of appointments for doctor users.   | M  |
 | FR.110.M   | The system shall return a daily timetable of appointments for nurse users.   | M  |
 | FR.115.M   | The system shall allow doctor and nurse users to mark an appointment as complete.   | M  |
-| FR.116.M   | When marking an appointment as complete the system shall allow the doctor or nurse user to save a description of any notes made during the appointment.   | M  |
-| FR.120.M   | The system shall allow doctor and nurse users to issue a prescription after an appointment is marked as complete.   | M  |
-| FR.125.M   | The system shall allow doctor and nurse users to forward a patient to a hospital after an appointment is marked as complete.   | M  |
-| FR.140.M   | The system shall allow patient users to request prescription re-issuance.   | M  |
-| FR.145.M   | The system shall create a weekly work scheme that ensures there is 1 doctor and 1 nurse on Monday and Friday.   | M  |
-| FR.150.M   | The system shall create a weekly work scheme that ensures there are 2 doctors on Tuesday, Wednesday, Thursday, Saturday and Sunday.   | M  |
+| FR.120.M   | When marking an appointment as complete the system shall allow the doctor or nurse user to save a description of any notes made during the appointment.   | M  |
+| FR.125.M   | The system shall allow doctor and nurse users to issue a prescription after an appointment is marked as complete.   | M  |
+| FR.130.M   | The system shall allow doctor and nurse users to forward a patient to a hospital after an appointment is marked as complete.   | M  |
+| FR.135.M   | The system shall allow patient users to request prescription re-issuance.   | M  |
+| FR.140.M   | The system shall create a weekly work scheme that ensures there is 1 doctor and 1 nurse on Monday and Friday.   | M  |
+| FR.145.M   | The system shall create a weekly work scheme that ensures there are 2 doctors on Tuesday, Wednesday, Thursday, Saturday and Sunday.   | M  |
 
 #### 1.2.2.2. Non-functional Requirements
 
@@ -149,11 +149,13 @@ The requirements below are separated into functional and non-functional requirem
 
 | Requirement ID | Description | MoSCoW |
 |------|------|------|
-| FR.130.M   | The system shall provide an appointment booking form for patient users.   | M  |
-| FR.130.M   | When booking an appointment the system shall ask the user to select a date and time.   | M  |
-| FR.130.S   | When booking an appointment the system shall allow the user to provide a short text description of their issue but is not required.   | M  |
-| FR.135.M   | The system shall integrate appointments with an external calendar service.   | M  |
-| FR.141.M   | The system shall allow patients to cancel a booked appointment.   | M  |
+| FR.150.M   | The system shall provide an appointment booking form for patient users.   | M  |
+| FR.155.M   | When booking an appointment the system shall ask the user to select a date and time.   | M  |
+| FR.160.S   | When booking an appointment the system shall allow the user to provide a short text description of their issue but is not required.   | M  |
+| FR.165.M   | The system shall integrate appointments with an external calendar service.   | M  |
+| FR.170.M   | The system shall allow patients to cancel a booked appointment.   | M  |
+| FR.175.C   | The system shall allow patients to book virtual appointments.   | C  |
+| FR.180.C   | The system shall send reminder email notifications to patients.   | C  |
 
 ### 1.2.4. Billing and Invoicing
 
@@ -161,13 +163,13 @@ The requirements below are separated into functional and non-functional requirem
 
 | Requirement ID | Description | MoSCoW |
 |------|------|------|
-| FR.160.M   | The system shall calculate appointment cost based on the duration of the appointment.   | M  |
-| FR.165.M   | The system shall calculate appointment cost based on whether a doctor or nurse attended.   | M  |
-| FR.170.M   | The system shall automatically produce an invoice after each appointment is marked as completed.   | M  |
-| FR.175.M   | The system shall allow invoices to be exported in a pdf format.   | M  |
-| FR.180.M   | The system shall allow invoices to be sent directly to the NHS.   | M  |
-| FR.185.M   | The system shall allow invoices to be sent directly to private healthcare providers.   | M  |
-| FR.190.M   | The system shall allow admin users to produce a report containing patient turnover, private payments and payments sent to the NHS.   | M  |
+| FR.185.M   | The system shall calculate appointment cost based on the duration of the appointment.   | M  |
+| FR.190.M   | The system shall calculate appointment cost based on whether a doctor or nurse attended.   | M  |
+| FR.195.M   | The system shall automatically produce an invoice after each appointment is marked as completed.   | M  |
+| FR.200.M   | The system shall allow invoices to be exported in a pdf format.   | M  |
+| FR.205.M   | The system shall allow invoices to be sent directly to the NHS.   | M  |
+| FR.210.M   | The system shall allow invoices to be sent directly to private healthcare providers.   | M  |
+| FR.215.M   | The system shall allow admin users to produce a report containing patient turnover, private payments and payments sent to the NHS.   | M  |
 
 #### 1.2.4.2. Non-functional Requirements
 
@@ -181,8 +183,8 @@ The requirements below are separated into functional and non-functional requirem
 
 | Requirement ID | Description | MoSCoW |
 |------|------|------|
-| FR.195.M   | The system shall allow nurse operations to be forward to other GP practices.   | M  |
-| FR.200.M   | The system shall facilitate collaboration with other GP practices via APIs.   | M  |
+| FR.220.M   | The system shall allow nurse operations to be forward to other GP practices.   | M  |
+| FR.225.M   | The system shall facilitate collaboration with other GP practices via APIs.   | M  |
 
 #### 1.2.5.2. Non-functional Requirements
 
@@ -197,40 +199,39 @@ The requirements below are separated into functional and non-functional requirem
 
 | Requirement ID | Description | MoSCoW |
 |------|------|------|
-| FR.205.M   | The system shall have a main home page.   | M  |
-| FR.230.M   | The main home page shall display general information about the SmartCare system.   | M  |
-| FR.230.M   | If a user is not logged in, then the main home page shall have a login button.   | M  |
-| FR.230.M   | If a user is logged in, then all pages shall have a logout button.   | M  |
-| FR.210.M   | The system shall have a login page.   | M  |
-| FR.215.M   | The system shall have a user registration page.   | M  |
-| FR.220.M   | The system shall have a doctor dashboard page.   | M  |
-| FR.230.M   | The doctor dashboard shall display a list of prescription re-issuance requests that need approval.   | M  |
-| FR.230.M   | The doctor dashboard shall allow doctors to approve a prescription re-issuance requests.   | M  |
-| FR.230.M   | The doctor dashboard shall allow doctors to decline a prescription re-issuance requests.   | M  |
-| FR.230.C   | If doctor declines a prescription re-issuance request they are given the option to state why.   | C  |
-| FR.230.M   | The doctor dashboard shall display a list of appointments assigned to them for the current date including patient information, appointment time and a brief description of the issue.   | M  |
-| FR.230.C   | The doctor dashboard shall allow doctors to request days off for holiday or sickness  | C  |
-| FR.230.C   | The doctor dashboard shall show a list of shifts that are in need of cover due to holiday or sickness doctors to request days off.   | C  |
-| FR.225.M   | The system shall have a nurse dashboard page.   | M  |
-| FR.230.M   | The nurse dashboard shall display a list of prescription re-issuance requests that need approval.   | M  |
-| FR.230.M   | The nurse dashboard shall display a list of appointments assigned to them for the current date including patient information, appointment time and a brief description of the issue.   | M  |
-| FR.235.M   | The system shall have a staff timetable  page.   | M  |
-| FR.230.M   | The staff timetable page shall display a working schedule for the current week.   | M  |
-| FR.230.M   | The staff timetable page shall display future work week schedules.   | M  |
-| FR.230.M   | The system shall have a patient dashboard page.   | M  |
-| FR.230.M   | The patient dashboard shall display a list of current prescriptions.   | M  |
-| FR.230.M   | The patient dashboard shall display a list of upcoming appointments with the corresponding date and time.   | M  |
-| FR.230.M   | The patient dashboard shall display a list of previous appointments including any prescriptions issued.   | M  |
-| FR.230.M   | The patient dashboard shall display a list of prescription re-issuance requests that are pending approval.   | M  |
-| FR.230.M   | The patient dashboard shall display a list of invoices for appointments and who is responsible for payment.   | M  |
-| FR.235.M   | The system shall have an admin dashboard page.   | M  |
-| FR.230.M   | The admin dashboard shall allow for the registration of a new doctor user.   | M  |
-| FR.230.M   | The admin dashboard shall allow the viewing of a doctor's information.   | M  |
-| FR.230.M   | The admin dashboard shall allow for the registration of a new nurse user.   | M  |
-| FR.230.M   | The admin dashboard shall allow the viewing of a nurse's information.   | M  |
-| FR.230.M   | The admin dashboard shall allow the editing of a patient's personal information including name, email address and home address.   | M  |
-| FR.230.M   | The admin dashboard shall allow for the deletion of any existing user.   | M  |
-
+| FR.230.M   | The system shall have a main home page.   | M  |
+| FR.235.M   | The main home page shall display general information about the SmartCare system.   | M  |
+| FR.240.M   | If a user is not logged in, then the main home page shall have a login button.   | M  |
+| FR.245.M   | If a user is logged in, then all pages shall have a logout button.   | M  |
+| FR.250.M   | The system shall have a login page.   | M  |
+| FR.255.M   | The system shall have a user registration page.   | M  |
+| FR.260.M   | The system shall have a doctor dashboard page.   | M  |
+| FR.265.M   | The doctor dashboard shall display a list of prescription re-issuance requests that need approval.   | M  |
+| FR.270.M   | The doctor dashboard shall allow doctors to approve a prescription re-issuance requests.   | M  |
+| FR.275.M   | The doctor dashboard shall allow doctors to decline a prescription re-issuance requests.   | M  |
+| FR.280.C   | If doctor declines a prescription re-issuance request they are given the option to state why.   | C  |
+| FR.285.M   | The doctor dashboard shall display a list of appointments assigned to them for the current date including patient information, appointment time and a brief description of the issue.   | M  |
+| FR.290.C   | The doctor dashboard shall allow doctors to request days off for holiday or sickness  | C  |
+| FR.295.C   | The doctor dashboard shall show a list of shifts that are in need of cover due to holiday or sickness doctors to request days off.   | C  |
+| FR.300.M   | The system shall have a nurse dashboard page.   | M  |
+| FR.305.M   | The nurse dashboard shall display a list of prescription re-issuance requests that need approval.   | M  |
+| FR.310.M   | The nurse dashboard shall display a list of appointments assigned to them for the current date including patient information, appointment time and a brief description of the issue.   | M  |
+| FR.315.M   | The system shall have a staff timetable  page.   | M  |
+| FR.320.M   | The staff timetable page shall display a working schedule for the current week.   | M  |
+| FR.325.M   | The staff timetable page shall display future work week schedules.   | M  |
+| FR.330.M   | The system shall have a patient dashboard page.   | M  |
+| FR.335.M   | The patient dashboard shall display a list of current prescriptions.   | M  |
+| FR.340.M   | The patient dashboard shall display a list of upcoming appointments with the corresponding date and time.   | M  |
+| FR.345.M   | The patient dashboard shall display a list of previous appointments including any prescriptions issued.   | M  |
+| FR.350.M   | The patient dashboard shall display a list of prescription re-issuance requests that are pending approval.   | M  |
+| FR.355.M   | The patient dashboard shall display a list of invoices for appointments and who is responsible for payment.   | M  |
+| FR.360.M   | The system shall have an admin dashboard page.   | M  |
+| FR.365.M   | The admin dashboard shall allow for the registration of a new doctor user.   | M  |
+| FR.370.M   | The admin dashboard shall allow the viewing of a doctor's information.   | M  |
+| FR.375.M   | The admin dashboard shall allow for the registration of a new nurse user.   | M  |
+| FR.380.M   | The admin dashboard shall allow the viewing of a nurse's information.   | M  |
+| FR.385.M   | The admin dashboard shall allow the editing of a patient's personal information including name, email address and home address.   | M  |
+| FR.390.M   | The admin dashboard shall allow for the deletion of any existing user.   | M  |
 
 #### 1.2.6.2. Non-functional Requirements
 
@@ -266,33 +267,64 @@ The requirements below are separated into functional and non-functional requirem
 | FR.085.M   | If the user is an admin, then the system shall allow them to perform read operations on stored records.  | M|
 | FR.090.M   | If the user is an admin, then the system shall allow them to perform update operations on stored records.  | M|
 | FR.095.M   | If the user is an admin, then the system shall allow them to perform delete operations on stored records.  | M|
-| FR.100.M   | The system shall return a timetable of appointments for doctor users.   | M  |
-| FR.110.M   | The system shall return a timetable of appointments for nurse users.   | M  |
+| FR.100.M   | The system shall return a daily timetable of appointments for doctor users.   | M  |
+| FR.110.M   | The system shall return a daily timetable of appointments for nurse users.   | M  |
 | FR.115.M   | The system shall allow doctor and nurse users to mark an appointment as complete.   | M  |
-| FR.120.M   | The system shall allow doctor and nurse users to issue a prescription after an appointment is marked as complete.   | M  |
-| FR.125.M   | The system shall allow doctor and nurse users to forward a patient to a hospital after an appointment is marked as complete.   | M  |
-| FR.130.M   | The system shall provide an appointment booking form for patient users.   | M  |
-| FR.135.M   | The system shall integrate appointments with an external calendar service.   | M  |
-| FR.140.M   | The system shall allow patient users to request prescription re-issuance.   | M  |
-| FR.145.M   | The system shall create a weekly work scheme that ensures there is 1 doctor and 1 nurse on Monday and Friday.   | M  |
-| FR.150.M   | The system shall create a weekly work scheme that ensures there are 2 doctors on Tuesday, Wednesday, Thursday, Saturday and Sunday.   | M  |
-| FR.155.M   | The system shall return a timetable of appointments for nurse users.   | M  |
-| FR.160.M   | The system shall calculate appointment cost based on the duration of the appointment.   | M  |
-| FR.165.M   | The system shall calculate appointment cost based on whether a doctor or nurse attended.   | M  |
-| FR.170.M   | The system shall automatically produce an invoice after each appointment is marked as completed.   | M  |
-| FR.175.M   | The system shall allow invoices to be exported in a pdf format.   | M  |
-| FR.180.M   | The system shall allow invoices to be sent directly to the NHS.   | M  |
-| FR.185.M   | The system shall allow invoices to be sent directly to private healthcare providers.   | M  |
-| FR.190.M   | The system shall allow admin users to produce a report containing patient turnover, private payments and payments sent to the NHS.   | M  |
-| FR.195.M   | The system shall allow nurse operations to be forward to other GP practices.   | M  |
-| FR.200.M   | The system shall facilitate collaboration with other GP practices via APIs.   | M  |
-| FR.205.M   | The system shall have a main home page.   | M  |
-| FR.210.M   | The system shall have a login page.   | M  |
-| FR.215.M   | The system shall have a user registration page.   | M  |
-| FR.220.M   | The system shall have a doctor dashboard page.   | M  |
-| FR.225.M   | The system shall have a nurse dashboard page.   | M  |
-| FR.230.M   | The system shall have a patient dashboard page.   | M  |
-| FR.235.M   | The system shall have an admin dashboard page.   | M  |
+| FR.120.M   | When marking an appointment as complete the system shall allow the doctor or nurse user to save a description of any notes made during the appointment.   | M  |
+| FR.125.M   | The system shall allow doctor and nurse users to issue a prescription after an appointment is marked as complete.   | M  |
+| FR.130.M   | The system shall allow doctor and nurse users to forward a patient to a hospital after an appointment is marked as complete.   | M  |
+| FR.135.M   | The system shall allow patient users to request prescription re-issuance.   | M  |
+| FR.140.M   | The system shall create a weekly work scheme that ensures there is 1 doctor and 1 nurse on Monday and Friday.   | M  |
+| FR.145.M   | The system shall create a weekly work scheme that ensures there are 2 doctors on Tuesday, Wednesday, Thursday, Saturday and Sunday.   | M  |
+| FR.150.M   | The system shall provide an appointment booking form for patient users.   | M  |
+| FR.155.M   | When booking an appointment the system shall ask the user to select a date and time.   | M  |
+| FR.160.S   | When booking an appointment the system shall allow the user to provide a short text description of their issue but is not required.   | M  |
+| FR.165.M   | The system shall integrate appointments with an external calendar service.   | M  |
+| FR.170.M   | The system shall allow patients to cancel a booked appointment.   | M  |
+| FR.175.C   | The system shall allow patients to book virtual appointments.   | C  |
+| FR.180.C   | The system shall send reminder email notifications to patients.   | C  |
+| FR.185.M   | The system shall calculate appointment cost based on the duration of the appointment.   | M  |
+| FR.190.M   | The system shall calculate appointment cost based on whether a doctor or nurse attended.   | M  |
+| FR.195.M   | The system shall automatically produce an invoice after each appointment is marked as completed.   | M  |
+| FR.200.M   | The system shall allow invoices to be exported in a pdf format.   | M  |
+| FR.205.M   | The system shall allow invoices to be sent directly to the NHS.   | M  |
+| FR.210.M   | The system shall allow invoices to be sent directly to private healthcare providers.   | M  |
+| FR.215.M   | The system shall allow admin users to produce a report containing patient turnover, private payments and payments sent to the NHS.   | M  |
+| FR.220.M   | The system shall allow nurse operations to be forward to other GP practices.   | M  |
+| FR.225.M   | The system shall facilitate collaboration with other GP practices via APIs.   | M  |
+| FR.230.M   | The system shall have a main home page.   | M  |
+| FR.235.M   | The main home page shall display general information about the SmartCare system.   | M  |
+| FR.240.M   | If a user is not logged in, then the main home page shall have a login button.   | M  |
+| FR.245.M   | If a user is logged in, then all pages shall have a logout button.   | M  |
+| FR.250.M   | The system shall have a login page.   | M  |
+| FR.255.M   | The system shall have a user registration page.   | M  |
+| FR.260.M   | The system shall have a doctor dashboard page.   | M  |
+| FR.265.M   | The doctor dashboard shall display a list of prescription re-issuance requests that need approval.   | M  |
+| FR.270.M   | The doctor dashboard shall allow doctors to approve a prescription re-issuance requests.   | M  |
+| FR.275.M   | The doctor dashboard shall allow doctors to decline a prescription re-issuance requests.   | M  |
+| FR.280.C   | If doctor declines a prescription re-issuance request they are given the option to state why.   | C  |
+| FR.285.M   | The doctor dashboard shall display a list of appointments assigned to them for the current date including patient information, appointment time and a brief description of the issue.   | M  |
+| FR.290.C   | The doctor dashboard shall allow doctors to request days off for holiday or sickness  | C  |
+| FR.295.C   | The doctor dashboard shall show a list of shifts that are in need of cover due to holiday or sickness doctors to request days off.   | C  |
+| FR.300.M   | The system shall have a nurse dashboard page.   | M  |
+| FR.305.M   | The nurse dashboard shall display a list of prescription re-issuance requests that need approval.   | M  |
+| FR.310.M   | The nurse dashboard shall display a list of appointments assigned to them for the current date including patient information, appointment time and a brief description of the issue.   | M  |
+| FR.315.M   | The system shall have a staff timetable  page.   | M  |
+| FR.320.M   | The staff timetable page shall display a working schedule for the current week.   | M  |
+| FR.325.M   | The staff timetable page shall display future work week schedules.   | M  |
+| FR.330.M   | The system shall have a patient dashboard page.   | M  |
+| FR.335.M   | The patient dashboard shall display a list of current prescriptions.   | M  |
+| FR.340.M   | The patient dashboard shall display a list of upcoming appointments with the corresponding date and time.   | M  |
+| FR.345.M   | The patient dashboard shall display a list of previous appointments including any prescriptions issued.   | M  |
+| FR.350.M   | The patient dashboard shall display a list of prescription re-issuance requests that are pending approval.   | M  |
+| FR.355.M   | The patient dashboard shall display a list of invoices for appointments and who is responsible for payment.   | M  |
+| FR.360.M   | The system shall have an admin dashboard page.   | M  |
+| FR.365.M   | The admin dashboard shall allow for the registration of a new doctor user.   | M  |
+| FR.370.M   | The admin dashboard shall allow the viewing of a doctor's information.   | M  |
+| FR.375.M   | The admin dashboard shall allow for the registration of a new nurse user.   | M  |
+| FR.380.M   | The admin dashboard shall allow the viewing of a nurse's information.   | M  |
+| FR.385.M   | The admin dashboard shall allow the editing of a patient's personal information including name, email address and home address.   | M  |
+| FR.390.M   | The admin dashboard shall allow for the deletion of any existing user.   | M  |
 
 #### 1.2.7.2. Non-functional Requirements
 
