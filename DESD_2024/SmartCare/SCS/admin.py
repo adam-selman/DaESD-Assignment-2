@@ -4,8 +4,12 @@ from .models import *
 
 # Register your models here.
 
-admin.site.register(User, UserAdmin)
-admin.site.register(Profile)
+
+
+admin.site.register(DoctorUser)
+admin.site.register(NurseUser)
+admin.site.register(PatientUser)
+admin.site.register(AdminUser)
 admin.site.register(ContactInfo)
 admin.site.register(Address)
 admin.site.register(Appointment)

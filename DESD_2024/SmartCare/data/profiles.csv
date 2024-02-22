@@ -1,6 +1,0 @@
-user,patient,doctor,part time,nurse,admin,trust
-1,True,False,False,False,False,False
-2,True,True,False,False,False,False
-3,False,True,True,False,False,False
-4,False,False,False,True,False,False
-5,False,False,False,False,True,False

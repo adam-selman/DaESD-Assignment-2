@@ -26,39 +26,60 @@ def get_user_by_id(user_id):
         print(f"User with ID {user_id} does not exist")
         return None
 
-def populate_users():
-    reader = open_csv('data/users.csv')
+def populate_doctors():
+    reader = open_csv('data/doctors.csv')
     if not reader:
         return
     
     for row in reader:
-        user = User.objects.create_user(username = row['username'], 
-                                    password = row['password'], 
-                                    email = row['email'],
-                                    first_name = row['firstname'], 
-                                    last_name = row['lastname'],
-                                    dob = row['date of birth'],
-                                    gender = row['gender'],
-                                    allergies = parse_bool(row['allergies']),
-                                    is_active = parse_bool(row['active']), 
+        if not all(row.values()):
+            print("Empty cell foind in the row.")
+            break
+
+        username = row.get('username')
+        password = row.get('password')
+        if username:
+            if not User.objects.filter(username = username).exists():
+                doctor = User.objects.create_user(username = username, 
+                                            password = password,
+                                            date_joined = timezone.now())
+                print(f"Doctor {username} created")
+            else:
+                print("user with username {username} already exists")
+        else:
+            print("username not found")
+
+def populate_admins():
+    reader = open_csv('data/admins.csv')
+    if not reader:
+        return
+    
+    for row in reader:
+        admins = User.objects.create_user(username = row['username'], 
+                                    password = row['password'],
                                     date_joined = timezone.now())
 
-def populate_profiles():
-    reader = open_csv('data/profiles.csv')
+def populate_nurses():
+    reader = open_csv('data/nurses.csv')
     if not reader:
         return
     
     for row in reader:
-        user_id = int(row['user'])
-        user = get_user_by_id(user_id)
-        if user:
-            profile = Profile.objects.create(user = user,
-                                            isPatient = parse_bool(row['patient']),
-                                            isDoctor = parse_bool(row['doctor']),
-                                            isPartTime = parse_bool(row['part time']),
-                                            isNurse = parse_bool(row['nurse']),
-                                            isAdmin = parse_bool(row['admin']),
-                                            isNHSTrust = parse_bool(row['trust']))
+        nurses = User.objects.create_user(username = row['username'], 
+                                    password = row['password'],
+                                    date_joined = timezone.now())
+
+def populate_patients():
+    reader = open_csv('data/patients.csv')
+    if not reader:
+        return
+    
+    for row in reader:
+        patients = User.objects.create_user(username = row['username'], 
+                                    password = row['password'],
+                                    date_joined = timezone.now())      
+
+
 '''            
 def populate_contact_info():
     with open('data/contact_info.csv', 'r') as file:
@@ -108,6 +129,8 @@ def populate_appointments():
 '''
 if __name__ == '__main__':
     print("Starting to populate the database... ")
-    populate_users()
-    populate_profiles()
+    populate_doctors()
+    #populate_admins()
+    #populate_nurses()
+    #spopulate_patients()
     print("Populating complete!")

@@ -1,6 +1,0 @@
-username,password,email,firstname,lastname,date of birth,gender,allergies,active,join date
-a5-selman,20049296,adam.selman@scs.nhs.uk,Adam,Selman,2001-01-01,male,False,True,2020-09-01
-s5-tadlaoui,21039395,sonia.tadlaoui@scs.nhs.uk,Sonia,Tadlaoui,2001-02-02,female,False,True,2020-09-01
-d5-victorsajowa,19043780,daniel.victor-sajowa@scs.nhs.uk,Daniel,Victor-Sajowa,2001-03-03,male,False,True,2020-09-01
-t5-chapman,19027149,tim.chapman@scs.nhs.uk,Tim,Chapman,1991-03-29,male,False,True,2019-09-01
-a5-wearne,29936827,aaron.wearne@scs.nhs.uk,Aaron,Wearne,2001-04-04,male,False,True,2020-09-01

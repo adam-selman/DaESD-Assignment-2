@@ -1,20 +1,17 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import User
 
-class User(AbstractUser):
-    userID = models.AutoField(primary_key=True)
-    dob = models.DateField()
-    gender = models.CharField(max_length = 100)
-    allergies = models.BooleanField(default = False)
-    
-class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    isPatient = models.BooleanField(default = False)
-    isDoctor = models.BooleanField(default = False)
-    isPartTime = models.BooleanField(default = False)
-    isNurse = models.BooleanField(default = False)
-    isAdmin = models.BooleanField(default = False)
-    isNHSTrust = models.BooleanField(default = False)
+class DoctorUser(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='doctor_user')
+
+class NurseUser(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='nurse_user')
+
+class PatientUser(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='patient_user')
+
+class AdminUser(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='admin_user')
 
 class ContactInfo(models.Model):
     contactID = models.AutoField(primary_key=True)
