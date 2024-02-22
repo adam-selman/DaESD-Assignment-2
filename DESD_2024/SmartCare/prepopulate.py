@@ -14,6 +14,8 @@ def parse_bool(value):
 def open_csv(file):
     try:
         file = open(file, 'r')
+        #reader = csv.DictReader(file)
+        #cleaned_rows = [row for row in reader if all(row.values())]
         return csv.DictReader(file)
     except FileNotFoundError:
         print(f"File {file} not found")
@@ -32,22 +34,11 @@ def populate_doctors():
         return
     
     for row in reader:
-        if not all(row.values()):
-            print("Empty cell foind in the row.")
-            break
-
         username = row.get('username')
         password = row.get('password')
-        if username:
-            if not User.objects.filter(username = username).exists():
-                doctor = User.objects.create_user(username = username, 
-                                            password = password,
-                                            date_joined = timezone.now())
-                print(f"Doctor {username} created")
-            else:
-                print("user with username {username} already exists")
-        else:
-            print("username not found")
+        doctorse = User.objects.create_user(username = username, 
+                                    password = password,
+                                    date_joined = timezone.now())
 
 def populate_admins():
     reader = open_csv('data/admins.csv')
@@ -55,18 +46,10 @@ def populate_admins():
         return
     
     for row in reader:
-        admins = User.objects.create_user(username = row['username'], 
-                                    password = row['password'],
-                                    date_joined = timezone.now())
-
-def populate_nurses():
-    reader = open_csv('data/nurses.csv')
-    if not reader:
-        return
-    
-    for row in reader:
-        nurses = User.objects.create_user(username = row['username'], 
-                                    password = row['password'],
+        username = row.get('username')
+        password = row.get('password')
+        admins = User.objects.create_user(username = username, 
+                                    password = password,
                                     date_joined = timezone.now())
 
 def populate_patients():
@@ -75,9 +58,23 @@ def populate_patients():
         return
     
     for row in reader:
-        patients = User.objects.create_user(username = row['username'], 
-                                    password = row['password'],
-                                    date_joined = timezone.now())      
+        username = row.get('username')
+        password = row.get('password')
+        doctorse = User.objects.create_user(username = username, 
+                                    password = password,
+                                    date_joined = timezone.now())
+
+def populate_nurses():
+    reader = open_csv('data/nurses.csv')
+    if not reader:
+        return
+    
+    for row in reader:
+        username = row.get('username')
+        password = row.get('password')
+        doctorse = User.objects.create_user(username = username, 
+                                    password = password,
+                                    date_joined = timezone.now())
 
 
 '''            
@@ -130,7 +127,7 @@ def populate_appointments():
 if __name__ == '__main__':
     print("Starting to populate the database... ")
     populate_doctors()
-    #populate_admins()
-    #populate_nurses()
-    #spopulate_patients()
+    populate_admins()
+    populate_nurses()
+    populate_patients()
     print("Populating complete!")
