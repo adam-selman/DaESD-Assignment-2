@@ -53,7 +53,6 @@ The following section contains a list of user stories for each of the users that
 - As a doctor, I want to be able to issue prescriptions at the end of appointments so the patient can be treated.
 - As a doctor, I want to be able to write up notes at the end of appointments so other healthcare professionals can understand the patients treatment history.
 - As a doctor, I want the SmartCare system to automatically generate invoices based on appointment lengths my rate as a doctor so that I can spend my time doing more productive work.
-- As a doctor, I want to
 
 ### 1.1.3. Nurse
 
@@ -166,9 +165,9 @@ The requirements below are separated into functional and non-functional requirem
 | FR.185.M   | The system shall calculate appointment cost based on the duration of the appointment.   | M  |
 | FR.190.M   | The system shall calculate appointment cost based on whether a doctor or nurse attended.   | M  |
 | FR.195.M   | The system shall automatically produce an invoice after each appointment is marked as completed.   | M  |
-| FR.200.M   | The system shall allow invoices to be exported in a pdf format.   | M  |
-| FR.205.M   | The system shall allow invoices to be sent directly to the NHS.   | M  |
-| FR.210.M   | The system shall allow invoices to be sent directly to private healthcare providers.   | M  |
+| FR.200.C   | The system shall allow invoices to be exported in a pdf format.   | C  |
+| FR.205.S   | The system shall allow invoices to be sent directly to the NHS.   | S  |
+| FR.210.S   | The system shall allow invoices to be sent directly to private healthcare providers.   | S  |
 | FR.215.M   | The system shall allow admin users to produce a report containing patient turnover, private payments and payments sent to the NHS.   | M  |
 
 #### 1.2.4.2. Non-functional Requirements
@@ -183,8 +182,8 @@ The requirements below are separated into functional and non-functional requirem
 
 | Requirement ID | Description | MoSCoW |
 |------|------|------|
-| FR.220.M   | The system shall allow nurse operations to be forward to other GP practices.   | M  |
-| FR.225.M   | The system shall facilitate collaboration with other GP practices via APIs.   | M  |
+| FR.220.S   | The system shall allow nurse operations to be forward to other GP practices.   | S  |
+| FR.225.C   | The system shall facilitate collaboration with other GP practices via APIs.   | C  |
 
 #### 1.2.5.2. Non-functional Requirements
 
@@ -286,12 +285,12 @@ The requirements below are separated into functional and non-functional requirem
 | FR.185.M   | The system shall calculate appointment cost based on the duration of the appointment.   | M  |
 | FR.190.M   | The system shall calculate appointment cost based on whether a doctor or nurse attended.   | M  |
 | FR.195.M   | The system shall automatically produce an invoice after each appointment is marked as completed.   | M  |
-| FR.200.M   | The system shall allow invoices to be exported in a pdf format.   | M  |
-| FR.205.M   | The system shall allow invoices to be sent directly to the NHS.   | M  |
+| FR.200.C   | The system shall allow invoices to be exported in a pdf format.   | C  |
+| FR.205.C   | The system shall allow invoices to be sent directly to the NHS.   | C  |
 | FR.210.M   | The system shall allow invoices to be sent directly to private healthcare providers.   | M  |
 | FR.215.M   | The system shall allow admin users to produce a report containing patient turnover, private payments and payments sent to the NHS.   | M  |
-| FR.220.M   | The system shall allow nurse operations to be forward to other GP practices.   | M  |
-| FR.225.M   | The system shall facilitate collaboration with other GP practices via APIs.   | M  |
+| FR.220.S   | The system shall allow nurse operations to be forward to other GP practices.   | S  |
+| FR.225.C   | The system shall facilitate collaboration with other GP practices via APIs.   | C  |
 | FR.230.M   | The system shall have a main home page.   | M  |
 | FR.235.M   | The main home page shall display general information about the SmartCare system.   | M  |
 | FR.240.M   | If a user is not logged in, then the main home page shall have a login button.   | M  |
@@ -311,7 +310,7 @@ The requirements below are separated into functional and non-functional requirem
 | FR.310.M   | The nurse dashboard shall display a list of appointments assigned to them for the current date including patient information, appointment time and a brief description of the issue.   | M  |
 | FR.315.M   | The system shall have a staff timetable  page.   | M  |
 | FR.320.M   | The staff timetable page shall display a working schedule for the current week.   | M  |
-| FR.325.M   | The staff timetable page shall display future work week schedules.   | M  |
+| FR.325.S   | The staff timetable page shall display future work week schedules.   | S  |
 | FR.330.M   | The system shall have a patient dashboard page.   | M  |
 | FR.335.M   | The patient dashboard shall display a list of current prescriptions.   | M  |
 | FR.340.M   | The patient dashboard shall display a list of upcoming appointments with the corresponding date and time.   | M  |
