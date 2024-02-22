@@ -36,10 +36,9 @@ def populate_doctors():
     for row in reader:
         username = row.get('username')
         password = row.get('password')
-        doctorse = User.objects.create_user(username = username, 
-                                    password = password,
-                                    date_joined = timezone.now())
-
+        user = User.objects.create_user(username=username, password = password, date_joined = timezone.now())
+        doctor = DoctorUser.objects.create(user = user)
+    
 def populate_admins():
     reader = open_csv('data/admins.csv')
     if not reader:
@@ -48,9 +47,8 @@ def populate_admins():
     for row in reader:
         username = row.get('username')
         password = row.get('password')
-        admins = User.objects.create_user(username = username, 
-                                    password = password,
-                                    date_joined = timezone.now())
+        user = User.objects.create_user(username=username, password = password, date_joined = timezone.now())
+        admin = AdminUser.objects.create(user = user)
 
 def populate_patients():
     reader = open_csv('data/patients.csv')
@@ -60,9 +58,8 @@ def populate_patients():
     for row in reader:
         username = row.get('username')
         password = row.get('password')
-        doctorse = User.objects.create_user(username = username, 
-                                    password = password,
-                                    date_joined = timezone.now())
+        user = User.objects.create_user(username=username, password = password, date_joined = timezone.now())
+        patient = PatientUser.objects.create(user = user)
 
 def populate_nurses():
     reader = open_csv('data/nurses.csv')
@@ -72,10 +69,8 @@ def populate_nurses():
     for row in reader:
         username = row.get('username')
         password = row.get('password')
-        doctorse = User.objects.create_user(username = username, 
-                                    password = password,
-                                    date_joined = timezone.now())
-
+        user = User.objects.create_user(username=username, password = password, date_joined = timezone.now())
+        nurse = NurseUser.objects.create(user = user)
 
 '''            
 def populate_contact_info():
