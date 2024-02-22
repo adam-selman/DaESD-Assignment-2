@@ -24,6 +24,7 @@ class ContactInfo(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='contact_infos')
 
 class Address(models.Model):
+    addressID = models.AutoField(primary_key=True)
     number = models.IntegerField()
     buildingName = models.CharField(max_length=100)
     streetName = models.CharField(max_length=100)
@@ -40,8 +41,7 @@ class Appointment(models.Model):
     duration = models.TimeField()
     status = models.CharField(max_length=100)
     patient = models.OneToOneField(User, on_delete=models.CASCADE, related_name='patient_appointment')
-    doctor = models.OneToOneField(User, null=True, on_delete=models.CASCADE, related_name='doctor_appointment')
-    nurse = models.OneToOneField(User, null=True, on_delete=models.CASCADE, related_name='nurse_appointment')
+    practicioner = models.OneToOneField(User, null=True, on_delete=models.CASCADE, related_name='practitioner_appointment')
 
 class Invoice(models.Model):
     invoiceID = models.AutoField(primary_key=True)
@@ -71,16 +71,19 @@ class NurseServiceRate(models.Model):
     rate = models.DecimalField(max_digits=10, decimal_places=2)
     serviceID = models.ForeignKey(Service, on_delete=models.CASCADE, related_name='nurse_service_rates')
 
+class Medication(models.Model):
+    medicationID = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100)
+
 class Prescription(models.Model):
     prescriptionID = models.AutoField(primary_key=True)
     repeatable = models.BooleanField()
-    medication = models.CharField(max_length=100)
+    medication = models.ManyToManyField(Medication, related_name='prescriptions')
     dosage = models.CharField(max_length=100)
     instructions = models.CharField(max_length=100)
     issueDate = models.DateField()
     appointmentID = models.ForeignKey(Appointment, on_delete=models.CASCADE, related_name='prescriptions')
-    doctor = models.OneToOneField(User, null=True, on_delete=models.CASCADE, related_name='doctor_prescription')
-    nurse = models.OneToOneField(User, null=True, on_delete=models.CASCADE, related_name='nurse_prescription')
+    practitioner = models.OneToOneField(User, null=True, on_delete=models.CASCADE, related_name='practitioner_prescription')
     patient = models.OneToOneField(User, on_delete=models.CASCADE, related_name='patient_prescription')
 
 class Timetable(models.Model):
@@ -101,3 +104,5 @@ class UserAllergy(models.Model):
 
     class Meta:
         unique_together = ['user', 'allergy']
+
+
