@@ -2,6 +2,7 @@ import os
 import csv
 import django
 from django.utils import timezone
+from django.db import IntegrityError
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'SmartCare.settings')
 django.setup()
@@ -27,6 +28,14 @@ def get_user_by_id(user_id):
     except User.DoesNotExist:
         print(f"User with ID {user_id} does not exist")
         return None
+    
+def check_duplicate_user(username):
+    try:
+        User.objects.get(username = username)
+        return True
+    except User.DoesNotExist:
+        return False
+    
 
 def populate_doctors():
     reader = open_csv('data/doctors.csv')
@@ -35,10 +44,15 @@ def populate_doctors():
     
     for row in reader:
         username = row.get('username')
+        if check_duplicate_user(username):
+            print(f"User with username {username} already exists, skipping.")
+            continue
         password = row.get('password')
+        specialization = row.get('specialization')
+        isPartTime = parse_bool(row.get('part time'))
         user = User.objects.create_user(username=username, password = password, date_joined = timezone.now())
         userProfile = UserProfile.objects.create(user = user, user_type = 'doctor')
-        doctor = DoctorProfile.objects.create(user_profile = userProfile)
+        doctor = DoctorProfile.objects.create(user_profile = userProfile, specialization = specialization, isPartTime = isPartTime)
     
 def populate_admins():
     reader = open_csv('data/admins.csv')
@@ -47,6 +61,9 @@ def populate_admins():
     
     for row in reader:
         username = row.get('username')
+        if check_duplicate_user(username):
+            print(f"User with username {username} already exists, skipping.")
+            continue
         password = row.get('password')
         user = User.objects.create_user(username=username, password = password, date_joined = timezone.now())
         userProfile = UserProfile.objects.create(user = user, user_type = 'admin')
@@ -59,6 +76,9 @@ def populate_patients():
     
     for row in reader:
         username = row.get('username')
+        if check_duplicate_user(username):
+            print(f"User with username {username} already exists, skipping.")
+            continue
         password = row.get('password')
         age = row.get('age')
         user = User.objects.create_user(username=username, password = password, date_joined = timezone.now())
@@ -72,12 +92,16 @@ def populate_nurses():
     
     for row in reader:
         username = row.get('username')
+        if check_duplicate_user(username):
+            print(f"User with username {username} already exists, skipping.")
+            continue
         password = row.get('password')
+        isPartTime = parse_bool(row.get('part time'))
         user = User.objects.create_user(username=username, password = password, date_joined = timezone.now())
         userProfile = UserProfile.objects.create(user = user, user_type = 'nurse')
-        nurse = NurseProfile.objects.create(user_profile = userProfile)
+        nurse = NurseProfile.objects.create(user_profile = userProfile, isPartTime = isPartTime)
 
-'''            
+'''
 def populate_contact_info():
     with open('data/contact_info.csv', 'r') as file:
         reader = csv.DictReader(file)
@@ -122,8 +146,8 @@ def populate_appointments():
     with open('data/appointments.csv', 'r') as file:
     reader = csv.DictReader(file)
     for row in reader:
-        
-'''
+ '''       
+
 if __name__ == '__main__':
     print("Starting to populate the database... ")
     populate_doctors()

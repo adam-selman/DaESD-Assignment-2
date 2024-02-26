@@ -1,3 +1,3 @@
-username,password
-d-a5-selman,20049296
-d-s5-tadlaoui,21039395
+username,password,specialization,part time
+d-a5-selman,20049296,obgyn,TRUE
+d-s5-tadlaoui,21039395,pediatrics,FALSE
