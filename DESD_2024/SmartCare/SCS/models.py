@@ -1,24 +1,49 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-class DoctorUser(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='doctor_user')
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user_type = models.CharField(max_length=10, choices =[('doctor', 'Doctor'),
+                                    ('patient', 'Patient'), ('nurse', 'Nurse'),
+                                    ('admin', 'Admin')])
+    
+    def __str__(self):
+        return self.user.username
 
-class NurseUser(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='nurse_user')
+class DoctorProfile(models.Model):
+    user_profile = models.OneToOneField(UserProfile, on_delete=models.CASCADE, related_name='doctor_user')
+    specialization = models.CharField(max_length=100)
+    isPartTime = models.BooleanField(default = False)
 
-class PatientUser(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='patient_user')
+    def __str__(self):
+        return self.user_profile.user.username
 
-class AdminUser(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='admin_user')
+class NurseProfile(models.Model):
+    user_profile = models.OneToOneField(UserProfile, on_delete=models.CASCADE, related_name='nurse_user')
+    isPartTime = models.BooleanField(default = False)
+
+    def __str__(self):
+        return self.user_profile.user.username
+    
+class PatientProfile(models.Model):
+    user_profile = models.OneToOneField(UserProfile, on_delete=models.CASCADE, related_name='patient_user')
+    age = models.IntegerField()
+
+    def __str__(self):
+        return self.user_profile.user.username
+
+class AdminProfile(models.Model):
+    user_profile = models.OneToOneField(UserProfile, on_delete=models.CASCADE, related_name='admin_user')
+
+    def __str__(self):
+        return self.user_profile.user.username
 
 class ContactInfo(models.Model):
     contactID = models.AutoField(primary_key=True)
     contactType = models.CharField(max_length=100)
     contactValue = models.CharField(max_length=100)
     description = models.CharField(max_length=100)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='contact_infos')
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='contact_infos')
 
 class Address(models.Model):
     addressID = models.AutoField(primary_key=True)
@@ -30,15 +55,15 @@ class Address(models.Model):
     postcode = models.CharField(max_length=8)
     country = models.CharField(max_length=16)
     description = models.CharField(max_length=100)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='addresses')
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='addresses')
 
 class Appointment(models.Model):
     appointmentID = models.AutoField(primary_key=True)
     dateTime = models.DateTimeField()
     duration = models.TimeField()
     status = models.CharField(max_length=100)
-    patient = models.OneToOneField(User, on_delete=models.CASCADE, related_name='patient_appointment')
-    practicioner = models.OneToOneField(User, null=True, on_delete=models.CASCADE, related_name='practitioner_appointment')
+    patient = models.OneToOneField(UserProfile, on_delete=models.CASCADE, related_name='patient_appointment')
+    practicioner = models.OneToOneField(UserProfile, null=True, on_delete=models.CASCADE, related_name='practitioner_appointment')
 
 class Invoice(models.Model):
     invoiceID = models.AutoField(primary_key=True)
@@ -46,7 +71,7 @@ class Invoice(models.Model):
     status = models.CharField(max_length=100)
     dateIssued = models.DateField()
     appointmentID = models.OneToOneField(Appointment, on_delete=models.CASCADE, related_name='invoices')
-    patient = models.OneToOneField(User, on_delete=models.CASCADE, related_name='patient_invoice')
+    patient = models.OneToOneField(UserProfile, on_delete=models.CASCADE, related_name='patient_invoice')
     billingParty = models.BooleanField()
 
 class Service(models.Model):
@@ -80,26 +105,15 @@ class Prescription(models.Model):
     instructions = models.CharField(max_length=100)
     issueDate = models.DateField()
     appointmentID = models.ForeignKey(Appointment, on_delete=models.CASCADE, related_name='prescriptions')
-    practitioner = models.OneToOneField(User, null=True, on_delete=models.CASCADE, related_name='practitioner_prescription')
-    patient = models.OneToOneField(User, on_delete=models.CASCADE, related_name='patient_prescription')
+    practitioner = models.OneToOneField(UserProfile, null=True, on_delete=models.CASCADE, related_name='practitioner_prescription')
+    patient = models.OneToOneField(UserProfile, on_delete=models.CASCADE, related_name='patient_prescription')
 
 class Timetable(models.Model):
     timetableID = models.AutoField(primary_key=True)
-    nurse = models.OneToOneField(User, null=True, on_delete=models.CASCADE, related_name='nurse_timetable')
-    doctor = models.OneToOneField(User, null=True, on_delete=models.CASCADE, related_name='doctor_timetable')
+    nurse = models.OneToOneField(UserProfile, null=True, on_delete=models.CASCADE, related_name='nurse_timetable')
+    doctor = models.OneToOneField(UserProfile, null=True, on_delete=models.CASCADE, related_name='doctor_timetable')
     day = models.CharField(max_length=100)
     startTime = models.TimeField()
     endTime = models.TimeField()
-
-class Allergy(models.Model):
-    allergyID = models.AutoField(primary_key=True)
-    name = models.CharField(max_length = 100)
-
-class UserAllergy(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    allergy = models.ForeignKey(Allergy, on_delete=models.CASCADE)
-
-    class Meta:
-        unique_together = ['user', 'allergy']
 
 

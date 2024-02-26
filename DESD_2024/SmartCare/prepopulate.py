@@ -37,7 +37,8 @@ def populate_doctors():
         username = row.get('username')
         password = row.get('password')
         user = User.objects.create_user(username=username, password = password, date_joined = timezone.now())
-        doctor = DoctorUser.objects.create(user = user)
+        userProfile = UserProfile.objects.create(user = user, user_type = 'doctor')
+        doctor = DoctorProfile.objects.create(user_profile = userProfile)
     
 def populate_admins():
     reader = open_csv('data/admins.csv')
@@ -48,7 +49,8 @@ def populate_admins():
         username = row.get('username')
         password = row.get('password')
         user = User.objects.create_user(username=username, password = password, date_joined = timezone.now())
-        admin = AdminUser.objects.create(user = user)
+        userProfile = UserProfile.objects.create(user = user, user_type = 'admin')
+        admin = AdminProfile.objects.create(user_profile = userProfile)
 
 def populate_patients():
     reader = open_csv('data/patients.csv')
@@ -58,8 +60,10 @@ def populate_patients():
     for row in reader:
         username = row.get('username')
         password = row.get('password')
+        age = row.get('age')
         user = User.objects.create_user(username=username, password = password, date_joined = timezone.now())
-        patient = PatientUser.objects.create(user = user)
+        userProfile = UserProfile.objects.create(user = user, user_type = 'patient')
+        patient = PatientProfile.objects.create(user_profile = userProfile, age = age)
 
 def populate_nurses():
     reader = open_csv('data/nurses.csv')
@@ -70,7 +74,8 @@ def populate_nurses():
         username = row.get('username')
         password = row.get('password')
         user = User.objects.create_user(username=username, password = password, date_joined = timezone.now())
-        nurse = NurseUser.objects.create(user = user)
+        userProfile = UserProfile.objects.create(user = user, user_type = 'nurse')
+        nurse = NurseProfile.objects.create(user_profile = userProfile)
 
 '''            
 def populate_contact_info():
