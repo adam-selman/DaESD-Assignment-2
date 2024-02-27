@@ -91,7 +91,9 @@ class Invoice(models.Model):
 
 class Service(models.Model):
     serviceID = models.AutoField(primary_key=True)
-    description = models.CharField(max_length=100)
+    service = models.CharField(max_length=100)
+    description = models.TextField()
+    duration = models.IntegerField()
 
 class AppointmentService(models.Model):
     appointmentServiceID = models.AutoField(primary_key=True)
