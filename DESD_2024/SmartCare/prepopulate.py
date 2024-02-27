@@ -48,12 +48,24 @@ def populate_doctors():
             print(f"User with username {username} already exists, skipping.")
             continue
         password = row.get('password')
+        firstName = row.get('first name')
+        lastName = row.get('last name')
+        email = row.get('email')
         specialization = row.get('specialization')
         isPartTime = parse_bool(row.get('part time'))
-        user = User.objects.create_user(username=username, password = password, date_joined = timezone.now())
-        userProfile = UserProfile.objects.create(user = user, user_type = 'doctor')
-        doctor = DoctorProfile.objects.create(user_profile = userProfile, specialization = specialization, isPartTime = isPartTime)
-    
+        user = User.objects.create_user(username=username, 
+                                        password = password, 
+                                        first_name = firstName, 
+                                        last_name = lastName, 
+                                        email = email, 
+                                        date_joined = timezone.now())
+        userProfile = UserProfile.objects.create(user = user, 
+                                                 user_type = 'doctor')
+        doctor = DoctorProfile.objects.create(user_profile = userProfile, 
+                                              specialization = specialization, 
+                                              isPartTime = isPartTime)
+        print(f"Doctor {username} created")
+
 def populate_admins():
     reader = open_csv('data/admins.csv')
     if not reader:
@@ -65,9 +77,19 @@ def populate_admins():
             print(f"User with username {username} already exists, skipping.")
             continue
         password = row.get('password')
-        user = User.objects.create_user(username=username, password = password, date_joined = timezone.now())
-        userProfile = UserProfile.objects.create(user = user, user_type = 'admin')
+        firstName = row.get('first name')
+        lastName = row.get('last name')
+        email = row.get('email')
+        user = User.objects.create_user(username=username, 
+                                        password = password, 
+                                        first_name = firstName, 
+                                        last_name = lastName, 
+                                        email = email, 
+                                        date_joined = timezone.now())
+        userProfile = UserProfile.objects.create(user = user, 
+                                                 user_type = 'admin')
         admin = AdminProfile.objects.create(user_profile = userProfile)
+        print(f"Admin {username} created")
 
 def populate_patients():
     reader = open_csv('data/patients.csv')
@@ -80,10 +102,22 @@ def populate_patients():
             print(f"User with username {username} already exists, skipping.")
             continue
         password = row.get('password')
+        firstName = row.get('first name')
+        lastName = row.get('last name')
+        email = row.get('email')
         age = row.get('age')
-        user = User.objects.create_user(username=username, password = password, date_joined = timezone.now())
-        userProfile = UserProfile.objects.create(user = user, user_type = 'patient')
-        patient = PatientProfile.objects.create(user_profile = userProfile, age = age)
+        private = parse_bool(row.get('private patient'))
+        user = User.objects.create_user(username=username, 
+                                        password = password, 
+                                        last_name = lastName, 
+                                        email = email, 
+                                        date_joined = timezone.now())
+        userProfile = UserProfile.objects.create(user = user, 
+                                                 user_type = 'patient')
+        patient = PatientProfile.objects.create(user_profile = userProfile, 
+                                                age = age, 
+                                                isPrivate = private)
+        print(f"Patient {username} created")
 
 def populate_nurses():
     reader = open_csv('data/nurses.csv')
@@ -96,10 +130,13 @@ def populate_nurses():
             print(f"User with username {username} already exists, skipping.")
             continue
         password = row.get('password')
-        isPartTime = parse_bool(row.get('part time'))
-        user = User.objects.create_user(username=username, password = password, date_joined = timezone.now())
+        firstName = row.get('first name')
+        lastName = row.get('last name')
+        email = row.get('email')
+        user = User.objects.create_user(username=username, password = password, first_name = firstName, last_name = lastName, email = email, date_joined = timezone.now())
         userProfile = UserProfile.objects.create(user = user, user_type = 'nurse')
-        nurse = NurseProfile.objects.create(user_profile = userProfile, isPartTime = isPartTime)
+        nurse = NurseProfile.objects.create(user_profile = userProfile)
+        print(f"Nurse {username} created")
 
 '''
 def populate_contact_info():

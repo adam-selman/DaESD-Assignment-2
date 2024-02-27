@@ -1,6 +1,9 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import *
+from .models import UserProfile, DoctorProfile, NurseProfile, PatientProfile,\
+    AdminProfile, ContactInfo, Address, Appointment, Invoice, Service,\
+    AppointmentService, DoctorServiceRate,\
+    NurseServiceRate, Medication, Prescription, Timetable
 
 # Register your models here.
 
