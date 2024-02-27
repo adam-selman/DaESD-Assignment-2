@@ -61,6 +61,8 @@ class Appointment(models.Model):
     appointmentID = models.AutoField(primary_key=True)
     dateTime = models.DateTimeField()
     duration = models.TimeField()
+    description = models.CharField(max_length=256)
+    notes = models.TextField()
     status = models.CharField(max_length=100)
     patient = models.OneToOneField(UserProfile, on_delete=models.CASCADE, related_name='patient_appointment')
     practicioner = models.OneToOneField(UserProfile, null=True, on_delete=models.CASCADE, related_name='practitioner_appointment')
