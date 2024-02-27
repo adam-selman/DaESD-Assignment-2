@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'SCS',
     'django.contrib.staticfiles',
+    
 ]
 
 MIDDLEWARE = [
@@ -103,6 +104,7 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
 
 
 # Internationalization

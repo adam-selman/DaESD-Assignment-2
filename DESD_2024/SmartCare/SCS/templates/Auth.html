@@ -1,0 +1,15 @@
+{% extends 'index.html' %}
+{% block content%}
+<button id="loginButton">Login</button>
+<button id="RegisterButton">Register</button>
+
+<script>
+document.getElementById('loginButton').addEventListener('click', function() {
+    // Use JavaScript to navigate to the login page without reloading the page
+    // For example:
+    window.location.href = 'login';
+    this.style.display = 'none';
+});
+</script>
+
+{% endblock %}
