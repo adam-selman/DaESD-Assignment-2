@@ -115,3 +115,5 @@ class Timetable(models.Model):
     day = models.CharField(max_length=100)
     startTime = models.TimeField()
     endTime = models.TimeField()
+
+

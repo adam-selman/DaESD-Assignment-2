@@ -7,12 +7,10 @@ services:
     volumes:
       - data:/var/lib/mysql
     env_file:
-      - .env 
-      
+      - .env
     ports:
       - "3306:3306"
-   
-  
+
   django:
     build: .
     links:
@@ -24,10 +22,9 @@ services:
       - .:/code
     ports:
       - "8000:8000"
-    
+
     depends_on:
       - db
-
 
 volumes:
   data:
