@@ -2,6 +2,7 @@ import os
 import csv
 import django
 from django.utils import timezone
+from django.db.models import ObjectDoesNotExist
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'SmartCare.settings')
 django.setup()
@@ -70,7 +71,7 @@ def populate_users(csvFileName, userType, profileClass, additionalFields):
         
         print(f"{userType} {row['first_name']} {row['last_name']} created")
 
-def populate_table(csvFileName, modelClass, columnToPrint = None):
+def populate_services(csvFileName, modelClass, columnToPrint = None, ignore_service = False):
     with open(csvFileName, 'r') as file:
         reader = csv.DictReader(file)
 
@@ -87,11 +88,55 @@ def populate_table(csvFileName, modelClass, columnToPrint = None):
             for csvFieldName, djangoFieldName in fieldMapping.items():
                 objData[djangoFieldName] = row[csvFieldName]
 
+            if not ignore_service and 'service' in objData:
+                serviceId = objData['service']
+                service = Service.objects.get(pk = int(serviceId))
+
+                existingEntry = modelClass.objects.filter(service_id = service).first()
+                if existingEntry:
+                    print(f"{modelClass.__name__} for {service.service} already exists, skipping.")
+                    continue
+
+                objData['service'] = service
+
             obj = modelClass.objects.create(**objData)
 
-            if columnToPrint and columnToPrint in row:
-                valueToPrint = row.get(columnToPrint)
-            print(f"{modelClass.__name__} {valueToPrint} created")    
+            if columnToPrint is not None:
+                if columnToPrint and columnToPrint in row:
+                    valueToPrint = row.get(columnToPrint)
+                    print(f"{modelClass.__name__} {valueToPrint} created")
+            else:
+                print(f"{modelClass.__name__} created")
+
+def populate_contact(csvFileName, modelClass):
+    with open(csvFileName, 'r') as file:
+        reader = csv.DictReader(file)
+
+        csvFieldName = reader.fieldnames
+
+        if not csvFieldName:
+            print(f"File {csvFileName} is empty")
+            return
+
+        fieldMapping = {csvFieldName: csvFieldName for csvFieldName in csvFieldName}
+
+        for row in reader:
+            objData = {}
+            for csvFieldName, djangoFieldName in fieldMapping.items():
+                objData[djangoFieldName] = row[csvFieldName]
+
+            if 'user' in objData:
+                userId = objData['user']
+                userProfile = UserProfile.objects.get(pk = int(userId))
+                userName =  userProfile.user.username
+
+                objData['user'] = userProfile
+
+            obj = modelClass.objects.create(**objData)
+
+            
+            print(f"{modelClass.__name__} created for user {userName}")
+
 
 if __name__ == '__main__':
     print("Starting to populate the database... ")
@@ -99,5 +144,9 @@ if __name__ == '__main__':
     populate_users('data/admins.csv', 'admin', AdminProfile, [])
     populate_users('data/nurses.csv', 'nurse', NurseProfile, [])
     populate_users('data/patients.csv', 'patient', PatientProfile, ['age', 'allergies', 'isPrivate'])
-    populate_table('data/service.csv', Service, 'service')
+    populate_services('data/service.csv', Service, 'service', ignore_service= True)
+    populate_services('data/doctorservicerate.csv', DoctorServiceRate)
+    populate_services('data/nurseservicerate.csv', NurseServiceRate)
+    populate_contact('data/contactinfo.csv', ContactNumber)
+    populate_contact('data/address.csv', Address)
     print("Populating complete!")
