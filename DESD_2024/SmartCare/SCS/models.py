@@ -95,13 +95,16 @@ class Appointment(models.Model):
 class Invoice(models.Model):
     invoiceID = models.AutoField(primary_key = True)
     amount = models.DecimalField(max_digits = 10, decimal_places = 2)
-    status = models.CharField(max_length = 100)
-    dateIssued = models.DateField()
+    status = models.BooleanField(max_length = 100) # either paid or unpaid
+    dateIssued = models.DateTimeField()
     appointment = models.OneToOneField(Appointment, on_delete = models.CASCADE, 
                                          related_name = 'invoices')
     patient = models.OneToOneField(UserProfile, on_delete = models.CASCADE, 
                                    related_name = 'patient_invoice')
-    billingParty = models.BooleanField()
+    billingParty = models.CharField(max_length = 100, 
+                                   choices = [('nhs', 'NHS'),
+                                              ('insurance', 'Insurance'), 
+                                              ('private', 'Private')])
 
 class DoctorServiceRate(models.Model):
     doctorServiceRateID = models.AutoField(primary_key = True)
@@ -122,17 +125,21 @@ class Medication(models.Model):
 class Prescription(models.Model):
     prescriptionID = models.AutoField(primary_key = True)
     repeatable = models.BooleanField()
-    medication = models.ManyToManyField(Medication, related_name = 'prescriptions')
+    medication = models.ForeignKey(Medication, on_delete = models.CASCADE, 
+                                   related_name = 'medication_prescription')
     dosage = models.CharField(max_length = 100)
     instructions = models.TextField()
-    issueDate = models.DateField()
-    appointment = models.ForeignKey(Appointment, on_delete = models.CASCADE, 
+    issueDate = models.DateTimeField()
+    appointment = models.OneToOneField(Appointment, on_delete = models.CASCADE, 
                                       related_name = 'prescriptions')
-    practitioner = models.OneToOneField(UserProfile, null = True, 
+    patient = models.ForeignKey(UserProfile, on_delete = models.CASCADE, 
+                                   related_name = 'patient_prescription')
+    doctor = models.ForeignKey(UserProfile, null = True, 
                                         on_delete=  models.CASCADE, 
                                         related_name = 'practitioner_prescription')
-    patient = models.OneToOneField(UserProfile, on_delete = models.CASCADE, 
-                                   related_name = 'patient_prescription')
+    nurse = models.ForeignKey(UserProfile, null = True,
+                                    on_delete = models.CASCADE,
+                                    related_name = 'nurse_prescription')
 
 class Timetable(models.Model):
     timetableID = models.AutoField(primary_key = True)

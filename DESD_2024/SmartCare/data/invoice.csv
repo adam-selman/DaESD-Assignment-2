@@ -1,0 +1,3 @@
+amount,status,dateIssued,appointment,patient,billingParty
+20,TRUE,2017-10-25 10:00:30,1,6,nhs
+10,FALSE,2024-02-28 14:49:00,2,7,private
