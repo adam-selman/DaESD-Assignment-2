@@ -79,15 +79,18 @@ class Appointment(models.Model):
     service = models.ForeignKey(Service, on_delete = models.CASCADE,
                                 related_name = 'appointment_service' )
     dateTime = models.DateTimeField()
-    duration = models.TimeField()
+    duration = models.IntegerField()
     description = models.CharField(max_length=256)
     notes = models.TextField()
     status = models.CharField(max_length=100)
-    patient = models.OneToOneField(UserProfile, on_delete = models.CASCADE, 
+    patient = models.ForeignKey(UserProfile, on_delete = models.CASCADE, 
                                    related_name = 'patient_appointment')
-    practicioner = models.OneToOneField(UserProfile, null = True, 
+    doctor = models.ForeignKey(UserProfile, null = True, 
                                         on_delete = models.CASCADE, 
-                                        related_name = 'practitioner_appointment')
+                                        related_name = 'doctor_appointment')
+    nurse = models.ForeignKey(UserProfile, null = True,
+                                 on_delete = models.CASCADE,
+                                 related_name = 'nurse_appointment')
 
 class Invoice(models.Model):
     invoiceID = models.AutoField(primary_key = True)

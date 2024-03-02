@@ -1,0 +1,22 @@
+contactType,contactValue,description,user
+mobile,07123456789,not between 9-5,1
+mobile,07234567891,anytime,2
+mobile,07345678912,,3
+mobile,07456789123,not weekends,4
+mobile,07567891234,not between 9-5,5
+mobile,07678912345,anytime,6
+mobile,07789123456,not weekends,7
+home,01171234567,not weekends,1
+home,01172345678,not between 9-5,2
+home,01173456789,anytime,3
+home,01174567891,not weekends,4
+home,01175678912,not between 9-5,5
+home,01176789123,anytime,6
+home,01177891234,not weekends,7
+work,02071234567,not weekends,1
+work,02072345678,not between 9-5,2
+work,02073456789,anytime,3
+work,02074567891,not weekends,4
+work,02075678912,not between 9-5,5
+work,02076789123,anytime,6
+work,02077891234,not weekends,7

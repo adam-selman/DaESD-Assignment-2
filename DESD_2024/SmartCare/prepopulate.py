@@ -1,16 +1,21 @@
 import os
 import csv
 import django
+from django.db import models
 from django.utils import timezone
-from django.db.models import ObjectDoesNotExist
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'SmartCare.settings')
 django.setup()
 
-from SCS.models import *
+from SCS.models import User, UserProfile, DoctorProfile, NurseProfile,\
+      PatientProfile, AdminProfile, ContactNumber, Address, Service,\
+      DoctorServiceRate, NurseServiceRate, Medication, Appointment
 
 def parse_bool(value):
     return value.lower() == 'true'
+
+def parse_int(value):
+    return int(value) if value.strip() else None
 
 def open_csv(file):
     try:
@@ -25,6 +30,12 @@ def get_user_by_id(user_id):
         return User.objects.get(userID = user_id)
     except User.DoesNotExist:
         print(f"User with ID {user_id} does not exist")
+        return None
+    
+def get_user_profile(user_id):
+    try:
+        return UserProfile.objects.get(pk=int(user_id))
+    except UserProfile.DoesNotExist:
         return None
     
 def check_duplicate_user(username):
@@ -123,7 +134,12 @@ def populate_contact(csvFileName, modelClass):
         for row in reader:
             objData = {}
             for csvFieldName, djangoFieldName in fieldMapping.items():
-                objData[djangoFieldName] = row[csvFieldName]
+                fieldValue = row[csvFieldName]
+
+                if isinstance(modelClass._meta.get_field(djangoFieldName), models.IntegerField):
+                    fieldValue = parse_int(fieldValue)
+                
+                objData[djangoFieldName] = fieldValue
 
             if 'user' in objData:
                 userId = objData['user']
@@ -137,6 +153,83 @@ def populate_contact(csvFileName, modelClass):
             
             print(f"{modelClass.__name__} created for user {userName}")
 
+def populate_medication(csvFileName, modelClass, columnToPrint = None):
+    with open(csvFileName, 'r') as file:
+        reader = csv.DictReader(file)
+
+        csvFieldName = reader.fieldnames
+
+        if not csvFieldName:
+            print(f"File {csvFileName} is empty")
+            return
+        
+        fieldMapping = {csvFieldName: csvFieldName for csvFieldName in csvFieldName}
+
+        for row in reader:
+            objData = {}
+            for csvFieldName, djangoFieldName in fieldMapping.items():
+                objData[djangoFieldName] = row[csvFieldName]
+
+            obj = modelClass.objects.create(**objData)
+
+            if columnToPrint is not None:
+                if columnToPrint and columnToPrint in row:
+                    valueToPrint = row.get(columnToPrint)
+                    print(f"{modelClass.__name__} {valueToPrint} created")
+            else:
+                print(f"{modelClass.__name__} created")
+
+
+def populate_appointment(csvFileName, modelClass):
+    with open(csvFileName, 'r') as file:
+        reader = csv.DictReader(file)
+
+        if not reader.fieldnames:
+            print(f"File {csvFileName} is empty")
+            return
+
+        for row in reader:
+            objData = {}
+            for csvFieldName, fieldValue in row.items():
+                if fieldValue.lower() == 'null':
+                    fieldValue = None
+
+                if isinstance(modelClass._meta.get_field(csvFieldName), models.IntegerField):
+                    fieldValue = parse_int(fieldValue)
+
+                objData[csvFieldName] = fieldValue
+
+            try:
+                if 'service_id' in objData:
+                    service_id = objData['service_id']
+                    service = Service.objects.get(pk=int(service_id))
+                    objData['service'] = service
+
+                if 'patient' in objData:
+                    patient_profile = get_user_profile(objData['patient'])
+                    objData['patient'] = patient_profile
+
+                if 'doctor' in objData:
+                    doctorId = objData['doctor']
+                    if doctorId is not None:
+                        doctor_profile = get_user_profile(objData['doctor'])
+                        objData['doctor'] = doctor_profile
+                    else:
+                        objData['doctor'] = None
+
+                if 'nurse' in objData:
+                    nurseId = objData['nurse']
+                    if nurseId is not None:
+                        nurse_profile = get_user_profile(objData['nurse'])
+                        objData['nurse'] = nurse_profile
+                    else:
+                        objData['nurse'] = None
+
+                obj = modelClass.objects.create(**objData)
+                print(f"{modelClass.__name__} created for user {objData.get('patient', 'Unknown')}")
+            except Exception as e:
+                print(f"Error creating {modelClass.__name__}:", e)
+
 
 if __name__ == '__main__':
     print("Starting to populate the database... ")
@@ -144,9 +237,11 @@ if __name__ == '__main__':
     populate_users('data/admins.csv', 'admin', AdminProfile, [])
     populate_users('data/nurses.csv', 'nurse', NurseProfile, [])
     populate_users('data/patients.csv', 'patient', PatientProfile, ['age', 'allergies', 'isPrivate'])
+    populate_contact('data/address.csv', Address)
+    populate_contact('data/contactnumber.csv', ContactNumber)
     populate_services('data/service.csv', Service, 'service', ignore_service= True)
     populate_services('data/doctorservicerate.csv', DoctorServiceRate)
     populate_services('data/nurseservicerate.csv', NurseServiceRate)
-    populate_contact('data/contactinfo.csv', ContactNumber)
-    populate_contact('data/address.csv', Address)
+    populate_medication('data/medication.csv', Medication, 'name')
+    populate_appointment('data/appointment.csv', Appointment)
     print("Populating complete!")

@@ -1,2 +1,8 @@
 number,buildingName,streetName,city,county,postcode,country,description,user
 1,,streetroad,bristol,bristol,bs1 1aa,england,home,1
+12,Highfield House,Green Lane,London,London,E1 6AN,United Kingdom,Residential,2
+,Rose Cottage,Main Street,Manchester,Lancashire,M3 4BD,United Kingdom,Commercial,3
+45,,Elm Street,Birmingham,West Midlands,B4 7DR,United Kingdom,Residential,4
+8,,Park Avenue,Leeds,West Yorkshire,LS1 2RT,United Kingdom,Commercial,5
+,Oak Lodge,Church Road,Sheffield,South Yorkshire,S1 3XY,United Kingdom,Residential,6
+21,The Old Barn,High Street,Edinburgh,Midlothian,EH1 1AA,United Kingdom,Commercial,7
