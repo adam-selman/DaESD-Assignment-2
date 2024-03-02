@@ -11,17 +11,67 @@
     
      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
      <script> src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"</script>
-
+     <link href="../src/style.css" rel="stylesheet">
     </head>
-    <body>
-        <h1>SmartCare homepage</h1>
-     
+    <body onresize = "myFunction1()">
+        <header>
+            <div id="logo_container">
+                <h2 id="logo">SmartCare</h1>
+                <div id="login_button">
+                    <button id="log_btn"><a id = "log_button" href="/">Login</a></button>
+                </div>
+            </div>
+            <div class = "navbar" id="mynavbar">
+                <a>Home</a>
+                <a>Services</a>
+                <a>About</a>
+            </div>
+            <div id="menu_btn_container">
+                <button id="menu_btn"><a href="javascript:void(0);" onclick="myFunction()">Menu</a></button>
+            </div>      
+        </header>
+        <div id="overflow_navbar">
+            <a class = "active">Home</a>
+            <a>Services</a>
+            <a>About</a>
+            <!--{% if user.is_authenticated %}-->
+            <a>Logout</a>
+            <!--{% else %}-->
+            <a>Login</a>
+            <!--{% endif %}-->
+        </div> 
+        <div id='1' class='container' >
 
-<div id='1' class='container' >
+            {% block content%}
 
-        {% block content%}
-        
-        {% endblock %}
-    </div>
-   
+            {% endblock %}
+        </div>   
     </body>
+    <script>
+        let x = false
+        function myFunction() {
+            var y = document.getElementById("overflow_navbar")
+            if (x == false){
+                y.style.display = "block"
+                y.style.transition = "0.5s"
+                x = true
+                console.log(x)
+            }else{
+                y.style.display = "none"
+                x = false
+                console.log(x)
+            }
+        }
+
+        function myFunction1() {
+            let w = window.outerWidth;
+            var y = document.getElementById("overflow_navbar")
+            if (w > 1000){
+                y.style.display = "none"
+                x = false
+            }
+        }
+    </script>
+
+
+    

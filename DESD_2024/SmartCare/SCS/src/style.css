@@ -1,0 +1,135 @@
+body{
+    margin: 0;
+    font-family: 'Sofia Pro', 'Century Gothic';
+}
+
+header{
+    background: #1985A1;
+    
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+#logo{
+    color: white;
+}
+
+#logo_container{
+    border-bottom: 1px solid black;
+    display: flex;
+    justify-content: space-between;
+}
+
+#login_button{
+    display: block;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+a{
+    text-decoration: none;
+    color: white;
+}
+
+#log_btn{
+    display: block;
+    padding: 15px;
+    border: 1px solid white;
+    border-radius: 4px;
+    background-color: #1985A1;
+}
+
+.navbar{
+    display: flex;
+    overflow: hidden;
+}
+
+.navbar > a {
+    margin: 10px;
+    padding: 5px;
+}
+
+#menu_btn{
+    display: none;  
+}
+
+
+
+.active{
+    background-color: #C5C3C6;
+}
+
+@media screen and (max-width: 1000px){
+    header{
+        background: #1985A1;
+        display: flex;
+        justify-content: space-between;
+        padding: 1%;
+    }
+}
+
+@media screen and (max-width: 1000px){
+    .navbar{
+        display: none;
+    }
+    
+    #menu_btn_container{
+        display: block;
+        margin-top: 8px;
+        margin-bottom: 8px;
+    }
+
+    #menu_btn{
+        display: block;
+        padding: 15px;
+        border: 1px solid white;
+        border-radius: 4px;
+        background-color: #1985A1;
+    }
+
+    #login_button{
+        display: none;
+    }
+
+    #overflow_navbar{
+        
+        color: black;
+        text-align: left; 
+        background-color: #1985A1;
+        
+    }
+
+    #overflow_navbar > a{
+        display: block;
+        text-decoration: none;
+        color: black;
+        padding: 10px 16px 10px 16px;
+        transition: 0.5s;
+        background-color: #1985A1;
+    }
+
+    #overflow_navbar > a:hover{
+        background-color: #104f5f;
+    }
+}
+
+
+    
+@media screen and (min-width: 1001px) {
+    #overflow_navbar{
+        display: none;
+    }
+        
+}
+
+#carousel{
+    background: #C5C3C6;
+    text-align: center;
+    padding: 5%;
+}
+
+#speech_bubble1{
+    background: #DCDCDD;
+    text-align: center;
+    padding: 5%;
+}
