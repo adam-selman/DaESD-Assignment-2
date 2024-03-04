@@ -2,4 +2,40 @@
 {% block content%}
 <p>patient page</p>
 
+<form id ="patient-booking-form" method="post">
+    {% csrf_token %}
+    <input type="date" name="bookingDate">
+    <button onclick="makePatientAppointmentBooking()" >Book Appointment</button>
+</form>
+
+<script>
+    function makePatientAppointmentBooking() {
+    var formData = new FormData(document.getElementById('patient-booking-form'));
+    
+    fetch('patientBooking', {
+  method: 'POST',
+  headers: {
+        'X-CSRFToken': token
+      },
+  
+  body: formData
+})
+.then(response => response.json())
+.then(data => {
+  if (data.success) {
+    // show success message
+    // refresh page
+    
+    
+    
+  } else {
+    
+    alert(data.error);
+  }
+});
+
+}
+
+</script>
+
 {% endblock %}
