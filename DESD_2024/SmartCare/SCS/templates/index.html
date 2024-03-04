@@ -1,4 +1,4 @@
-
+{% load static %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -11,9 +11,9 @@
     
      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
      <script> src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"</script>
-     <link href="../src/style.css" rel="stylesheet">
+     <link href="{% static 'style.css' %}" rel="stylesheet">
     </head>
-    <body onresize = "myFunction1()">
+    <body onresize = "removeResponsiveMenu()">
         <header>
             <div id="logo_container">
                 <h2 id="logo">SmartCare</h1>
@@ -27,7 +27,7 @@
                 <a>About</a>
             </div>
             <div id="menu_btn_container">
-                <button id="menu_btn"><a href="javascript:void(0);" onclick="myFunction()">Menu</a></button>
+                <button id="menu_btn"><a href="javascript:void(0);" onclick="showMenu()">Menu</a></button>
             </div>      
         </header>
         <div id="overflow_navbar">
@@ -48,27 +48,25 @@
         </div>   
     </body>
     <script>
-        let x = false
-        function myFunction() {
+        let menuVisible = false
+        function showMenu() {
             var y = document.getElementById("overflow_navbar")
-            if (x == false){
+            if (menuVisible == false){
                 y.style.display = "block"
                 y.style.transition = "0.5s"
-                x = true
-                console.log(x)
+                menuVisible = true
             }else{
                 y.style.display = "none"
-                x = false
-                console.log(x)
+                menuVisible = false
             }
         }
 
-        function myFunction1() {
+        function removeResponsiveMenu() {
             let w = window.outerWidth;
             var y = document.getElementById("overflow_navbar")
             if (w > 1000){
                 y.style.display = "none"
-                x = false
+                menuVisible = false
             }
         }
     </script>
