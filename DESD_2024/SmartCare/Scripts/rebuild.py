@@ -40,6 +40,13 @@ def confirm_rebuild():
         return False
     return True
 
+def delete_migration_files():
+    migrationsDirectory = os.path.join(projectDirectory, 'SCS', 'migrations')
+    if os.path.exists(migrationsDirectory):
+        for fileName in os.listdir(migrationsDirectory):
+            if fileName.endswith('.py') and fileName != '__init__.py':
+                os.remove(os.path.join(migrationsDirectory, fileName))
+
 # Main function to run the script
 def main():
     # Prompt for confirmation
@@ -51,6 +58,12 @@ def main():
     # Rebuild the database
     rebuild_database()
     print('Database rebuilt.')
+
+    # Clear previous migrations
+    print('Deleting migration files...')
+    delete_migration_files()
+    print('Migration files deleted.')
+    
     # Run the migrations
     print('Running migrations...')
     run_migrations()
