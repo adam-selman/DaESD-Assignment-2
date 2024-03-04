@@ -4,37 +4,50 @@ import django
 from django.apps import apps
 from django.conf import settings
 from django.core.serializers import deserialize
+from django.db.utils import IntegrityError
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'SmartCare.settings')
 django.setup()
 
 def restore_database():
-    backupDate = input("Enter the date of the backup to restore (YYYY-MM-DD): ")
+    while True:
+        backupDate = input("Enter the date of the backup to restore (YYYY-MM-DD): ")
+        backupDirectoryName = f"backup_{backupDate}"
+        backupDirectoryPath = os.path.join(settings.BASE_DIR, 'backup', backupDirectoryName)
+
+        if os.path.exists(backupDirectoryPath):
+            break
+        else:
+            print(f"No backup found for date: {backupDate}")
     
-    backupDirectoryName = f"backup_{backupDate}"
-    backupDirectoryPath = os.path.join(settings.BASE_DIR, 'backup', backupDirectoryName)
+    modelOrder = ['User', 'Group', 'Permission','UserProfile', 'DoctorProfile',
+                   'NurseProfile', 'PatientProfile', 'AdminProfile', 'Timetable',
+                   'ContactNumber', 'Address', 'Service', 'DoctorServiceRate',
+                   'NurseServiceRate', 'Appointment', 'Medication', 'Prescription',
+                   'Invoice', 'LogEntry', 'Session', 'ContentType']
 
-    if not os.path.exists(backupDirectoryPath):
-        print(f"No backup found for date: {backupDate}")
-        return
-    
-    appLabel = input("Enter the app label to restore (e.g. SCS): ")
-    modelName = input("Enter the model name to restore (e.g. UserProfile): ")
-    fileName = f"{appLabel}_{modelName}.json"
-    filePath = os.path.join(backupDirectoryPath, fileName)
+    for modelName in modelOrder:
+        for root, dir, files in os.walk(backupDirectoryPath):
+            for file in files:
+                appLabel, fileModelName = file.split('_', 1)
+                fileModelName = fileModelName.split('.')[0]
+                
+                if fileModelName == modelName:
+                    print(f"Restoring {modelName}...")
+                    jsonFile_path = os.path.join(root, file)
+                    with open(jsonFile_path, 'r', encoding='utf-8') as jsonFile:
+                        data = json.load(jsonFile)
+                        objects = deserialize('json', json.dumps(data))
 
-    if not os.path.exists(filePath):
-        print(f"No backup found for model '{modelName}' and app '{appLabel}'")
-        return
+                    model = apps.get_model(appLabel, fileModelName)
+                    if model is not None:
+                        for obj in objects:
+                            try:
+                                obj.save()
+                            except IntegrityError as e:
+                                print(f"Error restoring {modelName}: {e}")
 
-    with open(filePath, 'r', encoding='utf-8') as jsonFile:
-        data = json.load(jsonFile)
-        objects = deserialize('json', json.dumps(data))
-
-    model = apps.get_model(appLabel, modelName)
-    if model is not None:
-        for obj in objects:
-            obj.save()
+            print(f"Restored {modelName}")
 
     print("Database restore completed.")
 
