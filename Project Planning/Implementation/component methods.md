@@ -28,7 +28,6 @@
     - [1.3.3. Appointment Completion](#133-appointment-completion)
       - [1.3.3.1. issue\_prescription](#1331-issue_prescription)
       - [1.3.3.2. add\_appointment\_notes](#1332-add_appointment_notes)
-      - [](#)
     - [1.3.4. External APIs](#134-external-apis)
       - [1.3.4.1. addToCalendar](#1341-addtocalendar)
       - [1.3.4.2. getAddress](#1342-getaddress)
@@ -234,9 +233,7 @@ see [1.1.2.1. issue\_prescription](#1121-issue_prescription).
 def add_appointment_notes(appointmentID: int, notes: str) -> JsonResponse
 ```
 
-This python method adds appointment notes to a given appointment. It expects the appointment ID and the notes to associate with it. This shall return `0` if successful or `-1` if an error occurred.  
-
-#### 
+This python method adds appointment notes to a given appointment. It expects the appointment ID and the notes to associate with it. This shall return `0` if successful or `-1` if an error occurred.
 
 ### 1.3.4. External APIs
 
