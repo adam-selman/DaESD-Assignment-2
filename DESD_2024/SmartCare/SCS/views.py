@@ -57,6 +57,27 @@ def patient(request):
     return render(request, 'patient_dashboard.html')
 
 @login_required
+def patient_appointment_booking(request) -> JsonResponse:
+    """
+    View function for patient appointment booking
+
+    Args:
+        request (_type_): _description_
+
+    Returns:
+        JsonResponse: JsonResponse containing the result of the request
+    """
+    csrf_token = get_token(request)
+    check = False
+    if request.method == 'POST':
+        # fetch form fields
+        pass
+
+    else:
+        check = False
+    return JsonResponse({'key': 'value'}) 
+
+@login_required
 def admin(request):
     return render(request, 'admin_dashboard.html')
 
