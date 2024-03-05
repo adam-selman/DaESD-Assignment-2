@@ -2,9 +2,11 @@ from django.shortcuts import render,redirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.contrib import messages
-#from .forms import LoginForm
+from .forms import UserRegisterForm
 from django.contrib.auth import authenticate, login
 from django.middleware.csrf import get_token
+from .models import UserProfile
+
 
 
 def index(request):
@@ -13,7 +15,19 @@ def index(request):
 def Auth(request):
     return render(request, 'Auth.html')
 
- 
+def register(request):
+    if request.method == 'POST':
+        form = UserRegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            # Create a profile for the new user
+            profile = UserProfile(user=user, user_type=form.cleaned_data['user_type'])
+            profile.save()
+            login(request, user)
+            return redirect('home')
+    else:
+        form = UserRegisterForm()
+    return render(request, 'register.html', {'form': form})
 
 
 @login_required
