@@ -4,7 +4,7 @@ from django.shortcuts import render,redirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.contrib import messages
-#from .forms import LoginForm
+from .forms import AppointmentBookingForm
 from django.contrib.auth import authenticate, login
 from django.middleware.csrf import get_token
 
@@ -54,10 +54,11 @@ def Login(request):
 def doc(request):
     return render(request, 'doctor_dashboard.html')
 
-
 def patient(request):
-    return render(request, 'patient_dashboard.html')
-
+    
+    form = AppointmentBookingForm(request.POST or None)
+    context = {"form": form}
+    return render(request, 'patient_dashboard.html', context)
 
 def patient_appointment_booking(request) -> JsonResponse:
     """
@@ -75,10 +76,10 @@ def patient_appointment_booking(request) -> JsonResponse:
     print(request.method)
     if request.method == 'POST':
         # fetch form fields
-        data_from_post = json.load(request)['data'] #Get data from POST request
-        print(data_from_post)
+        booking_date = request.POST.get('bookingDate')
+        print(booking_date)
 
-        data = {'success': 'false'}
+        data = {'success': 'false', 'bookingDate': booking_date}
     else:
         check = False
     return JsonResponse(data) 

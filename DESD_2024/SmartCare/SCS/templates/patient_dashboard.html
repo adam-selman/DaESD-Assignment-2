@@ -4,39 +4,40 @@
 
 <form id ="patient-booking-form" method="post">
     {% csrf_token %}
-    <input type="date" name="bookingDate">
-    <select name="practitioner">
-      <option value="doctor">Doctor</option>
-      <option value="nurse">Nurse</option>
-    </select>
-    <button onclick="makePatientAppointmentBooking()">Book Appointment</button>
+    {{ form }}
+    <button>Book Appointment</button>
 </form>
 
 <script>
 
-//document.getElementById("patient-booking-form").addEventListener("submit", function (e) {
-//   e.preventDefault();
-//   makePatientAppointmentBooking(e.target);
-//   var formData = new FormData(document.getElementById('patient-booking-form'));
-//   var token = "{{ csrf_token }}" ;
-// });
+document.getElementById("patient-booking-form").addEventListener("submit", function (e) {
+   e.preventDefault();
+   makePatientAppointmentBooking(e.target);
+   var formData = new FormData(document.getElementById('patient-booking-form'));
+   var token = "{{ csrf_token }}" ;
+ });
 
-// function makePatientAppointmentBooking(form) {
-//     var formData = new FormData(form);
-//     var token = "{{ csrf_token }}" ;
-
-function makePatientAppointmentBooking() {
-    var formData = new FormData(document.getElementById('patient-booking-form'));
+ function makePatientAppointmentBooking(form) {
+    var formData = new FormData(form);
     var token = "{{ csrf_token }}" ;
-    
+
+    if (formData.get('bookingDate') === "") {
+      alert("Please select a date");
+      return;
+    }
+
+    else if (formData.get('practitioner') === "") {
+      alert("Please select a practitioner");
+      return;
+    }
+
     fetch('patient_appointment_booking', {
     method: 'POST',
     headers: {
-            'X-CSRFToken': token,
-            'Content-Type': 'application/json'
-             },
+            'X-CSRFToken': token
+            },
   
-  body: JSON.stringify({'data':formData})
+  body: formData
 })
 .then(response => response.json())
 .then(data => {
@@ -44,9 +45,8 @@ function makePatientAppointmentBooking() {
     // show success message
     // refresh page
     alert(data.success);
-    alert(data.data);
-    
-    
+    alert(data.bookingDate);
+
   } else {
     
     alert(data.error);
