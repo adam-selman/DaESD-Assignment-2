@@ -20,7 +20,18 @@
 
 document.getElementById("bookingDate").addEventListener("change", function (e) {
    e.preventDefault();
-   getPractitioners(e.target);
+   if (e.target.value == "") {
+      var practitionerSelect = document.getElementById('practitioner');
+      practitionerSelect.hidden = true;
+      practitionerSelect.innerHTML = "";
+      document.getElementById('practitionerLabel').hidden = true;
+      
+     return;
+   }
+   else{
+    getPractitioners(e.target);
+    }
+   
  });
 
 function populatePracticioners(practitioners) {
