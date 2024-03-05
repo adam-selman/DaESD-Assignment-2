@@ -3,20 +3,23 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.contrib import messages
 #from .forms import LoginForm
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login , logout
 from django.middleware.csrf import get_token
 
 
 def index(request):
-    return render(request, 'index.html')
+    csrf_token = get_token(request)
+    return render(request, 'index.html',{'csrf_token':csrf_token})
 
 def Auth(request):
     return render(request, 'Auth.html')
 
- 
+def Session(request):
+    csrf_token = get_token(request)
+    return render(request, 'CheckSession.html',{'csrf_token':csrf_token}) 
 
 
-@login_required
+
 def Login(request):
     csrf_token = get_token(request)
     check = False
@@ -52,15 +55,29 @@ def Login(request):
 def doc(request):
     return render(request, 'doctor_dashboard.html')
 
-@login_required
+@login_required(login_url='login')
 def patient(request):
     return render(request, 'patient_dashboard.html')
 
-@login_required
+@login_required(login_url='login')
 def admin(request):
     return render(request, 'admin_dashboard.html')
 
-@login_required
+@login_required(login_url='login')
 def nurse(request):
     return render(request, 'nurse_dashboard.html')
+
+
+def Logout(request):
+    logout(request)
+    return redirect('/login') 
+
+
+
+def check_session(request):
+    if request.user.is_authenticated:  
+        return JsonResponse({'status': 'active'}, status=200)
+    else:
+        return JsonResponse({'status': 'expired'}, status=401)
+
 
