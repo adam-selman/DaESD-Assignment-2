@@ -11,7 +11,7 @@ django.setup()
 from SCS.models import User, UserProfile, DoctorProfile, NurseProfile,\
       PatientProfile, AdminProfile, ContactNumber, Address, Service,\
       DoctorServiceRate, NurseServiceRate, Medication, Appointment,\
-      Prescription, Invoice
+      Prescription, Invoice, Timetable
 
 def parse_bool(value):
     return value.lower() == 'true'
@@ -412,6 +412,26 @@ def populate_invoice(csvFileName, modelClass):
                 print(f"Error creating {modelClass.__name__}:", e)
                 
 
+def populate_timetables(csvFileName):
+    with open(csvFileName, 'r') as file:
+        reader = csv.DictReader(file)
+
+        for row in reader:
+
+            pracitioner = UserProfile.objects.get(pk=int(row.get('practitioner')))
+
+            commonFields = {
+                'practitioner': pracitioner,
+                'monday': parse_bool(row.get('monday')),
+                'tuesday': parse_bool(row.get('tuesday')),
+                'wednesday': parse_bool(row.get('wednesday')),
+                'thursday': parse_bool(row.get('thursday')),
+                'friday': parse_bool(row.get('friday')),
+                'saturday':parse_bool(row.get('saturday')),
+                'sunday': parse_bool(row.get('sunday')),
+            }
+            user = Timetable.objects.create(**commonFields)
+
 
 if __name__ == '__main__':
     print("Starting to populate the database... ")
@@ -428,4 +448,5 @@ if __name__ == '__main__':
     populate_appointment('data/appointment.csv', Appointment)
     populate_prescription('data/prescription.csv', Prescription)
     populate_invoice('data/invoice.csv', Invoice)
+    populate_timetables('data/timetable.csv')
     print("Populating complete!")
