@@ -1,3 +1,5 @@
+
+import json
 from django.shortcuts import render,redirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
@@ -52,11 +54,11 @@ def Login(request):
 def doc(request):
     return render(request, 'doctor_dashboard.html')
 
-@login_required
+
 def patient(request):
     return render(request, 'patient_dashboard.html')
 
-@login_required
+
 def patient_appointment_booking(request) -> JsonResponse:
     """
     View function for patient appointment booking
@@ -67,15 +69,19 @@ def patient_appointment_booking(request) -> JsonResponse:
     Returns:
         JsonResponse: JsonResponse containing the result of the request
     """
+    print("Reached patient_appointment_booking")
     csrf_token = get_token(request)
     check = False
+    print(request.method)
     if request.method == 'POST':
         # fetch form fields
-        pass
+        data_from_post = json.load(request)['data'] #Get data from POST request
+        print(data_from_post)
 
+        data = {'success': 'false'}
     else:
         check = False
-    return JsonResponse({'key': 'value'}) 
+    return JsonResponse(data) 
 
 @login_required
 def admin(request):
