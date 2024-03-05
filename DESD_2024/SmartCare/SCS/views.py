@@ -13,10 +13,6 @@ def index(request):
 def Auth(request):
     return render(request, 'Auth.html')
 
- 
-
-
-@login_required
 def Login(request):
     csrf_token = get_token(request)
     check = False
