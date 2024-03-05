@@ -6,11 +6,12 @@
     {% csrf_token %}
     <label>Booking Date</label>
     <input id="bookingDate" type="date" name="bookingDate">
-    
-    <label>Doctor/Nurse</label>
-    <select id="practitioner" name="practitioner">
+    <br>
+    <label hidden="true" id="practitionerLabel" >Doctor/Nurse</label>
+    <select id="practitioner" name="practitioner" hidden="true">
     
     </select>
+    <br>
       
     <button>Book Appointment</button>
 </form>
@@ -41,20 +42,25 @@ function populatePracticioners(practitioners) {
   });
 }
 
- function getPractitioners() {
+ function getPractitioners(form_input) {
+  // Create a FormData object and append the date value
+    var formData = new FormData();
+    formData.append("bookingDate", form_input.value);
   var token = "{{ csrf_token }}" ;
   fetch('get_practitioners', {
-    method: 'GET',
+    method: 'POST',
     headers: {
             'X-CSRFToken': token
-            }
+            },
+    body: formData
   })
   .then(response => response.json())
   .then(data => {
     if (data.success) {
       console.log(data.practitioners);
       populatePracticioners(data.practitioners);
-
+      document.getElementById('practitioner').hidden = false;
+      document.getElementById('practitionerLabel').hidden = false;
     } else {
       
       alert(data.error);
