@@ -68,7 +68,6 @@ function populatePracticioners(practitioners) {
   .then(response => response.json())
   .then(data => {
     if (data.success) {
-      console.log(data.practitioners);
       populatePracticioners(data.practitioners);
       document.getElementById('practitioner').hidden = false;
       document.getElementById('practitionerLabel').hidden = false;
