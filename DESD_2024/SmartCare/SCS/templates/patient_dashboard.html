@@ -4,18 +4,63 @@
 
 <form id ="patient-booking-form" method="post">
     {% csrf_token %}
-    {{ form }}
+    <label>Booking Date</label>
+    <input id="bookingDate" type="date" name="bookingDate">
+    
+    <label>Doctor/Nurse</label>
+    <select id="practitioner" name="practitioner">
+    
+    </select>
+      
     <button>Book Appointment</button>
 </form>
 
 <script>
 
-document.getElementById("patient-booking-form").addEventListener("submit", function (e) {
+document.getElementById("bookingDate").addEventListener("change", function (e) {
    e.preventDefault();
-   makePatientAppointmentBooking(e.target);
-   var formData = new FormData(document.getElementById('patient-booking-form'));
-   var token = "{{ csrf_token }}" ;
+   getPractitioners(e.target);
  });
+
+function populatePracticioners(practitioners) {
+  var practitionerSelect = document.getElementById('practitioner');
+  practitionerSelect.innerHTML = "";
+  
+  practitioners.doctors.forEach(doctor => {
+    var option = document.createElement('option');
+    option.value = doctor[1];
+    option.text = doctor[0];
+    practitionerSelect.appendChild(option);
+  });
+
+  practitioners.nurses.forEach(nurse => {
+    var option = document.createElement('option');
+    option.value = nurse[1];
+    option.text = nurse[0];
+    practitionerSelect.appendChild(option);
+  });
+}
+
+ function getPractitioners() {
+  var token = "{{ csrf_token }}" ;
+  fetch('get_practitioners', {
+    method: 'GET',
+    headers: {
+            'X-CSRFToken': token
+            }
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      console.log(data.practitioners);
+      populatePracticioners(data.practitioners);
+
+    } else {
+      
+      alert(data.error);
+    }
+  });
+}
 
  function makePatientAppointmentBooking(form) {
     var formData = new FormData(form);

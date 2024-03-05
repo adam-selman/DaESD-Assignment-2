@@ -7,6 +7,7 @@ from django.contrib import messages
 from .forms import AppointmentBookingForm
 from django.contrib.auth import authenticate, login
 from django.middleware.csrf import get_token
+from .models import DoctorProfile, NurseProfile, UserProfile, User
 
 
 def index(request):
@@ -59,6 +60,35 @@ def patient(request):
     form = AppointmentBookingForm(request.POST or None)
     context = {"form": form}
     return render(request, 'patient_dashboard.html', context)
+
+def get_practitioners(request) -> JsonResponse:
+
+    print("Reached patient_appointment_booking")
+    csrf_token = get_token(request)
+    # fetch form fields
+    booking_date = request.POST.get('bookingDate')
+
+    all_doctors = DoctorProfile.objects.all()
+    all_nurses = NurseProfile.objects.all()
+    doctors = []
+    nurses = []
+
+    for doctor in all_doctors:
+        doctor_user_profile = UserProfile.objects.filter(id=doctor.user_profile_id).first()
+        doctor_user_info = User.objects.filter(id=doctor_user_profile.user_id).first()
+        doctors.append((doctor_user_info.first_name + " " + doctor_user_info.last_name, doctor_user_info.id))
+   
+    for nurse in all_nurses:
+            nurse_user_profile = UserProfile.objects.filter(id=nurse.user_profile_id).first()
+            nurse_user_info = User.objects.filter(id=nurse_user_profile.user_id).first()
+            nurses.append((nurse_user_info.first_name + " " + nurse_user_info.last_name, nurse_user_info.id))
+
+    practitioners = {"doctors": doctors,
+                    "nurses": nurses}
+
+    data = {'success': 'true', 'practitioners': practitioners}
+    return JsonResponse(data) 
+
 
 def patient_appointment_booking(request) -> JsonResponse:
     """
