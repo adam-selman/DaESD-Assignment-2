@@ -102,7 +102,10 @@ document.getElementById("practitioner").addEventListener("change", function (e) 
 
 
 
-// method to populate the practitioners select element with available practitioners
+/**
+ * Method to populate the practitioners select element with available practitioners
+ * @param {Array} practitioners - The practitioners to be populated
+ */
 function populatePractitioners(practitioners) {
   var practitionerSelect = document.getElementById('practitioner');
   practitionerSelect.innerHTML = "";
@@ -126,7 +129,10 @@ function populatePractitioners(practitioners) {
   });
 }
 
-// method to populate the timeSlots select element with available timeSlots
+/**
+ * Method to populate the time slots select element with available time slots
+ * @param {Array} timeSlots - The time slots to be populated
+ */
 function populateTimeSlots(timeSlots) {
   var timeSlotSelect = document.getElementById('timeSlot');
   timeSlotSelect.innerHTML = "";
@@ -144,7 +150,11 @@ function populateTimeSlots(timeSlots) {
 
 }
 
-// method to get practitioners by day and service when date and service selected
+/**
+ * Method to get practitioners by day and service when service and date selected
+ * @param {HTMLSelectElement} service - The select element for the service
+ * @param {HTMLInputElement} bookingDate - The input element for the booking date
+ */
 function getPractitionersByDayAndService(service, bookingDate) {
   // Create a FormData object and append the date value
   var formData = new FormData();
@@ -170,7 +180,11 @@ function getPractitionersByDayAndService(service, bookingDate) {
   });
 }
 
-// method to get practitioners by day and service when date and service selected
+/**
+ * Method to get time slots by day and practitioner when date and practitioner selected
+ * @param {HTMLInputElement} bookingDate - The input element for the booking date
+ * @param {HTMLSelectElement} practitioner - The select element for the practitioner
+ */
 function getTimeSlotsByDayAndPractitioner(bookingDate, practitioner) {
   // Create a FormData object and append the date value
   var formData = new FormData();
@@ -203,6 +217,11 @@ document.getElementById("patient-booking-form").addEventListener("submit", funct
    makePatientAppointmentBooking(this);
 });
 
+
+/**
+ * Method to make a patient appointment booking
+ * @param {HTMLFormElement} form - The form element to be submitted
+ */
 function makePatientAppointmentBooking(form) {
     var formData = new FormData(form);
     var token = "{{ csrf_token }}" ;
@@ -257,7 +276,7 @@ function makePatientAppointmentBooking(form) {
     timeSlotSelect = document.getElementById('timeSlot')
     timeSlotSelect.value = createSelectPlaceholderElement("Select a Time Slot");
     timeSlotSelect.disabled = true;
-    
+
     reason = document.getElementById('reason').value = "";    
 
   } else {
@@ -268,6 +287,11 @@ function makePatientAppointmentBooking(form) {
 
 }
 
+/**
+ * Method to create a placeholder option element for a select element
+ * @param {string} placeholderText - The text to be displayed as the placeholder
+ * @returns {HTMLOptionElement} - The placeholder option element
+ */
 function createSelectPlaceholderElement(placeholderText) {
   var placeholder_option = document.createElement('option');
   placeholder_option.text = placeholderText;
