@@ -1,6 +1,260 @@
 {% extends 'index.html' %}
 {% block content%}
 {% include 'CheckSession.html' %}
-<p>patient page</p>
+<div class="container">
+  <div class="row">
+    <div class="col-md-6">
+      <h2>Book Appointment</h2>
+      <p>Book an appointment with a doctor or nurse</p>
+      <form id ="patient-booking-form" method="post">
+        {% csrf_token %}
+    
+        <label for="service">Service: </label>
+        <select id="service" name="service">
+        <option selected disabled hidden>Select a service</option>
+          {% for service_id, service_name, service_duration in services %} 
+            <option value="{{service_id}}">{{ service_name }}</li> 
+          {% endfor %} 
+        </select>
+        <br>
+    
+        <label for="bookingDate" id="bookingDateLabel" hidden="true">Date: </label>
+        <input id="bookingDate" type="date" name="bookingDate" hidden="true">
+        <br>
+        <label for="practitioner" hidden="true" id="practitionerLabel"  >Doctor/Nurse: </label>
+        <select id="practitioner" name="practitioner" hidden="true">
+          <option selected disabled hidden>Select a Practitioner</option>
+        </select>
+        <br>
+        <label for="timeSlot" hidden="true" id="timeSlotLabel">Time Slot: </label>
+        <select id="timeSlot" name="timeSlot" hidden="true">
+          <option selected disabled hidden>Select a Time Slot</option>
+        </select>
+        <br>
+        <button>Book Appointment</button>
+    </form>
+    </div>
+  </div>
+
+
+<script>
+
+// Adding event listener that listens for changes in the service select element
+document.getElementById("service").addEventListener("change", function (e) {
+  e.preventDefault();
+  bookingDate = document.getElementById("bookingDate");
+  if (e.target.value == "") {
+    var bookingDate = document.getElementById('bookingDate');
+    var bookingDateLabel = document.getElementById('bookingDateLabel');
+    bookingDate.hidden = true;
+    bookingDate.innerHTML = "";
+    document.getElementById('practitionerLabel').hidden = true;
+    
+    return;
+  }
+  else if (bookingDate.value !== "" && bookingDate.hidden === false) {
+    getPractitionersByDayAndService(e.target, bookingDate)
+  }
+  else{
+  var bookingDate = document.getElementById('bookingDate');
+  var bookingDateLabel = document.getElementById('bookingDateLabel');
+
+  bookingDate.hidden = false;
+  bookingDateLabel.hidden = false;
+  }
+  
+ });
+
+// Adding event listener that listens for changes in the bookingDate input element
+document.getElementById("bookingDate").addEventListener("change", function (e) {
+  e.preventDefault();
+  if (e.target.value == "") {
+    var practitionerSelect = document.getElementById('practitioner');
+    practitionerSelect.hidden = true;
+    practitionerSelect.innerHTML = "";
+    document.getElementById('practitionerLabel').hidden = true;
+  }
+  else{
+    var service = document.getElementById('service');
+    getPractitionersByDayAndService(service, e.target);
+  }
+  return;
+
+});
+
+// Adding event listener that listens for changes in the practitioner input element
+document.getElementById("practitioner").addEventListener("change", function (e) {
+  e.preventDefault();
+  if (e.target.value !== "") {
+    var bookingDate = document.getElementById('bookingDate');
+    getTimeSlotsByDayAndPractitioner(bookingDate, e.target);
+  }
+  
+});
+
+
+
+// method to populate the practitioners select element with available practitioners
+function populatePractitioners(practitioners) {
+  var practitionerSelect = document.getElementById('practitioner');
+  practitionerSelect.innerHTML = "";
+  
+  // creating placeholder for selecting a practitioner
+  placeholder_option = createSelectPlaceholderElement("Select a Practitioner")
+  practitionerSelect.appendChild(placeholder_option);
+
+  practitioners.doctors.forEach(doctor => {
+    var option = document.createElement('option');
+    option.value = doctor[1];
+    option.text = doctor[0];
+    practitionerSelect.appendChild(option);
+  });
+
+  practitioners.nurses.forEach(nurse => {
+    var option = document.createElement('option');
+    option.value = nurse[1];
+    option.text = nurse[0];
+    practitionerSelect.appendChild(option);
+  });
+}
+
+// method to populate the timeSlots select element with available timeSlots
+function populateTimeSlots(timeSlots) {
+  var timeSlotSelect = document.getElementById('timeSlots');
+  timeSlotSelect.innerHTML = "";
+
+  // creating placeholder for selecting a practitioner
+  //! TURN THIS INTO A FUNCTION
+  placeholder_option = placeholder_option = createSelectPlaceholderElement("Select a Time Slot")
+  timeSlotSelect.appendChild(placeholder_option);
+  
+  timeSlots.forEach(timeSlot => {
+    var option = document.createElement('option');
+    option.value = timeSlot[1];
+    option.text = timeSlot[0];
+    timeSlotSelect.appendChild(option);
+  });
+
+}
+
+// method to get practitioners by day and service when date and service selected
+function getPractitionersByDayAndService(service, bookingDate) {
+  // Create a FormData object and append the date value
+  var formData = new FormData();
+  formData.append("bookingDate", bookingDate.value);
+  formData.append("service", service.value);
+  var token = "{{ csrf_token }}" ;
+  fetch('get_practitioners_by_day_and_service', {
+    method: 'POST',
+    headers: {
+            'X-CSRFToken': token
+            },
+    body: formData
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      populatePractitioners(data.practitioners);
+      document.getElementById('practitioner').hidden = false;
+      document.getElementById('practitionerLabel').hidden = false;
+    } else {
+      
+      alert(data.error);
+    }
+  });
+}
+
+// method to get practitioners by day and service when date and service selected
+function getTimeSlotsByDayAndPractitioner(bookingDate, practitioner) {
+  // Create a FormData object and append the date value
+  var formData = new FormData();
+  formData.append("bookingDate", bookingDate.value);
+  formData.append("practitioner", practitioner.value);
+  var token = "{{ csrf_token }}" ;
+  fetch('get_time_slots_by_day_and_practitioner', {
+    method: 'POST',
+    headers: {
+            'X-CSRFToken': token
+            },
+    body: formData
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      populateTimeSlots(data.practitioners);
+      document.getElementById('timeSlot').hidden = false;
+      document.getElementById('timeSlotLabel').hidden = false;
+    } else {
+      
+      alert(data.error);
+    }
+  });
+}
+
+
+// Adding event listener that submits the form when the submit button is clicked
+document.getElementById("patient-booking-form").addEventListener("submit", function (e) {
+   e.preventDefault();
+   makePatientAppointmentBooking(this);
+});
+
+ function makePatientAppointmentBooking(form) {
+    var formData = new FormData(form);
+    var token = "{{ csrf_token }}" ;
+
+    if (formData.get('bookingDate') === "") {
+      alert("Please select a date");
+      return;
+    }
+
+    else if (formData.get('practitioner') === "") {
+      alert("Please select a practitioner");
+      return;
+    }
+
+    else if (formData.get('service') === "") {
+      alert("Please select a service");
+      return;
+    }
+
+    else if (formData.get('timeSlot') === "") {
+      alert("Please select a time slot");
+      return;
+    }
+
+    fetch('patient_appointment_booking', {
+    method: 'POST',
+    headers: {
+            'X-CSRFToken': token
+            },
+  
+  body: formData
+})
+.then(response => response.json())
+.then(data => {
+  if (data.success) {
+    // show success message
+    // refresh page
+    alert('Appointment booked successfully');
+
+  } else {
+    
+    alert(data.error);
+  }
+});
+
+}
+
+function createSelectPlaceholderElement(placeholderText) {
+  var placeholder_option = document.createElement('option');
+  placeholder_option.text = placeholderText;
+  placeholder_option.selected = true;
+  placeholder_option.disabled = true;
+  placeholder_option.hidden = true;
+
+  return placeholder_option;
+}
+
+</script>
 
 {% endblock %}
