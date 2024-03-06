@@ -182,6 +182,7 @@ def get_time_slots_by_day_and_practitioner(request) -> JsonResponse:
 
         practitioner_user_profile = get_user_profile_by_user_id(practitioner)
 
+        # Get the appointments for the practitioner on the given day
         if practitioner_user_profile.user_type == "doctor":
             booked_appointments = Appointment.objects.filter(doctor_id=practitioner_user_profile, date=parsed_date).all()
 
@@ -190,16 +191,24 @@ def get_time_slots_by_day_and_practitioner(request) -> JsonResponse:
 
         booked_times = []
 
+        # Get the booked times
         for appointment in booked_appointments:
-            booked_times.append(appointment.time)
+            booked_times.append([appointment.time, appointment.duration_id])
+        
         
         available_times = APPOINTMENT_TIMES
         logger.info(f"Booked times: {booked_times}")
         logger.info(f"Available times: {available_times}")
-        for time in booked_times:
+
+        # Remove booked times from available times
+        for time, duration in booked_times:
             logger.info(f"Time: {time}")
             if time in available_times:
-                available_times.remove(time)
+                # Remove the time and the following n times based on the duration
+                index = available_times.index(time)
+                logger.info(f"Index: {index}")
+                for i in range(duration):
+                    available_times.pop(index)
 
         available_times = parse_times_for_view(available_times)
         logger.info(f"Available times: {available_times}")
@@ -238,25 +247,29 @@ def patient_appointment_booking(request) -> JsonResponse:
         else:
             practitioner_user_profile = get_user_profile_by_user_id(practitioner)
 
-            if practitioner_user_profile.user_type == "doctor":
-                new_appointment = Appointment.objects.create(date=booking_date,
-                                                             time=time,
-                                                             description=reason,
-                                                             doctor_id=practitioner,
-                                                             patient_id=patient.id,
-                                                             service_id=service_id,
-                                                             duration_id=service.duration)
-            else:
-                new_appointment = Appointment.objects.create(date=booking_date,
-                                                             time=time,
-                                                             description=reason,
-                                                             doctor_id=practitioner,
-                                                             patient_id=patient.id,
-                                                             service_id=service_id,
-                                                             duration=service.duration)
+            existing_appointment = len(Appointment.objects.filter(patient_id=patient.id, date=booking_date, time=time).all()) != 0
+            if not existing_appointment:
+                if practitioner_user_profile.user_type == "doctor":
+                    new_appointment = Appointment.objects.create(date=booking_date,
+                                                                time=time,
+                                                                description=reason,
+                                                                doctor_id=practitioner,
+                                                                patient_id=patient.id,
+                                                                service_id=service_id,
+                                                                duration_id=service.duration)
+                else:
+                    new_appointment = Appointment.objects.create(date=booking_date,
+                                                                time=time,
+                                                                description=reason,
+                                                                doctor_id=practitioner,
+                                                                patient_id=patient.id,
+                                                                service_id=service_id,
+                                                                duration=service.duration)
 
-            new_appointment.save()
-            data = {'success': 'true'}
+                new_appointment.save()
+                data = {'success': 'true'}
+            else:
+                data = {'success': 'false', 'error': 'Appointment already exists'}
     else:
         check = False
     return JsonResponse(data) 

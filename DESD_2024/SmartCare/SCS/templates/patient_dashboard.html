@@ -242,6 +242,24 @@ function makePatientAppointmentBooking(form) {
     // refresh page
     alert('Appointment booked successfully');
 
+    // resetting form fields
+    service = document.getElementById('service')
+    service.value = createSelectPlaceholderElement("Select a Service");
+
+    bookingDate = document.getElementById('bookingDate')
+    bookingDate.value = createSelectPlaceholderElement("Select a Date");
+    bookingDate.disabled = true;
+
+    practitionerSelect = document.getElementById('practitioner')
+    practitionerSelect.value = createSelectPlaceholderElement("Select a Practitioner");
+    practitionerSelect.disabled = true;
+
+    timeSlotSelect = document.getElementById('timeSlot')
+    timeSlotSelect.value = createSelectPlaceholderElement("Select a Time Slot");
+    timeSlotSelect.disabled = true;
+    
+    reason = document.getElementById('reason').value = "";    
+
   } else {
     
     alert(data.error);
