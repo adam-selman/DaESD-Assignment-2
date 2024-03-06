@@ -12,4 +12,7 @@ urlpatterns = [
    path('patient_appointment_booking', views.patient_appointment_booking, name='patientBooking'),
    path('get_practitioners_by_day_and_service', views.get_practitioners_by_day_and_service, name='getPractitionersByDayAndService'),
    path('get_time_slots_by_day_and_practitioner', views.get_time_slots_by_day_and_practitioner, name='getPractitionersByDayAndService'),
+   path('logout',views.Logout),
+   path('check_status',views.check_session),
+   path('Session_status',views.Session),
 ]
