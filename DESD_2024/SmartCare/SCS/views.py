@@ -15,18 +15,54 @@ from .utility import get_medical_services, check_practitioner_service , APPOINTM
 logger = logging.getLogger(__name__)
 
 def index(request):
+    """
+    View function for the index page
+
+    Args:
+        request (HttpRequest): Django view request object 
+
+    Returns:
+        HttpResponse: Page response containing the index page
+    """
     csrf_token = get_token(request)
     return render(request, 'index.html',{'csrf_token':csrf_token})
 
 def Auth(request):
+    """
+    View function for the authentication page
+
+    Args:
+        request (HttpRequest): Django view request object
+
+    Returns:
+        HttpResponse: Page response containing the authentication page
+    """
     return render(request, 'Auth.html')
 
 @login_required
 def Session(request):
+    """
+    Function to check the session status
+
+    Args:
+        request (HttpRequest): Django view request object
+
+    Returns:
+        HttpResponse: Page response containing the session status
+    """
     csrf_token = get_token(request)
     return render(request, 'CheckSession.html',{'csrf_token':csrf_token}) 
 
 def Login(request):
+    """
+    Function to handle user login
+
+    Args:
+        request (HttpRequest): Django view request object
+
+    Returns:
+        HttpResponse: Page response containing the login page
+    """
     csrf_token = get_token(request)
     check = False
     if request.method == 'POST':
@@ -57,6 +93,15 @@ def Login(request):
 
 @login_required(login_url='login')
 def doc(request):
+    """
+    View function for the doctor dashboard
+
+    Args:
+        request (HttpRequest): Django view request object
+
+    Returns:
+        HttpResponse: Page response containing the doctor dashboard
+    """
     return render(request, 'doctor_dashboard.html')
 
 @login_required(login_url='login')
@@ -70,7 +115,7 @@ def get_practitioners_by_day_and_service(request) -> JsonResponse:
     Returns a list of practitioners available on a given day
 
     Args:
-        request (_type_): _description_
+        request (HttpRequest): Django view request object
 
     Returns:
         JsonResponse: A JSON response containing the list of practitioners and if the request was successful.
@@ -163,7 +208,7 @@ def get_time_slots_by_day_and_practitioner(request) -> JsonResponse:
     Returns a list of time slots available for a given practitioner on a given day
 
     Args:
-        request (_type_): _description_
+        request (HttpRequest): Django view request object
 
     Returns:
         JsonResponse: A JSON response containing the list of time slots and if the request was successful.
@@ -219,7 +264,7 @@ def patient_appointment_booking(request) -> JsonResponse:
     View function for patient appointment booking
 
     Args:
-        request (_type_): _description_
+        request (HttpRequest): Django view request object
 
     Returns:
         JsonResponse: JsonResponse containing the result of the request
@@ -276,20 +321,56 @@ def patient_appointment_booking(request) -> JsonResponse:
 
 @login_required(login_url='login')
 def admin(request):
+    """
+    View function for the admin dashboard
+
+    Args:
+        request (HttpRequest): Django view request object
+
+    Returns:
+        HttpResponse: Page response containing the admin dashboard
+    """
     return render(request, 'admin_dashboard.html')
 
 @login_required(login_url='login')
 def nurse(request):
+    """
+    View function for the nurse dashboard
+
+    Args:
+        request (HttpRequest): Django view request object
+
+    Returns:
+        HttpResponse: Page response containing the nurse dashboard
+    """
     return render(request, 'nurse_dashboard.html')
 
 
 def Logout(request):
+    """
+    Function to handle user logout
+
+    Args:
+        request (HttpRequest): Django view request object
+
+    Returns:
+        HttpResponse: Page response containing the login page
+    """
     logout(request)
     return redirect('/login') 
 
 
 
 def check_session(request):
+    """
+    Function to check the session status
+
+    Args:
+        request (HttpRequest): Django view request object
+
+    Returns:
+        JsonResponse: JSON response containing the session status
+    """
     if request.user.is_authenticated:  
         return JsonResponse({'status': 'active'}, status=200)
     else:

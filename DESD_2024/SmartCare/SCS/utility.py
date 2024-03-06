@@ -13,9 +13,6 @@ def get_medical_services() -> list:
     """
     Returns a list of available services
 
-    Args:
-        request (_type_): _description_
-
     Returns:
         list: Returns a list of services to pass to a view as context
     """
@@ -89,7 +86,17 @@ def parse_times_for_view(times: list) -> list:
         parsed_times.append(time.strftime("%H:%M"))
     return parsed_times
 
-def convert_to_datetimes(appointment_times):
+def convert_to_datetimes(appointment_times) -> list:
+    """
+    Converts a list of strings to a list of datetime objects
+
+    Args:
+        appointment_times (list[str]): A list of strings representing times
+
+    Returns:
+        list: A list of datetime objects
+    """
+
     formatted_times = []
     for time_str in appointment_times:
         formatted_time = datetime.strptime(time_str, "%H:%M:%S").time()
