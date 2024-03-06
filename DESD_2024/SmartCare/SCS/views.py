@@ -9,9 +9,9 @@ from django.contrib import messages
 from .forms import AppointmentBookingForm
 from django.contrib.auth import authenticate, login
 from django.middleware.csrf import get_token
-from .models import DoctorProfile, NurseProfile, UserProfile, User, Timetable, Service
+from .models import DoctorProfile, NurseProfile, UserProfile, User, Timetable, Service, Appointment
 
-from .utility import get_medical_services, check_practicioner_service  
+from .utility import get_medical_services, check_practitioner_service , APPOINTMENT_TIMES, get_user_profile_by_user_id
 
 logger = logging.getLogger(__name__)
 
@@ -51,7 +51,7 @@ def Login(request):
         check = False
     return render(request, 'login.html',{'csrf_token':csrf_token,'check':check}) 
 
-    
+
 
 @login_required(login_url='login')
 def doc(request):
@@ -74,7 +74,6 @@ def get_practitioners_by_day_and_service(request) -> JsonResponse:
     Returns:
         JsonResponse: A JSON response containing the list of practitioners and if the request was successful.
     """
-    print("Reached patient_appointment_booking")
     csrf_token = get_token(request)
     # fetch form fields
 
@@ -94,10 +93,10 @@ def get_practitioners_by_day_and_service(request) -> JsonResponse:
         doctors = []
         nurses = []
 
-        doctor_can_perorm = check_practicioner_service(service, doctor=True)
-        nurse_can_perform = check_practicioner_service(service, nurse=True)
+        doctor_can_perform = check_practitioner_service(service, doctor=True)
+        nurse_can_perform = check_practitioner_service(service, nurse=True)
 
-        if doctor_can_perorm:
+        if doctor_can_perform:
             all_doctors = DoctorProfile.objects.all()
 
             for doctor in all_doctors:
@@ -157,6 +156,48 @@ def get_practitioners_by_day_and_service(request) -> JsonResponse:
         data = {'success': 'true', 'practitioners': practitioners}
     return JsonResponse(data) 
 
+
+def get_time_slots_by_day_and_practitioner(request) -> JsonResponse:
+    """
+    Returns a list of time slots available for a given practitioner on a given day
+
+    Args:
+        request (_type_): _description_
+
+    Returns:
+        JsonResponse: A JSON response containing the list of time slots and if the request was successful.
+    """
+    print("Reached get_time_slots_by_day_and_practitioner")
+
+    if request.method == 'POST':
+        booking_date = request.POST.get('bookingDate')
+        practitioner = request.POST.get('practitioner')
+
+        logger.info(f"Booking date: {booking_date}")
+        logger.info(f"Practitioner: {practitioner}")
+
+        parsed_date = datetime.strptime(booking_date, "%Y-%m-%d")
+        logger.info(f"Parsed date: {parsed_date}")
+
+        practitioner_user_profile = get_user_profile_by_user_id(practitioner)
+
+        if practitioner_user_profile.user_type == "doctor":
+            booked_appointments = Appointment.objects.filter(doctor_id=practitioner_user_profile).all()
+
+        elif practitioner_user_profile.user_type == "nurse":
+            booked_appointments = Appointment.objects.filter(nurse_id=practitioner_user_profile).all()
+
+        time_slot_taken = False
+        for appointment in booked_appointments:
+            logger.info(f"Appointment dateTime: {appointment.dateTime}")
+            logger.info(f"Appointment dateTime type: {type(appointment.dateTime)}")
+            if appointment.dateTime == parsed_date:
+                time_slot_taken = True
+                break
+        
+        logger.info(f"Appointment dateTime: {appointment.dateTime}")
+        
+    return JsonResponse({'success': 'true'})
 
 def patient_appointment_booking(request) -> JsonResponse:
     """

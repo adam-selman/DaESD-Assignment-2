@@ -77,13 +77,13 @@ document.getElementById("bookingDate").addEventListener("change", function (e) {
 
 // Adding event listener that listens for changes in the practitioner input element
 document.getElementById("practitioner").addEventListener("change", function (e) {
-   e.preventDefault();
-   if (e.target.value !== "") {
+  e.preventDefault();
+  if (e.target.value !== "") {
     var bookingDate = document.getElementById('bookingDate');
     getTimeSlotsByDayAndPractitioner(bookingDate, e.target);
-    }
-   
- });
+  }
+  
+});
 
 
 
