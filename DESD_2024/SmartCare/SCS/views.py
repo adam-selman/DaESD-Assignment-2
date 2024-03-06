@@ -10,7 +10,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.middleware.csrf import get_token
 from .models import DoctorProfile, NurseProfile, UserProfile, User, Timetable, Service, Appointment
 
-from .utility import get_medical_services, check_practitioner_service , APPOINTMENT_TIMES, get_user_profile_by_user_id
+from .utility import get_medical_services, check_practitioner_service , APPOINTMENT_TIMES, get_user_profile_by_user_id, parse_times_for_view
 
 logger = logging.getLogger(__name__)
 
@@ -25,8 +25,6 @@ def Auth(request):
 def Session(request):
     csrf_token = get_token(request)
     return render(request, 'CheckSession.html',{'csrf_token':csrf_token}) 
-
-
 
 def Login(request):
     csrf_token = get_token(request)
@@ -185,22 +183,27 @@ def get_time_slots_by_day_and_practitioner(request) -> JsonResponse:
         practitioner_user_profile = get_user_profile_by_user_id(practitioner)
 
         if practitioner_user_profile.user_type == "doctor":
-            booked_appointments = Appointment.objects.filter(doctor_id=practitioner_user_profile).all()
+            booked_appointments = Appointment.objects.filter(doctor_id=practitioner_user_profile, date=parsed_date).all()
 
         elif practitioner_user_profile.user_type == "nurse":
-            booked_appointments = Appointment.objects.filter(nurse_id=practitioner_user_profile).all()
+            booked_appointments = Appointment.objects.filter(nurse_id=practitioner_user_profile, date=parsed_date).all()
 
-        time_slot_taken = False
+        booked_times = []
+
         for appointment in booked_appointments:
-            logger.info(f"Appointment dateTime: {appointment.dateTime}")
-            logger.info(f"Appointment dateTime type: {type(appointment.dateTime)}")
-            if appointment.dateTime == parsed_date:
-                time_slot_taken = True
-                break
+            booked_times.append(appointment.time)
         
-        logger.info(f"Appointment dateTime: {appointment.dateTime}")
-        
-    return JsonResponse({'success': 'true'})
+        available_times = APPOINTMENT_TIMES
+        logger.info(f"Booked times: {booked_times}")
+        logger.info(f"Available times: {available_times}")
+        for time in booked_times:
+            logger.info(f"Time: {time}")
+            if time in available_times:
+                available_times.remove(time)
+
+        available_times = parse_times_for_view(available_times)
+        logger.info(f"Available times: {available_times}")
+    return JsonResponse({'success': 'true', 'timeSlots': available_times})
 
 def patient_appointment_booking(request) -> JsonResponse:
     """
@@ -218,15 +221,42 @@ def patient_appointment_booking(request) -> JsonResponse:
     print(request.method)
     if request.method == 'POST':
         # fetch form fields
+        patient = request.user
         booking_date = request.POST.get('bookingDate')
         logger.info(f"Booking date: {booking_date}")
         service_id = request.POST.get('service')
+        service = Service.objects.filter(pk=service_id).first()
         logger.info(f"serviceID: {service_id}")
         practitioner = request.POST.get('practitioner')
         logger.info(f"Practitioner: {practitioner}")
-        print(booking_date)
+        time = request.POST.get('timeSlot')
+        logger.info(f"Time: {time}")
+        reason = request.POST.get('reason')
 
-        data = {'success': 'true'}
+        if booking_date is None or service_id is None or practitioner is None or time is None or reason is None:
+            data = {'success': 'false', 'error': 'Invalid form data'}
+        else:
+            practitioner_user_profile = get_user_profile_by_user_id(practitioner)
+
+            if practitioner_user_profile.user_type == "doctor":
+                new_appointment = Appointment.objects.create(date=booking_date,
+                                                             time=time,
+                                                             description=reason,
+                                                             doctor_id=practitioner,
+                                                             patient_id=patient.id,
+                                                             service_id=service_id,
+                                                             duration_id=service.duration)
+            else:
+                new_appointment = Appointment.objects.create(date=booking_date,
+                                                             time=time,
+                                                             description=reason,
+                                                             doctor_id=practitioner,
+                                                             patient_id=patient.id,
+                                                             service_id=service_id,
+                                                             duration=service.duration)
+
+            new_appointment.save()
+            data = {'success': 'true'}
     else:
         check = False
     return JsonResponse(data) 
