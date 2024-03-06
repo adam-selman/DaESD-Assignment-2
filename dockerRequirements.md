@@ -35,19 +35,25 @@ In order to run Django commands while the containers are running the following c
 
  - Open a terminal and navigate to the `DESD_2024` directory of the repo and then run the following commands:
 
+
 ```bash
-docker compose run django  sh - c  "cd /code/SmartCare/ && python manage.py makemigrations  && python manage.py  migrate"
+docker compose run django sh -c "cd /code/SmartCare/Scripts && python rebuild.py"
 ```
 
 ```bash
-docker compose run django sh -c "cd /code/SmartCare/ && python rebuild.py"
+docker compose run django sh -c "cd /code/SmartCare/Scripts/ && python prepopulate.py"
 ```
+
 ### 1.2.2. For testing
 
 #### 1.2.2.1. Running the Server
 
 ```bash
-docker compose run django  sh -c  "cd /code/SmartCare/ && python manage.py runserver"
+docker compose up -d 
 ```
 
 #### 1.2.2.2. Adding Dummy Data
+
+```bash
+docker compose run django sh -c "cd /code/SmartCare/Scripts && python prepopulate.py"
+```
