@@ -248,20 +248,25 @@ def populate_appointment(csvFileName, modelClass):
             objData[csvFieldName] = fieldValue
 
         try:
-            if 'dateTime' in objData:
+            '''if 'dateTime' in objData:
                 dateTimeStr = objData['dateTime']
                 dateTime = datetime.strptime(dateTimeStr, '%Y-%m-%d %H:%M:%S')
                 dateTime = timezone.make_aware(dateTime)
-                objData['dateTime'] = dateTime
+                objData['dateTime'] = dateTime'''
 
             if 'service' in objData:
                 serviceId = objData['service']
                 service = Service.objects.get(pk=int(serviceId))
                 objData['service'] = service
 
-            existingAppointment = modelClass.objects.filter(dateTime=objData['dateTime'], patient = objData['patient']).exists()
+            if 'duration' in objData:
+                durationId = objData['duration']
+                duration = Service.objects.get(pk=int(durationId))
+                objData['duration'] = duration
+
+            existingAppointment = modelClass.objects.filter(date = objData['date'], time = objData['time'], patient = objData['patient']).exists()
             if existingAppointment:
-                print(f"Skipping duplicate appointment for patient {objData['patient']} with date issued {objData['dateTime']}")
+                print(f"Skipping duplicate appointment for patient {objData['patient']} with date issued {objData['date']} and time {objData['time']} ")
                 continue
 
             if 'patient' in objData:
