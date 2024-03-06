@@ -57,18 +57,14 @@ def Login(request):
         check = False
     return render(request, 'login.html',{'csrf_token':csrf_token,'check':check}) 
 
-
-
 @login_required(login_url='login')
 def doc(request):
     return render(request, 'doctor_dashboard.html')
 
 @login_required(login_url='login')
 def patient(request):
-    
-    form = AppointmentBookingForm(request.POST or None)
     services = get_medical_services()
-    context = {"form": form, "services": services}
+    context = {"services": services}
     return render(request, 'patient_dashboard.html', context)
 
 def get_practitioners_by_day_and_service(request) -> JsonResponse:
