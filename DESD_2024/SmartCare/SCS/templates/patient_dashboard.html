@@ -4,10 +4,20 @@
 
 <form id ="patient-booking-form" method="post">
     {% csrf_token %}
-    <label>Booking Date</label>
-    <input id="bookingDate" type="date" name="bookingDate">
+
+    <label for="service">Service: </label>
+    <select id="service" name="service">
+    <option selected disabled hidden>Select a service</option>
+      {% for service_id, service_name, service_duration in services %} 
+        <option value="{{service_id}}">{{ service_name }}</li> 
+      {% endfor %} 
+    </select>
     <br>
-    <label hidden="true" id="practitionerLabel" >Doctor/Nurse</label>
+
+    <label for="bookingDate" id="bookingDateLabel" hidden="true">Date: </label>
+    <input id="bookingDate" type="date" name="bookingDate" hidden="true">
+    <br>
+    <label for="practitioner" hidden="true" id="practitionerLabel"  >Doctor/Nurse: </label>
     <select id="practitioner" name="practitioner" hidden="true">
     
     </select>
@@ -18,6 +28,7 @@
 
 <script>
 
+// Adding event listener that listens for changes in the bookingDate input element
 document.getElementById("bookingDate").addEventListener("change", function (e) {
    e.preventDefault();
    if (e.target.value == "") {
@@ -29,12 +40,37 @@ document.getElementById("bookingDate").addEventListener("change", function (e) {
      return;
    }
    else{
-    getPractitioners(e.target);
+    var service = document.getElementById('service');
+    getPractitionersByDayAndService(service, e.target);
     }
    
  });
 
-function populatePracticioners(practitioners) {
+// Adding event listener that listens for changes in the service select element
+document.getElementById("service").addEventListener("change", function (e) {
+   e.preventDefault();
+   if (e.target.value == "") {
+      var bookingDate = document.getElementById('bookingDate');
+      var bookingDateLabel = document.getElementById('bookingDateLabel');
+      bookingDate.hidden = true;
+      bookingDate.innerHTML = "";
+      document.getElementById('practitionerLabel').hidden = true;
+      
+     return;
+   }
+   else{
+    var bookingDate = document.getElementById('bookingDate');
+    var bookingDateLabel = document.getElementById('bookingDateLabel');
+
+    bookingDate.hidden = false;
+    bookingDateLabel.hidden = false;
+    }
+   
+ });
+
+
+// method to populate the practitioners select element with available practitioners
+function populatePractitioners(practitioners) {
   var practitionerSelect = document.getElementById('practitioner');
   practitionerSelect.innerHTML = "";
   
@@ -53,12 +89,14 @@ function populatePracticioners(practitioners) {
   });
 }
 
- function getPractitioners(form_input) {
+// method to get practitioners by day and service when date and service selected
+function getPractitionersByDayAndService(service, bookingDate) {
   // Create a FormData object and append the date value
     var formData = new FormData();
-    formData.append("bookingDate", form_input.value);
+    formData.append("bookingDate", bookingDate.value);
+    formData.append("service", service.value);
   var token = "{{ csrf_token }}" ;
-  fetch('get_practitioners', {
+  fetch('get_practitioners_by_day_and_service', {
     method: 'POST',
     headers: {
             'X-CSRFToken': token
@@ -68,7 +106,7 @@ function populatePracticioners(practitioners) {
   .then(response => response.json())
   .then(data => {
     if (data.success) {
-      populatePracticioners(data.practitioners);
+      populatePractitioners(data.practitioners);
       document.getElementById('practitioner').hidden = false;
       document.getElementById('practitionerLabel').hidden = false;
     } else {
@@ -77,6 +115,13 @@ function populatePracticioners(practitioners) {
     }
   });
 }
+
+
+// Adding event listener that submits the form when the submit button is clicked
+document.getElementById("patient-booking-form").addEventListener("submit", function (e) {
+   e.preventDefault();
+   makePatientAppointmentBooking(this);
+});
 
  function makePatientAppointmentBooking(form) {
     var formData = new FormData(form);
@@ -89,6 +134,11 @@ function populatePracticioners(practitioners) {
 
     else if (formData.get('practitioner') === "") {
       alert("Please select a practitioner");
+      return;
+    }
+
+    else if (formData.get('service') === "") {
+      alert("Please select a service");
       return;
     }
 

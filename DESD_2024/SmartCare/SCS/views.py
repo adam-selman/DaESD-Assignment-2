@@ -9,7 +9,9 @@ from django.contrib import messages
 from .forms import AppointmentBookingForm
 from django.contrib.auth import authenticate, login
 from django.middleware.csrf import get_token
-from .models import DoctorProfile, NurseProfile, UserProfile, User, Timetable
+from .models import DoctorProfile, NurseProfile, UserProfile, User, Timetable, Service
+
+from .utility import get_medical_services, check_practicioner_service  
 
 logger = logging.getLogger(__name__)
 
@@ -18,9 +20,6 @@ def index(request):
 
 def Auth(request):
     return render(request, 'Auth.html')
-
- 
-
 
 @login_required
 def Login(request):
@@ -61,18 +60,29 @@ def doc(request):
 def patient(request):
     
     form = AppointmentBookingForm(request.POST or None)
-    context = {"form": form}
+    services = get_medical_services()
+    context = {"form": form, "services": services}
     return render(request, 'patient_dashboard.html', context)
 
-def get_practitioners(request) -> JsonResponse:
+def get_practitioners_by_day_and_service(request) -> JsonResponse:
+    """
+    Returns a list of practitioners available on a given day
 
+    Args:
+        request (_type_): _description_
+
+    Returns:
+        JsonResponse: A JSON response containing the list of practitioners and if the request was successful.
+    """
     print("Reached patient_appointment_booking")
     csrf_token = get_token(request)
     # fetch form fields
 
     if request.method == 'POST':
         booking_date = request.POST.get('bookingDate')
+        service = request.POST.get('service')
         logger.info(f"Booking date: {booking_date}")
+        logger.info(f"serviceID: {service}")
 
         parsed_date = datetime.strptime(booking_date, "%Y-%m-%d")
         logger.info(f"Parsed date: {parsed_date}")
@@ -81,62 +91,70 @@ def get_practitioners(request) -> JsonResponse:
         logger.info(f"Day of week: {day_of_week}")
         
 
-        all_doctors = DoctorProfile.objects.all()
-        all_nurses = NurseProfile.objects.all()
         doctors = []
         nurses = []
 
-        for doctor in all_doctors:
-            doctor_user_profile = UserProfile.objects.filter(id=doctor.user_profile_id).first()
-            doctor_user_info = User.objects.filter(id=doctor_user_profile.user_id).first()
-            doctor_timetable = Timetable.objects.filter(practitioner_id=doctor.user_profile_id).first()
-            logger.info(f"Doctor timetable: {doctor_timetable}")
-            doctor_available = False
-            if day_of_week == "monday":
-                doctor_available = doctor_timetable.monday
-            elif day_of_week == "tuesday":
-                doctor_available = doctor_timetable.tuesday
-            elif day_of_week == "wednesday":
-                doctor_available = doctor_timetable.wednesday
-            elif day_of_week == "thursday":
-                doctor_available = doctor_timetable.thursday
-            elif day_of_week == "friday":
-                doctor_available = doctor_timetable.friday
-            elif day_of_week == "saturday":
-                doctor_available = doctor_timetable.saturday
-            elif day_of_week == "sunday":
-                doctor_available = doctor_timetable.sunday
-            
-            if doctor_available:
-                doctors.append((doctor_user_info.first_name + " " + doctor_user_info.last_name, doctor_user_info.id))
+        doctor_can_perorm = check_practicioner_service(service, doctor=True)
+        nurse_can_perform = check_practicioner_service(service, nurse=True)
+
+        if doctor_can_perorm:
+            all_doctors = DoctorProfile.objects.all()
+
+            for doctor in all_doctors:
+                doctor_user_profile = UserProfile.objects.filter(id=doctor.user_profile_id).first()
+                doctor_user_info = User.objects.filter(id=doctor_user_profile.user_id).first()
+                doctor_timetable = Timetable.objects.filter(practitioner_id=doctor.user_profile_id).first()
+                logger.info(f"Doctor timetable: {doctor_timetable}")
+                doctor_available = False
+                if day_of_week == "monday":
+                    doctor_available = doctor_timetable.monday
+                elif day_of_week == "tuesday":
+                    doctor_available = doctor_timetable.tuesday
+                elif day_of_week == "wednesday":
+                    doctor_available = doctor_timetable.wednesday
+                elif day_of_week == "thursday":
+                    doctor_available = doctor_timetable.thursday
+                elif day_of_week == "friday":
+                    doctor_available = doctor_timetable.friday
+                elif day_of_week == "saturday":
+                    doctor_available = doctor_timetable.saturday
+                elif day_of_week == "sunday":
+                    doctor_available = doctor_timetable.sunday
+                
+                if doctor_available:
+                    doctors.append((doctor_user_info.first_name + " " + doctor_user_info.last_name, doctor_user_info.id))
     
-        for nurse in all_nurses:
-            nurse_user_profile = UserProfile.objects.filter(id=nurse.user_profile_id).first()
-            nurse_user_info = User.objects.filter(id=nurse_user_profile.user_id).first()
-            nurse_timetable = Timetable.objects.filter(practitioner_id=nurse.user_profile_id).first()
-            logger.info(f"nurse timetable: {nurse_timetable}")
-            nurse_available = False
-            if day_of_week == "monday":
-                nurse_available = nurse_timetable.monday
-            elif day_of_week == "tuesday":
-                nurse_available = nurse_timetable.tuesday
-            elif day_of_week == "wednesday":
-                nurse_available = nurse_timetable.wednesday
-            elif day_of_week == "thursday":
-                nurse_available = nurse_timetable.thursday
-            elif day_of_week == "friday":
-                nurse_available = nurse_timetable.friday
-            elif day_of_week == "saturday":
-                nurse_available = nurse_timetable.saturday
-            elif day_of_week == "sunday":
-                nurse_available = nurse_timetable.sunday
-            
-            if nurse_available:
-                nurses.append((nurse_user_info.first_name + " " + nurse_user_info.last_name, nurse_user_info.id))
+        if nurse_can_perform:
+            all_nurses = NurseProfile.objects.all()
+
+            for nurse in all_nurses:
+                nurse_user_profile = UserProfile.objects.filter(id=nurse.user_profile_id).first()
+                nurse_user_info = User.objects.filter(id=nurse_user_profile.user_id).first()
+
+                nurse_timetable = Timetable.objects.filter(practitioner_id=nurse.user_profile_id).first()
+                
+                nurse_available = False
+                if day_of_week == "monday":
+                    nurse_available = nurse_timetable.monday
+                elif day_of_week == "tuesday":
+                    nurse_available = nurse_timetable.tuesday
+                elif day_of_week == "wednesday":
+                    nurse_available = nurse_timetable.wednesday
+                elif day_of_week == "thursday":
+                    nurse_available = nurse_timetable.thursday
+                elif day_of_week == "friday":
+                    nurse_available = nurse_timetable.friday
+                elif day_of_week == "saturday":
+                    nurse_available = nurse_timetable.saturday
+                elif day_of_week == "sunday":
+                    nurse_available = nurse_timetable.sunday
+                
+                if nurse_available:
+                    nurses.append((nurse_user_info.first_name + " " + nurse_user_info.last_name, nurse_user_info.id))
         practitioners = {"doctors": doctors,
                         "nurses": nurses}
 
-        data = {'success': 'true', 'practitioners': practitioners, "day_of_week": day_of_week}
+        data = {'success': 'true', 'practitioners': practitioners}
     return JsonResponse(data) 
 
 
@@ -157,9 +175,14 @@ def patient_appointment_booking(request) -> JsonResponse:
     if request.method == 'POST':
         # fetch form fields
         booking_date = request.POST.get('bookingDate')
+        logger.info(f"Booking date: {booking_date}")
+        service_id = request.POST.get('service')
+        logger.info(f"serviceID: {service_id}")
+        practitioner = request.POST.get('practitioner')
+        logger.info(f"Practitioner: {practitioner}")
         print(booking_date)
 
-        data = {'success': 'false', 'bookingDate': booking_date}
+        data = {'success': 'true'}
     else:
         check = False
     return JsonResponse(data) 
