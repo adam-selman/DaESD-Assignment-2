@@ -126,14 +126,9 @@ def get_practitioners_by_day_and_service(request) -> JsonResponse:
     if request.method == 'POST':
         booking_date = request.POST.get('bookingDate')
         service = request.POST.get('service')
-        logger.info(f"Booking date: {booking_date}")
-        logger.info(f"serviceID: {service}")
-
         parsed_date = datetime.strptime(booking_date, "%Y-%m-%d")
-        logger.info(f"Parsed date: {parsed_date}")
 
         day_of_week = parsed_date.strftime("%A").lower()
-        logger.info(f"Day of week: {day_of_week}")
         
 
         doctors = []
@@ -149,7 +144,6 @@ def get_practitioners_by_day_and_service(request) -> JsonResponse:
                 doctor_user_profile = UserProfile.objects.filter(id=doctor.user_profile_id).first()
                 doctor_user_info = User.objects.filter(id=doctor_user_profile.user_id).first()
                 doctor_timetable = Timetable.objects.filter(practitioner_id=doctor.user_profile_id).first()
-                logger.info(f"Doctor timetable: {doctor_timetable}")
                 doctor_available = False
                 if day_of_week == "monday":
                     doctor_available = doctor_timetable.monday
@@ -219,11 +213,7 @@ def get_time_slots_by_day_and_practitioner(request) -> JsonResponse:
         booking_date = request.POST.get('bookingDate')
         practitioner = request.POST.get('practitioner')
 
-        logger.info(f"Booking date: {booking_date}")
-        logger.info(f"Practitioner: {practitioner}")
-
         parsed_date = datetime.strptime(booking_date, "%Y-%m-%d")
-        logger.info(f"Parsed date: {parsed_date}")
 
         practitioner_user_profile = get_user_profile_by_user_id(practitioner)
 
@@ -242,21 +232,16 @@ def get_time_slots_by_day_and_practitioner(request) -> JsonResponse:
         
         
         available_times = APPOINTMENT_TIMES
-        logger.info(f"Booked times: {booked_times}")
-        logger.info(f"Available times: {available_times}")
 
         # Remove booked times from available times
         for time, duration in booked_times:
-            logger.info(f"Time: {time}")
             if time in available_times:
                 # Remove the time and the following n times based on the duration
                 index = available_times.index(time)
-                logger.info(f"Index: {index}")
                 for i in range(duration):
                     available_times.pop(index)
 
         available_times = parse_times_for_view(available_times)
-        logger.info(f"Available times: {available_times}")
     return JsonResponse({'success': 'true', 'timeSlots': available_times})
 
 def patient_appointment_booking(request) -> JsonResponse:
@@ -277,14 +262,10 @@ def patient_appointment_booking(request) -> JsonResponse:
         # fetch form fields
         patient = request.user
         booking_date = request.POST.get('bookingDate')
-        logger.info(f"Booking date: {booking_date}")
         service_id = request.POST.get('service')
         service = Service.objects.filter(pk=service_id).first()
-        logger.info(f"serviceID: {service_id}")
         practitioner = request.POST.get('practitioner')
-        logger.info(f"Practitioner: {practitioner}")
         time = request.POST.get('timeSlot')
-        logger.info(f"Time: {time}")
         reason = request.POST.get('reason')
 
         if booking_date is None or service_id is None or practitioner is None or time is None or reason is None:
