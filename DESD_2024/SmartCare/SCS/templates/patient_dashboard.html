@@ -1,35 +1,41 @@
 {% extends 'index.html' %}
 {% block content%}
 {% include 'CheckSession.html' %}
-<p>patient page</p>
-
-<form id ="patient-booking-form" method="post">
-    {% csrf_token %}
-
-    <label for="service">Service: </label>
-    <select id="service" name="service">
-    <option selected disabled hidden>Select a service</option>
-      {% for service_id, service_name, service_duration in services %} 
-        <option value="{{service_id}}">{{ service_name }}</li> 
-      {% endfor %} 
-    </select>
-    <br>
-
-    <label for="bookingDate" id="bookingDateLabel" hidden="true">Date: </label>
-    <input id="bookingDate" type="date" name="bookingDate" hidden="true">
-    <br>
-    <label for="practitioner" hidden="true" id="practitionerLabel"  >Doctor/Nurse: </label>
-    <select id="practitioner" name="practitioner" hidden="true">
+<div class="container">
+  <div class="row">
+    <div class="col-md-6">
+      <h2>Book Appointment</h2>
+      <p>Book an appointment with a doctor or nurse</p>
+      <form id ="patient-booking-form" method="post">
+        {% csrf_token %}
     
-    </select>
-    <br>
-    <label for="timeSlot" hidden="true" id="timeSlotLabel"  >Time Slot: </label>
-    <select id="timeSlot" name="timeSlot" hidden="true">
+        <label for="service">Service: </label>
+        <select id="service" name="service">
+        <option selected disabled hidden>Select a service</option>
+          {% for service_id, service_name, service_duration in services %} 
+            <option value="{{service_id}}">{{ service_name }}</li> 
+          {% endfor %} 
+        </select>
+        <br>
     
-    </select>
-    <br>
-    <button>Book Appointment</button>
-</form>
+        <label for="bookingDate" id="bookingDateLabel" hidden="true">Date: </label>
+        <input id="bookingDate" type="date" name="bookingDate" hidden="true">
+        <br>
+        <label for="practitioner" hidden="true" id="practitionerLabel"  >Doctor/Nurse: </label>
+        <select id="practitioner" name="practitioner" hidden="true">
+          <option selected disabled hidden>Select a Practitioner</option>
+        </select>
+        <br>
+        <label for="timeSlot" hidden="true" id="timeSlotLabel">Time Slot: </label>
+        <select id="timeSlot" name="timeSlot" hidden="true">
+          <option selected disabled hidden>Select a Time Slot</option>
+        </select>
+        <br>
+        <button>Book Appointment</button>
+    </form>
+    </div>
+  </div>
+
 
 <script>
 
@@ -93,6 +99,10 @@ function populatePractitioners(practitioners) {
   var practitionerSelect = document.getElementById('practitioner');
   practitionerSelect.innerHTML = "";
   
+  // creating placeholder for selecting a practitioner
+  placeholder_option = createSelectPlaceholderElement("Select a Practitioner")
+  practitionerSelect.appendChild(placeholder_option);
+
   practitioners.doctors.forEach(doctor => {
     var option = document.createElement('option');
     option.value = doctor[1];
@@ -112,6 +122,11 @@ function populatePractitioners(practitioners) {
 function populateTimeSlots(timeSlots) {
   var timeSlotSelect = document.getElementById('timeSlots');
   timeSlotSelect.innerHTML = "";
+
+  // creating placeholder for selecting a practitioner
+  //! TURN THIS INTO A FUNCTION
+  placeholder_option = placeholder_option = createSelectPlaceholderElement("Select a Time Slot")
+  timeSlotSelect.appendChild(placeholder_option);
   
   timeSlots.forEach(timeSlot => {
     var option = document.createElement('option');
@@ -120,12 +135,6 @@ function populateTimeSlots(timeSlots) {
     timeSlotSelect.appendChild(option);
   });
 
-  practitioners.nurses.forEach(nurse => {
-    var option = document.createElement('option');
-    option.value = nurse[1];
-    option.text = nurse[0];
-    practitionerSelect.appendChild(option);
-  });
 }
 
 // method to get practitioners by day and service when date and service selected
@@ -226,8 +235,7 @@ document.getElementById("patient-booking-form").addEventListener("submit", funct
   if (data.success) {
     // show success message
     // refresh page
-    alert(data.success);
-    alert(data.bookingDate);
+    alert('Appointment booked successfully');
 
   } else {
     
@@ -235,6 +243,16 @@ document.getElementById("patient-booking-form").addEventListener("submit", funct
   }
 });
 
+}
+
+function createSelectPlaceholderElement(placeholderText) {
+  var placeholder_option = document.createElement('option');
+  placeholder_option.text = placeholderText;
+  placeholder_option.selected = true;
+  placeholder_option.disabled = true;
+  placeholder_option.hidden = true;
+
+  return placeholder_option;
 }
 
 </script>
