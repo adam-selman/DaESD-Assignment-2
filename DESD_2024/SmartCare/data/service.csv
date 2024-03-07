@@ -2,17 +2,17 @@ service,description,duration
 initial consultation,a comprehensive assessment for new medical concerns,2
 follow up consultation,reviewing progress and adjusting treatment plans for ongoing conditions,1
 chronic disease management,monitoring and managing long-term health conditions,1
-medication review,evaluating the effectiveness and safety of current medications,1
-minor surgery,performing minor surgical procedures such as mole removals or joint injections,2
+medication review,evaluating the effectiveness and safety of current medications,2
+minor surgery,performing minor surgical procedures such as mole removals or joint injections,8
 mental health consultation,assessing and managing mental health concerns,2
 vaccination and immunisation,administering vaccines to prevent infectious diseases,1
 wound care,dressing wounds and providing care for wound healing,1
 health screening,assessing health parameters like blood pressure and cholesterol levels,1
 chronic disease monitoring,regular monitoring of chronic conditions to prevent complications,1
-family planning and sexual health,providing contraception advice and sexual health services,1
+family planning and sexual health,providing contraception advice and sexual health services,2
 health promotion,educating patients on healthy lifestyle choices and preventive measures,1
 general health check-up,assessing overall health status and addressing general health concerns,1
-minor ailment,providing assessment and treatment for minor illnesses or injuries,1
-travel health consultation,offering advice and vaccinations for safe travel,2
-health education session,providing information and guidance on health-related topics,1
+minor ailment,providing assessment and treatment for minor illnesses or injuries,2
+travel health consultation,offering advice and vaccinations for safe travel,3
+health education session,providing information and guidance on health-related topics,2
 form review,reviewing and processing administrative forms or documents,1

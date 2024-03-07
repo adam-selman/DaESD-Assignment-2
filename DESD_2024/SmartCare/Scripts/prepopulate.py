@@ -15,7 +15,7 @@ django.setup()
 from SCS.models import User, UserProfile, DoctorProfile, NurseProfile,\
       PatientProfile, AdminProfile, ContactNumber, Address, Service,\
       DoctorServiceRate, NurseServiceRate, Medication, Appointment,\
-      Prescription, Invoice
+      Prescription, Invoice, Timetable
 
 def parse_bool(value):
     return value.lower() == 'true'
@@ -248,20 +248,25 @@ def populate_appointment(csvFileName, modelClass):
             objData[csvFieldName] = fieldValue
 
         try:
-            if 'dateTime' in objData:
+            '''if 'dateTime' in objData:
                 dateTimeStr = objData['dateTime']
                 dateTime = datetime.strptime(dateTimeStr, '%Y-%m-%d %H:%M:%S')
                 dateTime = timezone.make_aware(dateTime)
-                objData['dateTime'] = dateTime
+                objData['dateTime'] = dateTime'''
 
             if 'service' in objData:
                 serviceId = objData['service']
                 service = Service.objects.get(pk=int(serviceId))
                 objData['service'] = service
 
-            existingAppointment = modelClass.objects.filter(dateTime=objData['dateTime'], patient = objData['patient']).exists()
+            if 'duration' in objData:
+                durationId = objData['duration']
+                duration = Service.objects.get(pk=int(durationId))
+                objData['duration'] = duration
+
+            existingAppointment = modelClass.objects.filter(date = objData['date'], time = objData['time'], patient = objData['patient']).exists()
             if existingAppointment:
-                print(f"Skipping duplicate appointment for patient {objData['patient']} with date issued {objData['dateTime']}")
+                print(f"Skipping duplicate appointment for patient {objData['patient']} with date issued {objData['date']} and time {objData['time']} ")
                 continue
 
             if 'patient' in objData:
@@ -422,7 +427,34 @@ def populate_invoice(csvFileName, modelClass):
         except Exception as e:
             print(f"Error creating {modelClass.__name__}:", e)
                 
+def populate_timetables(csvFileName):
+    print("Populating timetables...")
+    with open(csvFileName, 'r') as file:
+        reader = csv.DictReader(file)
 
+        for row in reader:
+
+            practitioner_id = row.get('practitioner')
+
+            # Check if the timetable entry already exists
+            existingPractitionerEntry = Timetable.objects.filter(practitioner_id=practitioner_id).exists()
+            if existingPractitionerEntry:
+                print(f"Skipping duplicate timetable entry")
+                continue
+
+            practitioner = UserProfile.objects.get(pk=int(practitioner_id))
+
+            commonFields = {
+                'practitioner': practitioner,
+                'monday': parse_bool(row.get('monday')),
+                'tuesday': parse_bool(row.get('tuesday')),
+                'wednesday': parse_bool(row.get('wednesday')),
+                'thursday': parse_bool(row.get('thursday')),
+                'friday': parse_bool(row.get('friday')),
+                'saturday':parse_bool(row.get('saturday')),
+                'sunday': parse_bool(row.get('sunday')),
+            }
+            user = Timetable.objects.create(**commonFields)
 
 if __name__ == '__main__':
     print("Starting to populate the database... ")
@@ -439,4 +471,5 @@ if __name__ == '__main__':
     populate_appointment('data/appointment.csv', Appointment)
     populate_prescription('data/prescription.csv', Prescription)
     populate_invoice('data/invoice.csv', Invoice)
+    populate_timetables('timetable.csv')
     print("Populating complete!")
