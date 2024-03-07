@@ -24,9 +24,13 @@
   
     var empty = true;
   
-    if (username === "" || password === "") {
+    if (username === "" ) {
       empty = false;
-      alert("Following fields cannot be left empty!");
+      alert(" Username field should not be left empty!");
+    }
+    if (password === ""){
+      empty= false;
+      alert("Password field should not be left empty!")
     }
   
     if (empty) {
