@@ -3,9 +3,6 @@ from .models import Appointment, UserProfile
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
-# class AppointmentBookingForm(forms.Form):
-#     your_name = forms.CharField(label="Your name")
-#     date = forms.DateField(label="Booking Date")
 class UserRegisterForm(UserCreationForm):
     email = forms.EmailField(required=True)
     user_type = forms.ChoiceField(choices=UserProfile.USER_TYPE_CHOICES)
@@ -27,3 +24,9 @@ class AppointmentBookingForm(forms.ModelForm):
         model = Appointment
         fields = ['service', 'dateTime', 'duration', 'description', 'notes', 'status']
         widgets = {'dateTime': forms.widgets.DateInput(attrs={'type': 'date'})}
+
+
+
+# class AppointmentBookingForm(forms.Form):
+#     your_name = forms.CharField(label="Your name")
+#     date = forms.DateField(label="Booking Date")
