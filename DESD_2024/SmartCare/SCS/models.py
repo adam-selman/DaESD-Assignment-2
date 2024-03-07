@@ -78,8 +78,10 @@ class Appointment(models.Model):
     appointmentID = models.AutoField(primary_key = True)
     service = models.ForeignKey(Service, on_delete = models.CASCADE,
                                 related_name = 'appointment_service' )
-    dateTime = models.DateTimeField()
-    duration = models.IntegerField()
+    date = models.DateField()
+    time = models.TimeField()
+    duration = models.ForeignKey(Service, on_delete = models.CASCADE,
+                                 related_name = 'appointment_duration')
     description = models.CharField(max_length=256)
     notes = models.TextField()
     status = models.CharField(max_length=100)
