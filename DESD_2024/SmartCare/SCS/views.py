@@ -356,5 +356,3 @@ def check_session(request):
         return JsonResponse({'status': 'active'}, status=200)
     else:
         return JsonResponse({'status': 'expired'}, status=401)
-
-
