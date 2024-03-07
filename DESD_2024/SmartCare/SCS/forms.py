@@ -28,4 +28,4 @@ class AppointmentBookingForm(forms.ModelForm):
     class Meta:
         model = Appointment
         fields = ['service', 'dateTime', 'duration', 'description', 'notes', 'status']
-        widgets = {'date
+        widgets = {'date'}
