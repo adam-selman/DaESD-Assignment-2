@@ -15,15 +15,16 @@ class UserRegisterForm(UserCreationForm):
 class AppointmentBookingForm(forms.ModelForm):
     """
     Form object for booking patient appointments
-
-    Args:
-        forms (django.forms): Django implementation of forms
     """
 
     class Meta:
         model = Appointment
-        fields = ['service', 'dateTime', 'duration', 'description', 'notes', 'status']
-        widgets = {'dateTime': forms.widgets.DateInput(attrs={'type': 'date'})}
+        fields = ['service', 'date', 'time', 'duration', 'description', 'notes', 'status']
+        widgets = {
+            'date': forms.widgets.DateInput(attrs={'type': 'date'}),
+            'time': forms.widgets.TimeInput(attrs={'type': 'time'}), 
+        }
+
 
 
 

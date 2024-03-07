@@ -28,6 +28,7 @@ def register(request):
     else:
         form = UserRegisterForm()
     return render(request, 'register.html', {'form': form})
+    
 
 def index(request):
     """
