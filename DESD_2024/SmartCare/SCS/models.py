@@ -83,8 +83,10 @@ class Appointment(models.Model):
     appointmentID = models.AutoField(primary_key = True)
     service = models.ForeignKey(Service, on_delete = models.CASCADE,
                                 related_name = 'appointment_service' )
-    dateTime = models.DateTimeField()
-    duration = models.IntegerField()
+    date = models.DateField()
+    time = models.TimeField()
+    duration = models.ForeignKey(Service, on_delete = models.CASCADE,
+                                 related_name = 'appointment_duration')
     description = models.CharField(max_length=256)
     notes = models.TextField()
     status = models.CharField(max_length=100)
@@ -130,9 +132,11 @@ class Medication(models.Model):
 class Prescription(models.Model):
     prescriptionID = models.AutoField(primary_key = True)
     repeatable = models.BooleanField()
+    approved = models.BooleanField()
     medication = models.ForeignKey(Medication, on_delete = models.CASCADE, 
                                    related_name = 'medication_prescription')
     dosage = models.CharField(max_length = 100)
+    quantity = models.IntegerField()
     instructions = models.TextField()
     issueDate = models.DateTimeField()
     appointment = models.OneToOneField(Appointment, on_delete = models.CASCADE, 
