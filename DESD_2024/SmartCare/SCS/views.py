@@ -9,13 +9,25 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.middleware.csrf import get_token
 from .models import DoctorProfile, NurseProfile, UserProfile, User, Timetable, Service, Appointment
+from .forms import UserRegisterForm
 
 from .utility import get_medical_services, check_practitioner_service , APPOINTMENT_TIMES, get_user_profile_by_user_id, parse_times_for_view
 
 logger = logging.getLogger(__name__)
 
 def register(request):
-    pass
+    if request.method == 'POST':
+        form = UserRegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            # Create a profile for the new user
+            profile = UserProfile(user=user, user_type=form.cleaned_data['user_type'])
+            profile.save()
+            login(request, user)
+            return redirect('home')
+    else:
+        form = UserRegisterForm()
+    return render(request, 'register.html', {'form': form})
 
 def index(request):
     """
