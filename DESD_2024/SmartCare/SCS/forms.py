@@ -10,8 +10,6 @@ class UserRegisterForm(UserCreationForm):
     class Meta:
         model = User
         fields = ["username", "email", "password1", "password2", "user_type"]
-from django import forms
-from .models import Appointment, UserProfile
 
 # class AppointmentBookingForm(forms.Form):
 #     your_name = forms.CharField(label="Your name")
