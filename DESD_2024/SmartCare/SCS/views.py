@@ -14,6 +14,9 @@ from .utility import get_medical_services, check_practitioner_service , APPOINTM
 
 logger = logging.getLogger(__name__)
 
+def register(request):
+    pass
+
 def index(request):
     """
     View function for the index page
