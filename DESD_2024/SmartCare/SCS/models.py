@@ -40,7 +40,7 @@ class PatientProfile(models.Model):
     isPrivate = models.BooleanField(default = False)
 
     def __str__(self):
-        return self.user_profile.user.username77
+        return self.user_profile.user.username
 
 class AdminProfile(models.Model):
     user_profile = models.OneToOneField(UserProfile, on_delete = models.CASCADE, 
