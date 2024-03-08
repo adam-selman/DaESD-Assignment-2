@@ -1,15 +1,60 @@
 {% extends 'index.html' %}
 {% block content%}
-<button id="loginButton">Login</button>
-<button id="RegisterButton">Register</button>
+{% load static %}
+
+<!--Login button and register button automatically appear after 10s-->
+
+<div id="top_section">
+    <div class = "image-container">
+        <img src="{% static "pic4.jpg" %}">
+        <div class="rectangle-clip">
+            <h2>We are here for you!!!</h1>
+            <p>If you ever feel alone or your mental health is on the decline then there are more than enough mental health professionals available to speak with you on anything that may
+              concern you. Free from judgement and fully confidential. 
+            </p>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="content" id="side_1">
+        <h3>To login in and see what our website has to offer click this button. </h3>
+        <button id="loginButton" class="button_style">Login</button>
+    </div>
+    <div class="content" id="side_2">
+        <h3>And to register an account so that you can see more of our products click this button.</h3>
+        <button id="RegisterButton" class="button_style">Register</button>
+    </div>
+</div>
+<div class= "row" id="row2">
+    <div class="content" id="words">
+        <h3>Healthy life happy life </h3>
+        <p>Eating healthy involves consuming a balanced diet rich in fruits, vegetables, lean proteins, whole grains, and healthy fats while minimizing processed foods, sugars, and excessive salts. Portion control is crucial, as is staying hydrated with water. Incorporating diverse nutrients ensures optimal health and energy levels. Strive for moderation and variety, listening to your body's hunger and fullness cues. Regular physical activity complements a healthy diet, contributing to overall well-being and longevity.</p>
+    </div>
+    <div class="content" id="picture">
+        <img src="{% static 'pic2.jpg' %}">
+    </div>
+</div>
+
+
+
+
+
+
+<style>
+    
+</style>
 
 <script>
 document.getElementById('loginButton').addEventListener('click', function() {
-    // Use JavaScript to navigate to the login page without reloading the page
-    // For example:
+    
+    
     window.location.href = 'login';
     this.style.display = 'none';
 });
+function showCarousel(){
+    document.getElementById("carousel_block").style.display = "block"
+}
+
 </script>
 
 {% endblock %}

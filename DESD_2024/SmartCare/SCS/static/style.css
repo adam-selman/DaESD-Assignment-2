@@ -1,7 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
 body{
     margin: 0;
-    font-family: 'Sofia Pro', 'Century Gothic';
+    font-family: 'Roboto', 'Roboto Mono';
+}
+
+.container{
+    background: white;
 }
 
 #body-container{
@@ -19,6 +25,7 @@ header{
     padding-right: 10px;
 }
 
+
 #logo{
     color: white;
 }
@@ -35,10 +42,35 @@ header{
     margin-bottom: 8px;
 }
 
-a{
+/* a{
     text-decoration: none;
     color: white;
 }
+ */
+
+
+.page_container{
+    display: grid;
+    grid-template-columns: 10% 80% 10%;
+    grid-template-rows: 100px auto;
+    grid-template-areas: "blank_space blank_space blank_space"
+                         ". login_container .";
+}
+
+
+
+.blank_space{
+    display: grid;
+    grid-area: blank_space;   
+}
+
+#reset_pw{
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+}
+
+
 
 #log_btn{
     display: block;
@@ -62,7 +94,95 @@ a{
     display: none;  
 }
 
+#top_section{
+    
+    background: #DCDCDD;
+    color: black;
+   
+}
 
+.image-container {
+    
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+.white_a_style{
+    text-decoration: none;
+    color: white;
+}
+
+.image-container > img {
+    display: block;
+    width: 100%;
+    height: auto;
+    
+}
+
+.rectangle-clip {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    text-align: center;
+    width: 100%; /* Adjust the width as needed */
+    height: 25%;
+    padding: 10px;
+    background-color: #DCDCDD; /* You can set the color and transparency of the rectangle */
+    clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+}
+
+.rectangle-clip > p{
+    font-size: 100%;
+    box-sizing: border-box;
+}
+
+@media screen and (max-width: 750px) {
+    .rectangle-clip > p{
+        font-size: 60%;
+        box-sizing: border-box;
+    }
+
+    #picture{
+        display: none;
+        
+    }
+
+    #picture > img{
+        display: none;
+    }
+}
+
+@media screen and (max-width: 1000px) {
+    .rectangle-clip {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        text-align: center;
+        width: 30%; /* Adjust the width as needed */
+        height: 100%;
+        padding: 10px;
+        background-color: #DCDCDD; /* You can set the color and transparency of the rectangle */
+        clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+    }
+
+    .rectangle-clip > p{
+        font-size: 100%;
+        box-sizing: border-box;
+    }
+}
+
+#background_caption1, #background_caption2{
+    background: rgba(0,0,0,0.5);
+}
+
+@media screen and (max-width: 1000px){
+    #top_section{
+        display: block;
+    }
+
+    
+}
 
 .active{
     background-color: #C5C3C6;
@@ -105,7 +225,7 @@ a{
         color: black;
         text-align: left; 
         background-color: #1985A1;
-        
+        transition: 0.5s;
     }
 
     #overflow_navbar > a{
@@ -114,6 +234,7 @@ a{
         color: black;
         padding: 10px 16px 10px 16px;
         transition: 0.5s;
+        transition-timing-function: ease;
         background-color: #1985A1;
     }
 
@@ -135,11 +256,54 @@ a{
         
 }
 
-#carousel{
-    background: #C5C3C6;
-    text-align: center;
-    padding: 5%;
+.row{
+    display: grid;
+    padding: 20px 10px;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: "side_1 side_2";
 }
+
+#row2{
+    background-color: #DCDCDD;
+}
+
+#picture > img{
+    display: block;
+    max-width: 100%;
+    max-height: auto;
+    box-sizing: border-box;
+}
+
+#words{
+    display: grid;
+    grid-area: side_1;
+}
+
+#picture{
+    display: grid;
+    grid-area: side_2;
+}
+
+#side_1{
+    display: grid;
+    grid-area: side_1;
+}
+
+#side_2{
+    display: grid;
+    grid-area: side_2;
+}
+
+@media screen and (max-width: 1000px) {
+    .row{
+        display: grid;
+        padding: 10px;
+        grid-template-columns: 1fr;
+        grid-template-areas: "side_1"
+                             "side_2";
+    }
+}
+
 
 #speech_bubble1{
     background: #DCDCDD;
@@ -147,13 +311,35 @@ a{
     padding: 5%;
 }
 
+.button_style{
+    background-color: #1985A1;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
 #login_container{
+    grid-area: login_container;
     background: #1985A1;
     padding: 1%;
+    margin-left: 1%;
+    margin-right: 1%;
     border: 2px solid #1985A1;
     border-radius: 5px;
     width: 100%;
-    max-width: 750px;  
+     
+}
+
+.error_msg{
+    font-weight: bolder;
+    color: white;
 }
 
 .icon_bar{
@@ -169,6 +355,26 @@ a{
     padding: 2%;
 }
 
+
+
+.reset_page_container{
+    display: grid;
+    grid-template-columns: 10% 80% 10%;
+    grid-template-rows: 100px auto;
+    grid-template-areas: ". . . "
+                         ". password_reset_container ."; 
+}
+
+#password_reset_container{
+    display: grid;
+    padding: 15px;
+    grid-area: password_reset_container;
+    background-color: #1985A1;
+    border: 3px solid #1985A1;
+    border-radius: 10px;
+    
+}
+
 input[type=text], input[type=password]{
     width: 100%;
     padding: 1%;
@@ -176,6 +382,7 @@ input[type=text], input[type=password]{
     margin-bottom: 1%;
     border: 2px solid #C5C3C6;
     border-radius: 5px;
+    box-sizing: border-box;
     outline: none;
     
 }
@@ -191,10 +398,17 @@ input[type=submit]{
     width: 100%;
 }
 
-#carousel{
-    background: #C5C3C6;
-    text-align: center;
+#reset_pw_btn{
+    width: auto;
+    margin: auto;
+    text-align: left;
 }
+
+#username_fld{
+    margin-bottom: 5%;
+}
+
+
 
 #speech_bubble1{
     background: #DCDCDD;

@@ -1,0 +1,25 @@
+<script>
+    function checkSessionStatus() {
+        var token = "{{ csrf_token }}" ;
+fetch('check_status', {
+    method: 'GET',
+    headers: {
+        'X-CSRFToken': token
+    }
+})
+.then(response => {
+    if (response.status === 200) {
+        //
+    } else if (response.status === 401) {
+        alert('your session expired you will be redirected to the login page')
+        window.location.href = '/login';
+    }
+})
+.catch(error => {
+    console.error('Error checking session status:', error);
+});
+}
+setInterval(checkSessionStatus, 60000); 
+
+
+    </script>

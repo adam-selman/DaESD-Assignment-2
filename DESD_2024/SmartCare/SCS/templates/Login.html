@@ -1,26 +1,34 @@
 {% extends 'index.html' %}
 {% block content%}
-<form id ="login-form" method="post">
-    {% csrf_token %}
-    <input type="text" name="username" placeholder="Username">
-    <input type="password" name="password" placeholder="Password">
-    <select name="user_type">
-        <option value="doctor">Doctor</option>
-        <option value="patient">Patient</option>
-        <option value="nurse">Nurse</option>
-        <option value="nurse">Admin</option>
-    </select>
-    <button  onclick="Click()" >Login</button>
-    
-    
-</form>
-{% if check %}
-{% if messages %}
-{% for message in messages %}
-  <div>{{ message }}</div>
-{% endfor %}
-{% endif %}
-{% endif %}
+
+<div class="page_container">
+  <div class="black_space"></div>
+  <div id="login_container">
+    <form id ="login-form" method="post">
+        {% csrf_token %}
+        <h1>Login...</h1>
+        <span><input type="text" name="username" placeholder="Username"></span>
+        <span><input type="password" name="password" placeholder="Password"></span>
+        <select name="user_type" >
+            <option value="doctor">Doctor</option>
+            <option value="patient">Patient</option>
+            <option value="nurse">Nurse</option>
+            <option value="nurse">Admin</option>
+        </select>
+        <button  onclick="Click()" >Login</button>
+    </form>
+    <a id="reset_pw" href="/password_reset">Forgot your password?</a>
+    {% if check %}
+    {% if messages %}
+    {% for message in messages %}
+      <div class="error_msg">{{ message }}!</div>
+    {% endfor %}
+    {% endif %}
+    {% endif %}
+  </div>
+  
+</div>
+
 <script>
     function Click() {
     var formData = new FormData(document.getElementById('login-form'));

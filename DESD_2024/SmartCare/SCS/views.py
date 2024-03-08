@@ -3,15 +3,22 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.contrib import messages
 #from .forms import LoginForm
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login , logout
 from django.middleware.csrf import get_token
 
 
 def index(request):
-    return render(request, 'index.html')
+    csrf_token = get_token(request)
+    return render(request, 'index.html',{'csrf_token':csrf_token})
 
 def Auth(request):
     return render(request, 'Auth.html')
+
+def Session(request):
+    csrf_token = get_token(request)
+    return render(request, 'CheckSession.html',{'csrf_token':csrf_token}) 
+
+
 
 def Login(request):
     csrf_token = get_token(request)
@@ -42,21 +49,49 @@ def Login(request):
         check = False
     return render(request, 'login.html',{'csrf_token':csrf_token,'check':check}) 
 
-    
+
+def password_reset(request):
+    """ csrf_token = get_token(request)
+    username = request.POST.get('username')
+    user = authenticate(username = username)
+    if user is not None:
+        return JsonResponse({'success':True,'url': 'password_reset_sent'})
+    else:
+        messages.error(request, 'Username/Email not in records') """
+    #Receive username/email
+    #If username/email exists in records send the password reset request
+        #Do this by searchign 
+    #Else return an error message saying "Username/Password not recognised in records"
+    return render(request, 'password_reset.html')
+
 
 @login_required(login_url='login')
 def doc(request):
     return render(request, 'doctor_dashboard.html')
 
-@login_required
+@login_required(login_url='login')
 def patient(request):
     return render(request, 'patient_dashboard.html')
 
-@login_required
+@login_required(login_url='login')
 def admin(request):
     return render(request, 'admin_dashboard.html')
 
-@login_required
+@login_required(login_url='login')
 def nurse(request):
     return render(request, 'nurse_dashboard.html')
+
+
+def Logout(request):
+    logout(request)
+    return redirect('/login') 
+
+
+
+def check_session(request):
+    if request.user.is_authenticated:  
+        return JsonResponse({'status': 'active'}, status=200)
+    else:
+        return JsonResponse({'status': 'expired'}, status=401)
+
 
