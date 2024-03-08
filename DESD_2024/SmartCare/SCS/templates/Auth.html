@@ -1,7 +1,8 @@
 {% extends 'index.html' %}
 {% block content%}
 <button id="loginButton">Login</button>
-<button id="RegisterButton">Register</button>
+<button id="RegisterButton">Patient Register</button>
+<button id="AdminRegisterButton">Staff Register</button>
 
 <script>
 document.getElementById('loginButton').addEventListener('click', function() {
@@ -10,6 +11,16 @@ document.getElementById('loginButton').addEventListener('click', function() {
     window.location.href = 'login';
     this.style.display = 'none';
 });
+document.getElementById('RegisterButton').addEventListener('click', function() {
+    // Redirect to the patient register page
+    window.location.href = 'SCS/register/'; 
+});
+document.getElementById('AdminRegisterButton').addEventListener('click', function() {
+    // Redirect to the Doctor/nurse registration
+    window.location.href = 'SCS/staff_register/';
+
+});
 </script>
+
 
 {% endblock %}
