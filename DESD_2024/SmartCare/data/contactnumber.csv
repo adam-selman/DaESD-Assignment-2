@@ -6,7 +6,10 @@ mobile,07456789123,not weekends,4
 mobile,07567891234,not between 9-5,5
 mobile,07678912345,anytime,6
 mobile,07789123456,not weekends,7
+<<<<<<< new_templates
 mobile,07757307684,not weekend,8
+=======
+>>>>>>> main
 home,01171234567,not weekends,1
 home,01172345678,not between 9-5,2
 home,01173456789,anytime,3
@@ -14,7 +17,6 @@ home,01174567891,not weekends,4
 home,01175678912,not between 9-5,5
 home,01176789123,anytime,6
 home,01177891234,not weekends,7
-home,01175749802,not weekends,8
 work,02071234567,not weekends,1
 work,02072345678,not between 9-5,2
 work,02073456789,anytime,3
@@ -22,4 +24,3 @@ work,02074567891,not weekends,4
 work,02075678912,not between 9-5,5
 work,02076789123,anytime,6
 work,02077891234,not weekends,7
-work,02074150982,not weekends,8
