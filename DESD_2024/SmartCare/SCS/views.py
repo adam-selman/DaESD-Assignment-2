@@ -6,14 +6,18 @@ from django.shortcuts import render,redirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login , logout
 from django.middleware.csrf import get_token
+
+from django.contrib.auth.decorators import user_passes_test
+
 from .models import DoctorProfile, NurseProfile, UserProfile, User, Timetable, Service, Appointment
 from .forms import UserRegisterForm, DoctorNurseRegistrationForm
 
 from .utility import get_medical_services, check_practitioner_service , APPOINTMENT_TIMES, get_user_profile_by_user_id, parse_times_for_view
 
 logger = logging.getLogger(__name__)
+
 
 def register_doctor_nurse(request):
     if request.method == 'POST':
@@ -50,6 +54,17 @@ def register(request):
         form = UserRegisterForm()
     return render(request, 'register.html', {'form': form})
     
+def is_doctor(user):
+    return user.groups.filter(name='doctor_group').exists()
+
+def is_nurse(user):
+    return user.groups.filter(name='nurse_group').exists()
+
+def is_patient(user):
+    return user.groups.filter(name='patient_group').exists()
+
+def is_admin(user):
+    return user.groups.filter(name='admin_group').exists()
 
 def index(request):
     """
@@ -91,6 +106,7 @@ def Session(request):
     return render(request, 'CheckSession.html',{'csrf_token':csrf_token}) 
 
 def Login(request):
+
     """
     Function to handle user login
 
@@ -105,30 +121,35 @@ def Login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-        user_type = request.POST.get('user_type')
+        
 
         user = authenticate(username=username, password=password)
         if user is not None:
-            if user.userprofile.user_type == user_type:
-                login(request, user)
-                if user_type == 'doctor':
-                    return JsonResponse({'success':True,'url': 'doctor_dashboard'})
-                elif user_type == 'patient':
-                    return JsonResponse({'success':True,'url': 'patient_dashboard'})
-                elif user_type == 'nurse':
-                    return JsonResponse({'success':True,'url': 'nurse_dashboard'})
-                elif user_type == 'admin':
-                    return JsonResponse({'success':True,'url': 'admin_dashboard'})
-            else:
-                return HttpResponse("Unauthorized access", status=401)
+            user_profile = UserProfile.objects.get(user=user)
+            user_type = user_profile.user_type
+            
+            login(request, user)
+        
+            if user_type == 'doctor':
+                return redirect('docDash')
+            elif user_type == 'patient':
+                return redirect('patDash')
+            elif user_type == 'nurse':
+                return redirect('nursDash')
+            elif user_type == 'admin':
+                return redirect('admDash')
+            
+            
         else:
             check = True
             messages.error(request, 'Invalid username or password')
+            
     else:
         check = False
     return render(request, 'login.html',{'csrf_token':csrf_token,'check':check}) 
 
 @login_required(login_url='login')
+@user_passes_test(is_doctor, login_url='login')
 def doc(request):
     """
     View function for the doctor dashboard
@@ -142,6 +163,7 @@ def doc(request):
     return render(request, 'doctor_dashboard.html')
 
 @login_required(login_url='login')
+@user_passes_test(is_patient, login_url='login')
 def patient(request):
     services = get_medical_services()
     context = {"services": services}
@@ -338,6 +360,7 @@ def patient_appointment_booking(request) -> JsonResponse:
     return JsonResponse(data) 
 
 @login_required(login_url='login')
+@user_passes_test(is_admin, login_url='login')
 def admin(request):
     """
     View function for the admin dashboard
@@ -351,6 +374,7 @@ def admin(request):
     return render(request, 'admin_dashboard.html')
 
 @login_required(login_url='login')
+@user_passes_test(is_nurse, login_url='login')
 def nurse(request):
     """
     View function for the nurse dashboard
