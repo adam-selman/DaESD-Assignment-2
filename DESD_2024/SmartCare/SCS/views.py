@@ -46,10 +46,10 @@ def register(request):
         if form.is_valid():
             user = form.save()
             # Create a profile for the new user
-            profile = UserProfile(user=user, user_type=form.cleaned_data['user_type'])
+            profile = UserProfile(user=user, user_type='patient')
             profile.save()
             login(request, user)
-            return redirect('home')
+            return redirect('index.html')
     else:
         form = UserRegisterForm()
     return render(request, 'register.html', {'form': form})

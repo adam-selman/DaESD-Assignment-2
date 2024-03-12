@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 class UserRegisterForm(UserCreationForm):
     email = forms.EmailField(required=True)
     #user_type = forms.ChoiceField(choices=UserProfile.USER_TYPE_CHOICES)
-    user_type = PatientProfile
+    user_type = 'patient'
   
 
     class Meta:
