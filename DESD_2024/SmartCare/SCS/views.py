@@ -49,7 +49,7 @@ def register(request):
             profile = UserProfile(user=user, user_type='patient')
             profile.save()
             login(request, user)
-            return redirect('index.html')
+            return redirect('home')
     else:
         form = UserRegisterForm()
     return render(request, 'register.html', {'form': form})
