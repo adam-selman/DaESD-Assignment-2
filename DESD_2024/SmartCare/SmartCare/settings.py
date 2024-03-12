@@ -61,8 +61,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'SCS',
-    'django.contrib.staticfiles',
-    
+    'django.contrib.staticfiles'
 ]
 
 
@@ -151,6 +150,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+# Add this below line in settings.py
+STATICFILES_DIRS = [
+    BASE_DIR / "SCS/static",
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
