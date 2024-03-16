@@ -84,7 +84,7 @@ def index(request):
     """
     View function for the index page
 
-    Args:
+    Args:  
         request (HttpRequest): Django view request object 
 
     Returns:
@@ -177,7 +177,7 @@ def doc(request):
     return render(request, 'doctor_dashboard.html')
 
 @login_required(login_url='login')
-@user_passes_test(is_patient, login_url='login')
+@custom_user_passes_test(is_patient)
 def patient(request):
     services = get_medical_services()
     context = {"services": services}
@@ -374,7 +374,7 @@ def patient_appointment_booking(request) -> JsonResponse:
     return JsonResponse(data) 
 
 @login_required(login_url='login')
-@user_passes_test(is_admin, login_url='login')
+@custom_user_passes_test(is_admin)
 def admin(request):
     """
     View function for the admin dashboard
@@ -388,7 +388,7 @@ def admin(request):
     return render(request, 'admin_dashboard.html')
 
 @login_required(login_url='login')
-@user_passes_test(is_nurse, login_url='login')
+@custom_user_passes_test(is_nurse)
 def nurse(request):
     """
     View function for the nurse dashboard
