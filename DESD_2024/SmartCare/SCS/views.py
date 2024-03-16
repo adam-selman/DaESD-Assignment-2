@@ -10,6 +10,7 @@ from django.contrib.auth import authenticate, login , logout
 from django.middleware.csrf import get_token
 
 from django.contrib.auth.decorators import user_passes_test
+from django.http import HttpResponseNotFound
 
 from .models import DoctorProfile, NurseProfile, UserProfile, User, Timetable, Service, Appointment
 
@@ -28,6 +29,19 @@ def is_patient(user):
 
 def is_admin(user):
     return user.groups.filter(name='admin_group').exists()
+
+def is_doctor_or_nurse(user):
+    return user.groups.filter(name__in=['doctor_group', 'nurse_group']).exists()
+
+def custom_user_passes_test(test_func):
+    def decorator(view_func):
+        def wrapper(request, *args, **kwargs):
+            if test_func(request.user):
+                return view_func(request, *args, **kwargs)
+            else:
+                return HttpResponseNotFound("404 Error: Page does not exist")
+        return wrapper
+    return decorator
 
 def index(request):
     """
@@ -112,7 +126,7 @@ def Login(request):
     return render(request, 'login.html',{'csrf_token':csrf_token,'check':check}) 
 
 @login_required(login_url='login')
-@user_passes_test(is_doctor, login_url='login')
+@custom_user_passes_test(is_doctor)
 def doc(request):
     """
     View function for the doctor dashboard
