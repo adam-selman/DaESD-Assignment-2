@@ -67,8 +67,8 @@ def is_patient(user):
 def is_admin(user):
     return user.groups.filter(name='admin_group').exists()
 
-def is_doctor_or_nurse(user):
-    return user.groups.filter(name__in=['doctor_group', 'nurse_group']).exists()
+def is_doctor_or_nurse_or_admin(user):
+    return user.groups.filter(name__in=['doctor_group', 'nurse_group','admin_group']).exists()
 
 def custom_user_passes_test(test_func):
     def decorator(view_func):
