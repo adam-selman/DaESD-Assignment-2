@@ -264,7 +264,6 @@ def get_time_slots_by_day_and_practitioner(request) -> JsonResponse:
         
         
         available_times = copy.deepcopy(APPOINTMENT_TIMES)
-        logger.info(f"available_times at start: {available_times}")
 
         # Remove booked times from available times
         for time, duration in booked_times:
@@ -273,11 +272,7 @@ def get_time_slots_by_day_and_practitioner(request) -> JsonResponse:
                 index = available_times.index(time)
                 for i in range(duration):
                     available_times.pop(index + i)
-        logger.info(f"available_times after appointment check: {available_times}")
-
-        logger.info(f"Selected date is today: {booking_date == current_date}")
         if booking_date == current_date:
-            logger.info(f"Removing Times...")
             # removing invalid times
             times_to_remove = []
             for time in available_times:
@@ -289,7 +284,6 @@ def get_time_slots_by_day_and_practitioner(request) -> JsonResponse:
                 available_times.remove(time)
 
         available_times = parse_times_for_view(available_times)
-        logger.info(f"available_times after date check: {available_times}")
     return JsonResponse({'success': 'true', 'timeSlots': available_times})
 
 def patient_appointment_booking(request) -> JsonResponse:
@@ -341,7 +335,9 @@ def patient_appointment_booking(request) -> JsonResponse:
                                                                 duration=service_id)
 
                 new_appointment.save()
-
+                logger.info("New appointment created successfully for patient: " + str(patient.id) + \
+                            " with doctor: " + str(practitioner) + " on date: "  + str(booking_date) + \
+                            " at time: " + str(time) + " for service: " + str(service_id) + " with reason: " + str(reason))
                 data = {'success': 'true'}
             else:
                 data = {'success': 'false', 'error': 'Appointment already exists'}
