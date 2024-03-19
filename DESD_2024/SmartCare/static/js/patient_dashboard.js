@@ -116,22 +116,27 @@ function makePatientAppointmentBooking(form) {
   var formData = new FormData(form);
   var token = getCsrfToken() ;
 
-  if (formData.get('bookingDate') === "") {
+  bookingDate = formData.get('bookingDate')
+  practitioner = formData.get('practitioner')
+  service = formData.get('service')
+  timeSlot = formData.get('timeSlot')
+
+  if (bookingDate === "") {
     alert("Please select a date");
     return;
   }
-
-  else if (formData.get('practitioner') === "") {
+  
+  else if (practitioner === null) {
     alert("Please select a practitioner");
     return;
   }
 
-  else if (formData.get('service') === "") {
+  else if (service === null) {
     alert("Please select a service");
     return;
   }
 
-  else if (formData.get('timeSlot') === "") {
+  else if (timeSlot === null) {
     alert("Please select a time slot");
     return;
   }

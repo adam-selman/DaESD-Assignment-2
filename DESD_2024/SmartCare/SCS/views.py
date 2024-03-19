@@ -319,7 +319,7 @@ def patient_appointment_booking(request) -> JsonResponse:
                                                                 doctor_id=practitioner,
                                                                 patient_id=patient.id,
                                                                 service_id=service_id,
-                                                                duration_id=service.duration)
+                                                                duration_id=service_id)
                 else:
                     new_appointment = Appointment.objects.create(date=booking_date,
                                                                 time=time,
@@ -327,7 +327,7 @@ def patient_appointment_booking(request) -> JsonResponse:
                                                                 doctor_id=practitioner,
                                                                 patient_id=patient.id,
                                                                 service_id=service_id,
-                                                                duration=service.duration)
+                                                                duration=service_id)
 
                 new_appointment.save()
                 logger.info("New appointment created successfully for patient: " + str(patient.id) + \
