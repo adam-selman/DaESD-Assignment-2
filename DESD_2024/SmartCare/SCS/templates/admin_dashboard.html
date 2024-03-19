@@ -2,5 +2,25 @@
 {% block content%}
 {% include 'CheckSession.html' %}
 <p>admin page</p>
-
+<table class="table table-hover">
+    <thead>
+        <tr class="table-info">
+            <th>Patient name</th>
+            <th> Age</th>
+            <th>Known allergies</th>
+            <th>Private billing</th>
+        </tr>
+    </thead>
+    <tbody>
+{% for patient in patients %}
+<tr class="table-dark">
+<td>{{ patient.user_profile }}</td>
+<td>{{ patient.age }}</td>
+<td>{{ patient.allergies }}</td>
+<td>{{ patient.isPrivate }}</td>
+</tr>
+   
+{% endfor %}
+</tbody>
+</table>
 {% endblock %}

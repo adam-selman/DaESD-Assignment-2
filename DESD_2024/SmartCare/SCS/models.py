@@ -90,7 +90,7 @@ class Appointment(models.Model):
     description = models.CharField(max_length=256)
     notes = models.TextField()
     status = models.CharField(max_length=100)
-    patient = models.ForeignKey(UserProfile, on_delete = models.CASCADE, 
+    patient = models.ForeignKey(PatientProfile, on_delete = models.CASCADE, 
                                    related_name = 'patient_appointment')
     doctor = models.ForeignKey(UserProfile, null = True, 
                                         on_delete = models.CASCADE, 
@@ -98,6 +98,8 @@ class Appointment(models.Model):
     nurse = models.ForeignKey(UserProfile, null = True,
                                  on_delete = models.CASCADE,
                                  related_name = 'nurse_appointment')
+    def __str__(self):
+        return self.description
 
 class Invoice(models.Model):
     invoiceID = models.AutoField(primary_key = True)

@@ -12,7 +12,7 @@ from django.middleware.csrf import get_token
 from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponseNotFound
 
-from .models import DoctorProfile, NurseProfile, UserProfile, User, Timetable, Service, Appointment
+from .models import DoctorProfile, NurseProfile, UserProfile, User, Timetable, Service, Appointment, PatientProfile
 from .forms import UserRegisterForm, DoctorNurseRegistrationForm
 
 from .utility import get_medical_services, check_practitioner_service , APPOINTMENT_TIMES, get_user_profile_by_user_id, parse_times_for_view
@@ -400,6 +400,49 @@ def nurse(request):
         HttpResponse: Page response containing the nurse dashboard
     """
     return render(request, 'nurse_dashboard.html')
+
+@login_required(login_url='login')
+@custom_user_passes_test(is_doctor_or_nurse_or_admin)
+def display_patients(request):
+    if is_doctor(request.user):
+        # Get the doctor's ID
+        doctor_id = request.user.id
+        # Retrieve the list of patients assigned to the doctor
+        patients = Appointment.objects.filter(doctor_id=doctor_id).values('patient')
+        # Retrieve the patient details
+        patient_details = PatientProfile.objects.filter(user_profile__in=patients)
+        # Render the doctor dashboard template
+        return render(request, 'doctor_dashboard.html', {'patients': patient_details})
+    elif is_nurse(request.user):
+        # Get the nurse's ID
+        nurse_id = request.user.id
+        # Retrieve the list of patients assigned to the nurse
+        patients = Appointment.objects.filter(nurse_id=nurse_id).values('patient')
+        # Retrieve the patient details
+        patient_details = PatientProfile.objects.filter(user_profile__in=patients)
+        # Render the nurse dashboard template
+        
+        appointment_details = []
+        for patient in patient_details:
+            appointments = Appointment.objects.filter(patient=patient)
+            appointment_details.append(appointments)
+        return render(request, 'nurse_dashboard.html', {'patients': patient_details,'appointments':appointment_details})
+    elif is_admin(request.user):
+        patient_details = PatientProfile.objects.all()
+        return render(request,'admin_dashboard.html',{'patients':patient_details})
+
+    else:
+        return HttpResponseNotFound("404 Error: Page not found")
+    
+
+
+
+
+
+
+
+
+
 
 
 def Logout(request):
