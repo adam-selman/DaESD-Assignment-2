@@ -43,7 +43,7 @@ def get_invoice_information_by_user_id(user_id: int) -> list:
         service = get_service_by_appointment_id(invoice.appointment_id)
         service_name = service.service
         amount = invoice.amount
-        issue_date = invoice.date.strftime("%d-%m-%Y")
+        issue_date = invoice.dateIssued.strftime("%d-%m-%Y")
         invoice_info.append([service_name, amount, issue_date])
     return invoice_info
 
