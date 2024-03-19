@@ -342,9 +342,6 @@ def patient_appointment_booking(request) -> JsonResponse:
 
                 new_appointment.save()
 
-                #? once appointment created calculate the cost and create an invoice?
-                appointment_cost = calculate_appointment_cost(new_appointment.appointmentID)
-                logger.info(f"Appointment cost: £{appointment_cost}")
                 data = {'success': 'true'}
             else:
                 data = {'success': 'false', 'error': 'Appointment already exists'}
