@@ -13,30 +13,37 @@
       <form id ="patient-booking-form" method="post">
         {% csrf_token %}
         <label for="service">Service: </label>
-        <select id="service" name="service" required>
-        <option selected disabled hidden>Select a service</option>
-          {% for service_id, service_name, service_duration in services %} 
-            <option value="{{service_id}}">{{ service_name }}</li> 
-          {% endfor %} 
-        </select>
+        <div class="form-group">
+          <select id="service" name="service" class="form-control" required>
+            <option selected disabled hidden>Select a service</option>
+            {% for service_id, service_name, service_duration in services %} 
+              <option value="{{service_id}}">{{ service_name }}</li> 
+            {% endfor %} 
+          </select>
+        </div>
         <br>
-    
-        <label for="bookingDate" id="bookingDateLabel">Date: </label>
-        <input id="bookingDate" type="date" name="bookingDate" disabled>
+        <div class="form_group">
+          <label for="bookingDate" id="bookingDateLabel">Date: </label>
+          <input id="bookingDate" type="date" name="bookingDate" class="form-control" disabled>
+        </div>
         <br>
-        <label for="practitioner" id="practitionerLabel"  >Doctor/Nurse: </label>
-        <select id="practitioner" name="practitioner"  required disabled>
-          <option selected disabled hidden>Select a Practitioner</option>
-        </select>
+        <div class="form_group">
+          <label for="practitioner" id="practitionerLabel"  >Doctor/Nurse: </label>
+          <select id="practitioner" name="practitioner" class="form-control" required disabled>
+            <option selected disabled hidden>Select a Practitioner</option>
+          </select>
+        </div>  
         <br>
-        <label for="timeSlot"  id="timeSlotLabel">Time Slot: </label>
-        <select id="timeSlot" name="timeSlot" required disabled>
-          <option selected disabled hidden>Select a Time Slot</option>
-        </select>
+        <div class="form_group">
+          <label for="timeSlot"  id="timeSlotLabel">Time Slot: </label>
+          <select id="timeSlot" name="timeSlot" class="form-control" required disabled>
+            <option selected disabled hidden>Select a Time Slot</option>
+          </select>
+        </div>  
         <br>
-        <textarea name="reason" id="reason" placeholder="Reason for appointment"></textarea>
+        <textarea name="reason" id="reason" class="form-control" rows="3" placeholder="Reason for appointment"></textarea>
         <br>
-        <button>Book Appointment</button>
+        <button class="btn btn-primary">Book Appointment</button>
     </form>
     </div>
   </div>
