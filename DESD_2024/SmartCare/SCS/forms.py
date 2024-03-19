@@ -3,15 +3,16 @@ from .models import Appointment, UserProfile, PatientProfile
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
+#form now takes age as required by table to not be null 
 class UserRegisterForm(UserCreationForm):
     email = forms.EmailField(required=True)
     #user_type = forms.ChoiceField(choices=UserProfile.USER_TYPE_CHOICES)
-    user_type = PatientProfile
+    age = forms.IntegerField(required=True)
+    user_type = 'patient' #Tim's fix :P
   
-
     class Meta:
         model = User
-        fields = ["username", "email", "password1", "password2"]
+        fields = ["username", "email", "password1", "password2", "age"]
 
 class DoctorNurseRegistrationForm(UserCreationForm):
     user_type = forms.ChoiceField(choices=[('doctor', 'Doctor'), ('nurse', 'Nurse')])

@@ -4,7 +4,7 @@ from . import views
 
 urlpatterns = [
    path('', views.Auth, name='auth'),
-   path('login', views.Login, name='login'),
+   path('login/', views.Login, name='login'),  #fixes for login path includes the needed /
    path('nurse_dashboard', views.nurse, name='nursDash'),
    path('doctor_dashboard', views.doc, name='docDash'),
    path('patient_dashboard', views.patient, name='patDash'),
@@ -17,4 +17,5 @@ urlpatterns = [
    path('Session_status',views.Session),
    path('register/', views.register, name='register'),
    path('staff_register/', views.register_doctor_nurse, name='staff_register'),
+   path('Auth/', views.Auth, name='Auth')
 ]

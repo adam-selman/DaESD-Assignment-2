@@ -11,7 +11,7 @@ from django.middleware.csrf import get_token
 
 from django.contrib.auth.decorators import user_passes_test
 
-from .models import DoctorProfile, NurseProfile, UserProfile, User, Timetable, Service, Appointment
+from .models import DoctorProfile, NurseProfile, UserProfile, User, Timetable, Service, Appointment, PatientProfile
 from .forms import UserRegisterForm, DoctorNurseRegistrationForm
 
 from .utility import get_medical_services, check_practitioner_service , APPOINTMENT_TIMES, get_user_profile_by_user_id, parse_times_for_view
@@ -40,16 +40,37 @@ def register_doctor_nurse(request):
         return render(request, 'staff_register.html', {'form': form})
             
 
-def register(request):
+'''def register(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
         if form.is_valid():
             user = form.save()
             # Create a profile for the new user
-            profile = UserProfile(user=user, user_type=form.cleaned_data['user_type'])
+            profile = PatientProfile()
+            profile.user = user
+            profile.user_type = form.cleaned_data.get('user_type_key')
             profile.save()
             login(request, user)
-            return redirect('home')
+            return redirect('Auth.html')
+    else:
+        form = UserRegisterForm()
+    return render(request, 'register.html', {'form': form})'''
+#fixs for the register view which takes age and first creates a user profile 
+def register(request):
+    if request.method == 'POST':
+        form = UserRegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            age = form.cleaned_data.get('age')
+
+            user_profile = UserProfile(user=user)
+            user_profile.save()
+
+            patient_profile = PatientProfile(user_profile=user_profile, age = age)
+            patient_profile.save()
+
+            login(request, user)
+            return redirect('/login') 
     else:
         form = UserRegisterForm()
     return render(request, 'register.html', {'form': form})
