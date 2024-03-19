@@ -11,49 +11,12 @@ from django.middleware.csrf import get_token
 
 from django.contrib.auth.decorators import user_passes_test
 
-from .models import DoctorProfile, NurseProfile, UserProfile, User, Timetable, Service, Appointment, Prescription
-from .forms import UserRegisterForm, DoctorNurseRegistrationForm
+from .models import DoctorProfile, NurseProfile, UserProfile, User, Timetable, Service, Appointment
 
 from .utility import get_medical_services, check_practitioner_service , APPOINTMENT_TIMES, get_user_profile_by_user_id, parse_times_for_view
 
 logger = logging.getLogger(__name__)
 
-
-def register_doctor_nurse(request):
-    if request.method == 'POST':
-        form = DoctorNurseRegistrationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            user_type = form.cleaned.data.get('user_type')
-            UserProfile.objects.create(user=user, user_type=user_type)
-            if user_type == 'doctor':
-                DoctorProfile.objects.create(
-                    user_profile=user.userprofile,
-                    specialization=form.cleaned_data['specialization'],
-                    isPartTime=form.cleaned_data['isPartTime']
-                )
-            elif user_type == 'nurse':
-                NurseProfile.objects.create(user_profile=user.userprofile)
-            return redirect('home')
-        else:
-            form = DoctorNurseRegistrationForm()
-        return render(request, 'staff_register.html', {'form': form})
-            
-
-def register(request):
-    if request.method == 'POST':
-        form = UserRegisterForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            # Create a profile for the new user
-            profile = UserProfile(user=user, user_type='patient')
-            profile.save()
-            login(request, user)
-            return redirect('home')
-    else:
-        form = UserRegisterForm()
-    return render(request, 'register.html', {'form': form})
-    
 def is_doctor(user):
     return user.groups.filter(name='doctor_group').exists()
 
@@ -415,76 +378,5 @@ def check_session(request):
         return JsonResponse({'status': 'active'}, status=200)
     else:
         return JsonResponse({'status': 'expired'}, status=401)
-    
-def is_doctor_or_nurse(user):
-    '''
-    Function to check if the user is a doctor or a nurse
-    
-    Args:
-        user (User): Django user object
-        
-    Return:
-        bool: True if the user is a doctor or a nurse, False otherwise
-    '''
-    return user.groups.filter(name__in=['doctor_group', 'nurse_group']).exists()
 
-@login_required
-@user_passes_test(is_doctor_or_nurse)
-def appointments_and_prescriptions(request):
-    '''
-    Function to provide a list of all appointments and prescriptions for the logged in doctor or nurse
-    
-    Args:
-        request (HttpRequest): Django view request object
-        
-        Return: 
-            HttpResponse: Page response containing the list of appointments and prescriptions
-    '''
-    user_profile = request.user.userprofile
-    practitioner_id = user_profile.id
-
-    if user_profile.user_type == 'doctor':
-        appointments = Appointment.objects.filter(doctor_id=practitioner_id)
-    elif user_profile.user_type == 'nurse':
-        appointments = Appointment.objects.filter(nurse_id=practitioner_id)
-    else:
-        return JsonResponse({'error': 'page not found'}, status=404)
-    
-    prescriptions = Prescription.objects.filter(appointment__in=appointments)
-    context = {
-        'appointments': appointments,
-        'prescriptions': prescriptions
-    }
-
-    return {
-        'appointments': list(appointments),
-        'prescriptions': list(prescriptions)
-    }
-
-@login_required
-@user_passes_test(is_doctor_or_nurse)
-def prescription_pending_approval(request):
-    '''
-    Function to provide a list of all prescriptions pending approval from the logged in doctor or nurse
-    
-    Args:
-        request (HttpRequest): Django view request object
-        
-        Return: 
-            HttpResponse: Page response containing the list of appointments and prescriptions
-    '''
-    user_profile = request.user.userprofile
-    practitioner_id = user_profile.id
-
-    if user_profile.user_type == 'doctor':
-        pending_prescriptions = Prescription.objects.filter(doctor_id=practitioner_id, repeatable = True, approved=False)
-    elif user_profile.user_type == 'nurse':
-        pending_prescriptions = Prescription.objects.filter(nurse_id = practitioner_id, repeatable=True, approved=False)
-    else:
-        return JsonResponse({'error': 'page not found'}, status=404)
-
-    context = {
-        'pending_prescriptions': pending_prescriptions
-    }
-    return {'pending_prescriptions': list(pending_prescriptions)}
 

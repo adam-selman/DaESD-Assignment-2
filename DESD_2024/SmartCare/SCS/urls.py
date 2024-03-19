@@ -15,6 +15,4 @@ urlpatterns = [
    path('logout',views.Logout),
    path('check_status',views.check_session),
    path('Session_status',views.Session),
-   path('register/', views.register, name='register'),
-   path('staff_register/', views.register_doctor_nurse, name='staff_register'),
 ]

@@ -3,15 +3,10 @@ from django.contrib.auth.models import User
 
 
 class UserProfile(models.Model):
-    USER_TYPE_CHOICES = [
-        ('doctor', 'Doctor'),
-        ('patient', 'Patient'),
-        ('nurse', 'Nurse'),
-        ('admin', 'Admin'),
-    ]
-
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES)
+    user = models.OneToOneField(User, on_delete = models.CASCADE)
+    user_type = models.CharField(max_length = 10, choices = [('doctor', 'Doctor'),
+                                    ('patient', 'Patient'), ('nurse', 'Nurse'),
+                                    ('admin', 'Admin')])
     
     def __str__(self):
         return self.user.username
