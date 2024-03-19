@@ -4,3 +4,7 @@
     box-sizing: border-box;
 }
 
+/* Custom CSS to make table text white */
+.table_white_text {
+    color: white;
+  }
