@@ -5,7 +5,8 @@ This file contains utility functions that are used in the SmartCare System
 from datetime import datetime
 import logging 
 
-from .models import Service, DoctorServiceRate, NurseServiceRate, User, NurseProfile, UserProfile
+from .db_utility import get_service_by_appointment_id
+from .models import Service, Invoice, DoctorServiceRate, NurseServiceRate, User, NurseProfile, UserProfile, Appointment
 
 logger = logging.getLogger(__name__)
 
@@ -25,6 +26,26 @@ def get_medical_services() -> list:
         service_options.append([service.serviceID, service.service, service.duration])    
 
     return service_options
+
+def get_invoice_information_by_user_id(user_id: int) -> list:
+    """
+    Returns the invoices for a user
+
+    Args:
+        user_id (int): The user id
+
+    Returns:
+        list: The invoices for the user
+    """
+    invoices = Invoice.objects.filter(patient_id=user_id).all()
+    invoice_info = []
+    for invoice in invoices:
+        service = get_service_by_appointment_id(invoice.appointment_id)
+        service_name = service.service
+        amount = invoice.amount
+        issue_date = invoice.date.strftime("%d-%m-%Y")
+        invoice_info.append([service_name, amount, issue_date])
+    return invoice_info
 
 def get_user_profile_by_user_id(user_id: int) -> int:
     """
@@ -110,3 +131,37 @@ APPOINTMENT_TIMES = convert_to_datetimes(["09:00:00", "09:15:00", "09:30:00", "0
                                "14:00:00", "14:15:00", "14:30:00", "14:45:00", "15:00:00", \
                                "15:15:00", "15:30:00", "15:45:00", "16:00:00", "16:15:00", \
                                "16:30:00", "16:45:00"])
+
+def calculate_appointment_cost(appointment_id: int) -> float:
+    """
+    Calculates the cost of an appointment
+
+    Args:
+        service_id (int): The id of the service
+
+    Returns:
+        float: The cost of the appointment
+    """
+    appointment = Appointment.objects.get(appointmentID=appointment_id)
+    service_id = appointment.service_id
+    service = Service.objects.get(serviceID=service_id)
+
+    doctor = False
+    nurse = False
+
+    if appointment.doctor_id is not None:
+        doctor = True
+    elif appointment.nurse_id is not None:
+        nurse = True
+    else:
+        raise ValueError("Appointment must have a doctor or a nurse")
+    
+    if doctor:
+        doctor_service_rate_object = DoctorServiceRate.objects.get(service=service_id) 
+        service_rate = doctor_service_rate_object.rate * service.duration
+    else:
+        nurse_service_rate_object = NurseServiceRate.objects.get(service=service_id)
+        service_rate = nurse_service_rate_object.rate * service.duration
+        
+    
+    return service_rate

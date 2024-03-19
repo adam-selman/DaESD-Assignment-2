@@ -11,9 +11,12 @@ from django.middleware.csrf import get_token
 
 from django.contrib.auth.decorators import user_passes_test
 
-from .models import DoctorProfile, NurseProfile, UserProfile, User, Timetable, Service, Appointment
+from .models import DoctorProfile, NurseProfile, UserProfile, User, Timetable, Service, Appointment, Invoice
 
-from .utility import get_medical_services, check_practitioner_service , APPOINTMENT_TIMES, get_user_profile_by_user_id, parse_times_for_view
+
+from .db_utility import get_service_by_appointment_id
+from .utility import get_medical_services, check_practitioner_service , APPOINTMENT_TIMES, get_user_profile_by_user_id, parse_times_for_view, \
+                    calculate_appointment_cost, get_invoice_information_by_user_id
 
 logger = logging.getLogger(__name__)
 
@@ -128,8 +131,10 @@ def doc(request):
 @login_required(login_url='login')
 @user_passes_test(is_patient, login_url='login')
 def patient(request):
+    invoices = get_invoice_information_by_user_id(request.user.id)
+    logger.info(f"Invoices: {invoices}")
     services = get_medical_services()
-    context = {"services": services}
+    context = {"services": services, "invoices": invoices}
     return render(request, 'patient_dashboard.html', context)
 
 @login_required(login_url='login')
@@ -324,18 +329,22 @@ def patient_appointment_booking(request) -> JsonResponse:
                                                                 description=reason,
                                                                 doctor_id=practitioner,
                                                                 patient_id=patient.id,
-                                                                service_id=service_id,
-                                                                duration_id=service.duration)
+                                                                service_id=service_id, #! change this?
+                                                                duration_id=service_id)
                 else:
                     new_appointment = Appointment.objects.create(date=booking_date,
                                                                 time=time,
                                                                 description=reason,
                                                                 doctor_id=practitioner,
                                                                 patient_id=patient.id,
-                                                                service_id=service_id,
-                                                                duration=service.duration)
+                                                                service_id=service_id, 
+                                                                duration=service_id)
 
                 new_appointment.save()
+
+                #? once appointment created calculate the cost and create an invoice?
+                appointment_cost = calculate_appointment_cost(new_appointment.appointmentID)
+                logger.info(f"Appointment cost: £{appointment_cost}")
                 data = {'success': 'true'}
             else:
                 data = {'success': 'false', 'error': 'Appointment already exists'}
