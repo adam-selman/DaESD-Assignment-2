@@ -294,17 +294,19 @@ def generate_invoice(request):
         HttpResponse: Page response containing the invoice
     """
     csrf_token = get_token(request)
-    if request.method == 'POST':
-        invoice_id = request.POST.get('invoiceID')
+    if request.method == 'GET':
+        logger.info("Generating invoice...")
+        invoice_id = request.GET.get('invoiceID')
+        logger.info(f"Invoice ID: {invoice_id}")
         file_path = generate_invoice_file(invoice_id)
         file_name = file_path.split('/')[-1]
         # Serve the temporary file for download
         with open(file_path, 'rb') as file:
-            response = FileResponse(file)
-            response['Content-Disposition'] = f'attachment; filename="{file_name}"'
+            response = HttpResponse(file.read(), content_type="application/vnd.ms-excel")
+            response['Content-Disposition'] = 'inline; filename=' + file_name
 
-            # Clean up temporary file
-            if os.path.exists(file_path):
-                os.remove(file_path)
+            # # Clean up temporary file
+            # if os.path.exists(file_path):
+            #     os.remove(file_path)
 
-        return response
+            return response

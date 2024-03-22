@@ -119,7 +119,7 @@ def get_invoice_information_by_user_id(user_id: int) -> list:
         service_name = service.service.title()
         amount = invoice.amount
         issue_date = invoice.dateIssued.strftime("%d-%m-%Y")
-        invoice_info.append([service_name, amount, issue_date])
+        invoice_info.append([service_name, amount, issue_date, invoice.invoiceID])
     return invoice_info
 
 def get_user_profile_by_user_id(user_id: int) -> int:
@@ -300,3 +300,4 @@ def make_patient_appointment_booking(patient, booking_date, service_id, practiti
             data = {'success': 'false', 'error': 'Appointment already exists'}
 
     return data
+    

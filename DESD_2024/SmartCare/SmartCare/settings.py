@@ -157,7 +157,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Define additional directories to find static files
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
     os.path.join(BASE_DIR, 'SCS', 'static'),
 ]
 

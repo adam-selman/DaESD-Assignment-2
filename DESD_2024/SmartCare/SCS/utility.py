@@ -99,12 +99,13 @@ def get_service_rate_by_appointment(appointment: Appointment) -> float:
         doctor = True
     elif appointment.nurse_id is not None:
         nurse = True
-    
+    else:
+        raise ValueError("Appointment must have a doctor or a nurse")
     if doctor:
-        doctor_service_rate_object = DoctorServiceRate.objects.get(service=service_id) 
+        doctor_service_rate_object = DoctorServiceRate.objects.get(service_id=service_id) 
         service_rate = doctor_service_rate_object.rate
     else:
-        nurse_service_rate_object = NurseServiceRate.objects.get(service=service_id)
+        nurse_service_rate_object = NurseServiceRate.objects.get(service_id=service_id)
         service_rate = nurse_service_rate_object.rate
         
     return service_rate
@@ -157,20 +158,20 @@ def create_invoice_file(invoice_id: int) -> str:
         str: The path to the invoice file
     """
     invoice = Invoice.objects.get(invoiceID=invoice_id)
-    invoice_creation_date = invoice.date
+    invoice_creation_date = invoice.dateIssued
     duration = invoice.appointment.duration_id
-    amount = invoice.amount
-    tax_amount = amount * 0.2
+    amount = round(float(invoice.amount),2 )
+    tax_amount = round((amount * 0.2), 2)
     current_date = datetime.now()
-    appointment = Appointment.objects.get(appointmentID=invoice.appointment).first()
-    service = Service.objects.get(serviceID=appointment.service).first()
+    appointment = Appointment.objects.get(appointmentID=invoice.appointment.appointmentID)
+    service = Service.objects.get(serviceID=appointment.service.serviceID)
     service_name = service.service.title()
     service_rate = get_service_rate_by_appointment(appointment)
     patient = invoice.patient
-    patient_user_profile = UserProfile.objects.get(user_id=patient.user_id).first()
-    patient_address = Address.objects.get(user_id=patient_user_profile.user_id).first()
+    patient_user_profile = UserProfile.objects.get(user_id=patient.user_id)
+    patient_address = Address.objects.get(user_id=patient_user_profile.user_id)
     address_string = str(patient_address)
-    user = User.objects.get(user_id=patient.user_id)
+    user = User.objects.get(id=patient.user_id)
 
     # getting files ready
     static_dir = settings.STATIC_ROOT
@@ -197,7 +198,7 @@ def create_invoice_file(invoice_id: int) -> str:
         'service_name': service_name,
         'duration': duration,
         'service_rate': service_rate,
-        'billing_party': invoice.billing_party,
+        'billing_party': invoice.billingParty,
         'total_amount': amount,
         'tax_amount': tax_amount,
         'pre_tax_amount': amount - tax_amount,
