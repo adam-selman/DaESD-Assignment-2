@@ -6,7 +6,7 @@ import logging
 from datetime import datetime
 from django.shortcuts import render,redirect, HttpResponse
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse, FileResponse
+from django.http import JsonResponse, FileResponse, Http404
 from django.contrib import messages
 from django.contrib.auth import authenticate, login , logout
 from django.middleware.csrf import get_token
@@ -282,7 +282,8 @@ def check_session(request):
     else:
         return JsonResponse({'status': 'expired'}, status=401)
 
-
+#! ADD SECURITY TO THIS
+@login_required(login_url='login')
 def generate_invoice(request):
     """
     Function to generate an invoice
@@ -295,8 +296,15 @@ def generate_invoice(request):
     """
     csrf_token = get_token(request)
     if request.method == 'GET':
+        user_id = request.user.id
         logger.info("Generating invoice...")
         invoice_id = request.GET.get('invoiceID')
+
+        # Check if the invoice belongs to the user
+        invoice = Invoice.objects.filter(invoiceID=invoice_id).first()
+        if invoice.patient_id != user_id:
+            raise Http404("Resource not found")
+        
         logger.info(f"Invoice ID: {invoice_id}")
         file_path = generate_invoice_file(invoice_id)
         file_name = file_path.split('/')[-1]
@@ -305,6 +313,7 @@ def generate_invoice(request):
             response = HttpResponse(file.read(), content_type="application/vnd.ms-excel")
             response['Content-Disposition'] = 'inline; filename=' + file_name
 
+            #! Find a way to delete the file after it has been served
             # # Clean up temporary file
             # if os.path.exists(file_path):
             #     os.remove(file_path)
