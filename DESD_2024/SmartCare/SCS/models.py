@@ -26,7 +26,7 @@ class NurseProfile(models.Model):
 
     def __str__(self):
         return self.user_profile.user.username
-    
+
 class PatientProfile(models.Model):
     user_profile = models.OneToOneField(UserProfile, on_delete = models.CASCADE, 
                                         related_name = 'patient_user')
@@ -67,6 +67,12 @@ class Address(models.Model):
     description = models.CharField(max_length = 100)
     user = models.ForeignKey(UserProfile, on_delete = models.CASCADE, 
                              related_name = 'addresses')
+    
+    def __str__(self):
+        if self.buildingName:
+            return f"{self.number} {self.buildingName}, {self.streetName}, {self.city}, {self.county}, {self.postcode}, {self.country}"
+        else:
+            return f"{self.number} {self.streetName}, {self.city}, {self.county}, {self.postcode}, {self.country}"
 
 class Service(models.Model):
     serviceID = models.AutoField(primary_key = True)
