@@ -1,18 +1,18 @@
-import os
-import sys
+
 import csv
 import django
-from django.db import models
-from django.utils import timezone
 from datetime import datetime
-
-from django.contrib.auth.models import Group, User
+import os
+import sys
 
 projectDirectory = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(projectDirectory)
-
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'SmartCare.settings')
 django.setup()
+
+from django.db import models
+from django.utils import timezone
+from django.contrib.auth.models import Group, User
 
 from SCS.models import User, UserProfile, DoctorProfile, NurseProfile,\
       PatientProfile, AdminProfile, ContactNumber, Address, Service,\
@@ -461,6 +461,7 @@ def populate_timetables(csvFileName):
 
 # Create groups
 def create_groups():
+    print("Creating groups...")
     group_names = ['doctor_group', 'nurse_group', 'patient_group', 'admin_group']
     groups = [Group.objects.get_or_create(name=name)[0] for name in group_names]
 
