@@ -63,12 +63,18 @@
             </tr>
           </thead>
           <tbody>
-            {% for service_name, amount, issue_date, invoice_id in invoices %}
+            {% for service_name, amount, issue_date, invoice_id, status in invoices %}
               <tr>
                 <td>{{service_name}}</td>
                 <td>£{{amount}}</td>
                 <td>{{issue_date}}</td>
-                <td><a href="generate_invoice?invoiceID={{invoice_id}}">Download Invoice</a></td>
+                <td>
+                  {% if status %}
+                  Invoice Paid
+                  {% else %}
+                  <a href="generate_invoice?invoiceID={{invoice_id}}">Download Invoice</a></td>
+
+                  {% endif %}
               </tr>
             {% endfor %}
 
