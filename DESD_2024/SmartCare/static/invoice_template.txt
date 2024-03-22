@@ -1,0 +1,16 @@
+SmartCare Invoice
+------------------------------
+Date: {{invoice_creation_date}}
+Invoice Number: {{invoice_id}}
+Customer Name: {{patient_name}}
+Customer Address: {{patient_address}}
+------------------------------
+Description        Appointment Duration       Service Rate (Per 15 Minutes)   Total
+------------------------------
+{{service_name}}        {{duration}}           {{service_rate}}                {{total_amount}}
+------------------------------
+Subtotal: {{amount}}
+Tax (20%): {{tax_amount}}
+Billable to {{billable_party}}
+------------------------------
+Total: {{total_amount}}

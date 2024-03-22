@@ -16,6 +16,7 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+INVOICE_TEMPLATE_FILENAME = "invoice_template.txt"
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -152,7 +153,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # Define the directory where collected static files will be stored
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Define additional directories to find static files
 STATICFILES_DIRS = [
@@ -165,6 +166,8 @@ STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 ]
+
+TEMP_FILE_DIRECTORY = os.path.join(STATIC_ROOT, 'temp')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

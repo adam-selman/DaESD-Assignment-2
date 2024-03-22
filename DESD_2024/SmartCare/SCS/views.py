@@ -1,10 +1,12 @@
+
+import os
 import copy
 import json
 import logging
 from datetime import datetime
 from django.shortcuts import render,redirect, HttpResponse
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
+from django.http import JsonResponse, FileResponse
 from django.contrib import messages
 from django.contrib.auth import authenticate, login , logout
 from django.middleware.csrf import get_token
@@ -17,7 +19,7 @@ from .models import DoctorProfile, NurseProfile, UserProfile, User, Timetable, S
 from .db_utility import get_service_by_appointment_id, check_practitioner_service, get_invoice_information_by_user_id, \
                     get_medical_services, get_user_profile_by_user_id, get_practitioners_by_day_and_service,  \
                          make_patient_appointment_booking, get_time_slots_by_day_and_practitioner
-from .utility import APPOINTMENT_TIMES, parse_times_for_view, calculate_appointment_cost
+from .utility import APPOINTMENT_TIMES, parse_times_for_view, calculate_appointment_cost, generate_invoice_file
 
 logger = logging.getLogger(__name__)
 
@@ -281,3 +283,28 @@ def check_session(request):
         return JsonResponse({'status': 'expired'}, status=401)
 
 
+def generate_invoice(request):
+    """
+    Function to generate an invoice
+
+    Args:
+        request (HttpRequest): Django view request object
+
+    Returns:
+        HttpResponse: Page response containing the invoice
+    """
+    csrf_token = get_token(request)
+    if request.method == 'POST':
+        invoice_id = request.POST.get('invoiceID')
+        file_path = generate_invoice_file(invoice_id)
+        file_name = file_path.split('/')[-1]
+        # Serve the temporary file for download
+        with open(file_path, 'rb') as file:
+            response = FileResponse(file)
+            response['Content-Disposition'] = f'attachment; filename="{file_name}"'
+
+            # Clean up temporary file
+            if os.path.exists(file_path):
+                os.remove(file_path)
+
+        return response
