@@ -35,7 +35,7 @@
     var currentHour = currentDate.getHours();
     var currentMinute = currentDate.getMinutes();
 
-    // if current time is after 5pm, set min date to tomorrow
+    // if current time is after 4:45pm, set min date to tomorrow
     if ((currentHour >= 16 && currentMinute > 44) || currentHour > 17) {
       tomorrow = new Date(currentDate);
       tomorrow.setDate(currentDate.getDate() + 1);
