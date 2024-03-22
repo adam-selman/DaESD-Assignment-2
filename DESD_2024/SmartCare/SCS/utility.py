@@ -5,92 +5,35 @@ This file contains utility functions that are used in the SmartCare System
 from datetime import datetime
 import logging 
 
-from .db_utility import get_service_by_appointment_id
 from .models import Service, Invoice, DoctorServiceRate, NurseServiceRate, User, NurseProfile, UserProfile, Appointment
 
 logger = logging.getLogger(__name__)
 
-def get_medical_services() -> list:
+class BILLABLE_PARTIES:
     """
-    Returns a list of available services
-
-    Returns:
-        list: Returns a list of services to pass to a view as context
+    Enum for the billing parties
     """
+    NHS = 'NHS',
+    INSURANCE = 'Insurance'
+    PRIVATE = 'Private'
 
-    service_options = []
-
-    services = Service.objects.all()
-
-    for service in services:
-        service_options.append([service.serviceID, service.service, service.duration])    
-
-    return service_options
-
-def get_invoice_information_by_user_id(user_id: int) -> list:
-    """
-    Returns the invoices for a user
-
-    Args:
-        user_id (int): The user id
-
-    Returns:
-        list: The invoices for the user
-    """
-    invoices = Invoice.objects.filter(patient_id=user_id).all()
-    invoice_info = []
-    for invoice in invoices:
-        service = get_service_by_appointment_id(invoice.appointment_id)
-        service_name = service.service
-        amount = invoice.amount
-        issue_date = invoice.dateIssued.strftime("%d-%m-%Y")
-        invoice_info.append([service_name, amount, issue_date])
-    return invoice_info
-
-def get_user_profile_by_user_id(user_id: int) -> int:
-    """
-    Returns the user profile 
-    Args:
-        user_id (int): The user id 
-
-    Returns:
-        UserProfile: The user profile of the user
-    """
-    user_profile = UserProfile.objects.get(user_id=user_id)
-    return user_profile
-
-
-def check_practitioner_service(service_id: int, doctor=False, nurse=False) -> bool:
-    """
-    Checks if a practitioner provides a given service
-
-    Args:
-        practitioner (_type_): _description_
-        service (_type_): _description_
-
-    Returns:
-        bool: Returns True if the practitioner provides the service, False otherwise
-    """
-    can_perform = False
-    if doctor is False and nurse is False:
-        raise ValueError("Doctor and nurse cannot both be False")
+    @property
+    def valid_choices(self):
+        return [self.NHS, self.INSURANCE, self.PRIVATE]
     
-    if doctor:
-        service = DoctorServiceRate.objects.filter(service=service_id).all()
-        if len(service) > 0:
-            can_perform = True
-        else:
-            can_perform = False
+    def validate(self, party: str) -> bool:
+        """
+        Validates the billing party
 
-    if nurse:
-        service = NurseServiceRate.objects.filter(service=service_id).all()
-        if len(service) > 0:
-            can_perform = True
-        else:
-            can_perform = False
+        Args:
+            party (str): The given billing party string to validate
 
-    return can_perform
-
+        Returns:
+            bool: Whether the billing party is valid
+        """
+        if party not in self.valid_choices:
+            return False
+        return True
 
 def parse_times_for_view(times: list) -> list:
     """
@@ -163,5 +106,4 @@ def calculate_appointment_cost(appointment_id: int) -> float:
         nurse_service_rate_object = NurseServiceRate.objects.get(service=service_id)
         service_rate = nurse_service_rate_object.rate * service.duration
         
-    
     return service_rate

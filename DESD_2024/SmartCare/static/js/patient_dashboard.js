@@ -58,7 +58,7 @@ function getPractitionersByDayAndService(service, bookingDate) {
   formData.append("bookingDate", bookingDate.value);
   formData.append("service", service.value);
   var token = getCsrfToken();
-  fetch('get_practitioners_by_day_and_service', {
+  fetch('retrieve_practitioners_by_day_and_service', {
     method: 'POST',
     headers: {
             'X-CSRFToken': token
@@ -88,7 +88,7 @@ function getTimeSlotsByDayAndPractitioner(bookingDate, practitioner) {
   formData.append("bookingDate", bookingDate.value);
   formData.append("practitioner", practitioner.value);
   var token = getCsrfToken();
-  fetch('get_time_slots_by_day_and_practitioner', {
+  fetch('retrieve_time_slots_by_day_and_practitioner', {
     method: 'POST',
     headers: {
             'X-CSRFToken': token

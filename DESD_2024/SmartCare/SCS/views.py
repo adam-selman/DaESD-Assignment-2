@@ -14,9 +14,10 @@ from django.contrib.auth.decorators import user_passes_test
 from .models import DoctorProfile, NurseProfile, UserProfile, User, Timetable, Service, Appointment, Invoice
 
 
-from .db_utility import get_service_by_appointment_id
-from .utility import get_medical_services, check_practitioner_service , APPOINTMENT_TIMES, get_user_profile_by_user_id, parse_times_for_view, \
-                    calculate_appointment_cost, get_invoice_information_by_user_id
+from .db_utility import get_service_by_appointment_id, check_practitioner_service, get_invoice_information_by_user_id, \
+                    get_medical_services, get_user_profile_by_user_id, get_practitioners_by_day_and_service,  \
+                         make_patient_appointment_booking, get_time_slots_by_day_and_practitioner
+from .utility import APPOINTMENT_TIMES, parse_times_for_view, calculate_appointment_cost
 
 logger = logging.getLogger(__name__)
 
@@ -138,7 +139,7 @@ def patient(request):
     return render(request, 'patient_dashboard.html', context)
 
 @login_required(login_url='login')
-def get_practitioners_by_day_and_service(request) -> JsonResponse:
+def retrieve_practitioners_by_day_and_service(request) -> JsonResponse:
     """
     Returns a list of practitioners available on a given day
 
@@ -157,75 +158,14 @@ def get_practitioners_by_day_and_service(request) -> JsonResponse:
         parsed_date = datetime.strptime(booking_date, "%Y-%m-%d")
 
         day_of_week = parsed_date.strftime("%A").lower()
-        
 
-        doctors = []
-        nurses = []
-
-        doctor_can_perform = check_practitioner_service(service, doctor=True)
-        nurse_can_perform = check_practitioner_service(service, nurse=True)
-
-        if doctor_can_perform:
-            all_doctors = DoctorProfile.objects.all()
-
-            for doctor in all_doctors:
-                doctor_user_profile = UserProfile.objects.filter(id=doctor.user_profile_id).first()
-                doctor_user_info = User.objects.filter(id=doctor_user_profile.user_id).first()
-                doctor_timetable = Timetable.objects.filter(practitioner_id=doctor.user_profile_id).first()
-                doctor_available = False
-                if day_of_week == "monday":
-                    doctor_available = doctor_timetable.monday
-                elif day_of_week == "tuesday":
-                    doctor_available = doctor_timetable.tuesday
-                elif day_of_week == "wednesday":
-                    doctor_available = doctor_timetable.wednesday
-                elif day_of_week == "thursday":
-                    doctor_available = doctor_timetable.thursday
-                elif day_of_week == "friday":
-                    doctor_available = doctor_timetable.friday
-                elif day_of_week == "saturday":
-                    doctor_available = doctor_timetable.saturday
-                elif day_of_week == "sunday":
-                    doctor_available = doctor_timetable.sunday
-                
-                if doctor_available:
-                    doctors.append((doctor_user_info.first_name + " " + doctor_user_info.last_name, doctor_user_info.id))
-    
-        if nurse_can_perform:
-            all_nurses = NurseProfile.objects.all()
-
-            for nurse in all_nurses:
-                nurse_user_profile = UserProfile.objects.filter(id=nurse.user_profile_id).first()
-                nurse_user_info = User.objects.filter(id=nurse_user_profile.user_id).first()
-
-                nurse_timetable = Timetable.objects.filter(practitioner_id=nurse.user_profile_id).first()
-                
-                nurse_available = False
-                if day_of_week == "monday":
-                    nurse_available = nurse_timetable.monday
-                elif day_of_week == "tuesday":
-                    nurse_available = nurse_timetable.tuesday
-                elif day_of_week == "wednesday":
-                    nurse_available = nurse_timetable.wednesday
-                elif day_of_week == "thursday":
-                    nurse_available = nurse_timetable.thursday
-                elif day_of_week == "friday":
-                    nurse_available = nurse_timetable.friday
-                elif day_of_week == "saturday":
-                    nurse_available = nurse_timetable.saturday
-                elif day_of_week == "sunday":
-                    nurse_available = nurse_timetable.sunday
-                
-                if nurse_available:
-                    nurses.append((nurse_user_info.first_name + " " + nurse_user_info.last_name, nurse_user_info.id))
-        practitioners = {"doctors": doctors,
-                        "nurses": nurses}
+        practitioners = get_practitioners_by_day_and_service(service, day_of_week)
 
         data = {'success': 'true', 'practitioners': practitioners}
     return JsonResponse(data) 
 
 
-def get_time_slots_by_day_and_practitioner(request) -> JsonResponse:
+def retrieve_time_slots_by_day_and_practitioner(request) -> JsonResponse:
     """
     Returns a list of time slots available for a given practitioner on a given day
 
@@ -242,48 +182,14 @@ def get_time_slots_by_day_and_practitioner(request) -> JsonResponse:
         current_time = datetime.now().time()
         if booking_date < current_date:
             return JsonResponse({'success': 'false', 'error': 'Invalid date'})
-        
 
         practitioner = request.POST.get('practitioner')
 
         parsed_date = datetime.strptime(booking_date, "%Y-%m-%d")
 
-        practitioner_user_profile = get_user_profile_by_user_id(practitioner)
-
-        # Get the appointments for the practitioner on the given day
-        if practitioner_user_profile.user_type == "doctor":
-            booked_appointments = Appointment.objects.filter(doctor_id=practitioner_user_profile, date=parsed_date).all()
-
-        elif practitioner_user_profile.user_type == "nurse":
-            booked_appointments = Appointment.objects.filter(nurse_id=practitioner_user_profile, date=parsed_date).all()
-
-        booked_times = []
-        # Get the booked times
-        for appointment in booked_appointments:
-            booked_times.append([appointment.time, appointment.duration_id])
-        
-        
-        available_times = copy.deepcopy(APPOINTMENT_TIMES)
-
-        # Remove booked times from available times
-        for time, duration in booked_times:
-            if time in available_times:
-                # Remove the time and the following n times based on the duration
-                index = available_times.index(time)
-                for i in range(duration):
-                    available_times.pop(index + i)
-        if booking_date == current_date:
-            # removing invalid times
-            times_to_remove = []
-            for time in available_times:
-                # removing times before now
-                if time < current_time:
-                    times_to_remove.append(time)
-
-            for time in times_to_remove:
-                available_times.remove(time)
-
+        available_times = get_time_slots_by_day_and_practitioner(practitioner, parsed_date)
         available_times = parse_times_for_view(available_times)
+
     return JsonResponse({'success': 'true', 'timeSlots': available_times})
 
 def patient_appointment_booking(request) -> JsonResponse:
@@ -310,37 +216,7 @@ def patient_appointment_booking(request) -> JsonResponse:
         time = request.POST.get('timeSlot')
         reason = request.POST.get('reason')
 
-        if booking_date is None or service_id is None or practitioner is None or time is None or reason is None:
-            data = {'success': 'false', 'error': 'Invalid form data'}
-        else:
-            practitioner_user_profile = get_user_profile_by_user_id(practitioner)
-
-            existing_appointment = len(Appointment.objects.filter(patient_id=patient.id, date=booking_date, time=time).all()) != 0
-            if not existing_appointment:
-                if practitioner_user_profile.user_type == "doctor":
-                    new_appointment = Appointment.objects.create(date=booking_date,
-                                                                time=time,
-                                                                description=reason,
-                                                                doctor_id=practitioner,
-                                                                patient_id=patient.id,
-                                                                service_id=service_id, #! change this?
-                                                                duration_id=service_id)
-                else:
-                    new_appointment = Appointment.objects.create(date=booking_date,
-                                                                time=time,
-                                                                description=reason,
-                                                                doctor_id=practitioner,
-                                                                patient_id=patient.id,
-                                                                service_id=service_id, 
-                                                                duration=service_id)
-
-                new_appointment.save()
-                logger.info("New appointment created successfully for patient: " + str(patient.id) + \
-                            " with doctor: " + str(practitioner) + " on date: "  + str(booking_date) + \
-                            " at time: " + str(time) + " for service: " + str(service_id) + " with reason: " + str(reason))
-                data = {'success': 'true'}
-            else:
-                data = {'success': 'false', 'error': 'Appointment already exists'}
+        data = make_patient_appointment_booking(patient, booking_date, service_id, practitioner, time, reason)
     else:
         check = False
     return JsonResponse(data) 
