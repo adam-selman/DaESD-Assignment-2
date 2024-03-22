@@ -3,6 +3,8 @@ import os
 import copy
 import json
 import logging
+import tempfile
+
 from datetime import datetime
 from django.shortcuts import render,redirect, HttpResponse
 from django.contrib.auth.decorators import login_required
@@ -19,7 +21,7 @@ from .models import DoctorProfile, NurseProfile, UserProfile, User, Timetable, S
 from .db_utility import get_service_by_appointment_id, check_practitioner_service, get_invoice_information_by_user_id, \
                     get_medical_services, get_user_profile_by_user_id, get_practitioners_by_day_and_service,  \
                          make_patient_appointment_booking, get_time_slots_by_day_and_practitioner
-from .utility import APPOINTMENT_TIMES, parse_times_for_view, calculate_appointment_cost, generate_invoice_file
+from .utility import APPOINTMENT_TIMES, parse_times_for_view, calculate_appointment_cost, generate_invoice_file_content
 
 logger = logging.getLogger(__name__)
 
@@ -297,7 +299,6 @@ def generate_invoice(request):
     csrf_token = get_token(request)
     if request.method == 'GET':
         user_id = request.user.id
-        logger.info("Generating invoice...")
         invoice_id = request.GET.get('invoiceID')
 
         # Check if the invoice belongs to the user
@@ -305,17 +306,19 @@ def generate_invoice(request):
         if invoice.patient_id != user_id:
             raise Http404("Resource not found")
         
-        logger.info(f"Invoice ID: {invoice_id}")
-        file_path = generate_invoice_file(invoice_id)
-        file_name = file_path.split('/')[-1]
-        # Serve the temporary file for download
-        with open(file_path, 'rb') as file:
-            response = HttpResponse(file.read(), content_type="application/vnd.ms-excel")
-            response['Content-Disposition'] = 'inline; filename=' + file_name
+        # generate invoice file content and name
+        file_content, file_name = generate_invoice_file_content(invoice_id)
+        bytes_data = bytes(file_content, 'utf-8')
 
-            #! Find a way to delete the file after it has been served
-            # # Clean up temporary file
-            # if os.path.exists(file_path):
-            #     os.remove(file_path)
+        # creating temp file to serve
+        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+            temp_file.write(bytes_data)
+            temp_file.flush()
 
+            # Get the file path
+            file_path = temp_file.name
+
+            # Serve the temporary file
+            response = FileResponse(open(file_path, 'rb'))
+            response['Content-Disposition'] = f'attachment; filename="{file_name}"'
             return response

@@ -131,7 +131,7 @@ def calculate_appointment_cost(appointment_id: int) -> float:
     return cost
 
 
-def generate_invoice_file(invoice_id: int) -> str:
+def generate_invoice_file_content(invoice_id: int) -> tuple:
     """
     Generates an invoice file and serves it
 
@@ -139,15 +139,15 @@ def generate_invoice_file(invoice_id: int) -> str:
         invoice_id (int): The id of the invoice
 
     Returns:
-        str: The path to the invoice file
+        str, str: The content of the invoice file to be written
     """
     invoice = Invoice.objects.get(invoiceID=invoice_id)
-    file_path = create_invoice_file(invoice_id)
+    file_content, file_name = create_invoice_file(invoice_id)
     
-    return file_path
+    return file_content, file_name
 
 
-def create_invoice_file(invoice_id: int) -> str:
+def create_invoice_file(invoice_id: int) -> tuple:
     """
     Creates an invoice file
 
@@ -155,18 +155,33 @@ def create_invoice_file(invoice_id: int) -> str:
         invoice_id (int): The id of the invoice
 
     Returns:
-        str: The path to the invoice file
+        str, str: The file contents of the invoice and the file name
     """
+
+
+    # invoice info
     invoice = Invoice.objects.get(invoiceID=invoice_id)
     invoice_creation_date = invoice.dateIssued
+    invoice_creation_date = invoice_creation_date.strftime("%d/%m/%Y")
     duration = invoice.appointment.duration_id
     amount = round(float(invoice.amount),2 )
     tax_amount = round((amount * 0.2), 2)
-    current_date = datetime.now()
+    pre_tax_amount = amount - tax_amount
+
+    # format as strings to 2dp
+    amount = "{:.2f}".format(amount)
+    tax_amount = "{:.2f}".format(tax_amount)
+    pre_tax_amount = "{:.2f}".format(pre_tax_amount)
+
+    # appointment info
     appointment = Appointment.objects.get(appointmentID=invoice.appointment.appointmentID)
+
+    # service info
     service = Service.objects.get(serviceID=appointment.service.serviceID)
     service_name = service.service.title()
     service_rate = get_service_rate_by_appointment(appointment)
+    
+    # patient info
     patient = invoice.patient
     patient_user_profile = UserProfile.objects.get(user_id=patient.user_id)
     patient_address = Address.objects.get(user_id=patient_user_profile.user_id)
@@ -176,18 +191,9 @@ def create_invoice_file(invoice_id: int) -> str:
     # getting files ready
     static_dir = settings.STATIC_ROOT
     invoice_template_path = os.path.join(static_dir, settings.INVOICE_TEMPLATE_FILENAME)
-    temp_file_directory = settings.TEMP_FILE_DIRECTORY
-    destination_file =  os.path.join(temp_file_directory, f"{user.first_name}_{user.last_name}_invoice_{invoice_id}.txt")
+    file_name = f"{user.first_name}_{user.last_name}_invoice_{invoice_id}.txt"
 
-    # Check if the source file exists
-    if os.path.exists(invoice_template_path):
-        # Copy the file
-        shutil.copy(invoice_template_path, destination_file)
-        logger.info("Invoice copied successfully!")
-    else:
-        logger.info("Source file does not exist.")
-
-    with open(destination_file, 'r') as file:
+    with open(invoice_template_path, 'r') as file:
         template = file.read()
 
     invoice_data = {
@@ -201,18 +207,25 @@ def create_invoice_file(invoice_id: int) -> str:
         'billing_party': invoice.billingParty,
         'total_amount': amount,
         'tax_amount': tax_amount,
-        'pre_tax_amount': amount - tax_amount,
+        'pre_tax_amount': pre_tax_amount,
     }
 
     filled_template = populate_invoice(template, invoice_data)
 
-    with open(destination_file, 'w') as file:
-        file.write(filled_template)
-
-    return destination_file
+    return filled_template, file_name
 
 
-def populate_invoice(template, invoice_data):
+def populate_invoice(template, invoice_data) -> str:
+    """
+    Populates the invoice template with the invoice data
+
+    Args:
+        template (str): The template to populate
+        invoice_data (dict): The data to populate the template with
+
+    Returns:
+        str: The filled template
+    """
 
     filled_template = template
     for key, value in invoice_data.items():

@@ -13,4 +13,4 @@ Subtotal: £{{pre_tax_amount}}
 Tax (20%): £{{tax_amount}}
 Billable to {{billing_party}}
 ------------------------------
-Total: {{total_amount}}
+Total: £{{total_amount}}
