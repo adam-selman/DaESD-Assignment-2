@@ -70,7 +70,10 @@ class Address(models.Model):
     
     def __str__(self):
         if self.buildingName:
-            return f"{self.number} {self.buildingName}, {self.streetName}, {self.city}, {self.county}, {self.postcode}, {self.country}"
+            if self.number:
+                return f"{self.number} {self.buildingName}, {self.streetName}, {self.city}, {self.county}, {self.postcode}, {self.country}"
+            else:
+                return f"{self.buildingName}, {self.streetName}, {self.city}, {self.county}, {self.postcode}, {self.country}"
         else:
             return f"{self.number} {self.streetName}, {self.city}, {self.county}, {self.postcode}, {self.country}"
 
