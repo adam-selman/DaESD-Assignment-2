@@ -42,7 +42,17 @@
                 </button>
             </div>
             <div class="modal-body">
-                <table>
+                <table class="table table-hover">
+                    <thead>
+                        <tr class="table-info">
+                            <th>Appointemnt </th>
+                            <th> Date</th>
+                            <th>Service</th>
+                            <th>Description </th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                
                     {% for appt in appointments %}
                    
@@ -51,18 +61,19 @@
                  
                 
                        
-                    <tr data1-row-id="{{patient.user_profile}}">
-                   
-                        {{appt.patient.user_profile}}
+                    <tr class="table-dark" data1-row-id="{{patient.user_profile}}">
                       
-                        <td>Date:</td>
+                        <td>{{appt.appointmentID}}</td>
                         <td>{{ appt.date }}</td>
-                        <td>{{ appt.patient }}</td>
-                    </tr>
+                        <td>{{ appt.service}}</td>
+                        <td>{{ appt.description }}</td>
+                        <td>{{ appt.notes }}</td>
+    
+                    
                     {% endif %}
                     {% endfor %}
-                   
-                  
+                </tr>
+                    </tbody>
                 </table>
             </div>
             <div class="modal-footer">
