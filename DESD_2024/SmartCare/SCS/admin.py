@@ -6,7 +6,7 @@ from .models import UserProfile, DoctorProfile, NurseProfile, PatientProfile,\
 
 # Register your models here.
 class AppointmentAdmin(admin.ModelAdmin):
-  list_display = ( "appointmentID","duration","nurse","patient","doctor",)
+  list_display = ( "appointmentID","service","date","time","description","notes","status","patient","doctor","nurse",)
 admin.site.register(Appointment,AppointmentAdmin)
 admin.site.register(UserProfile)
 admin.site.register(DoctorProfile)

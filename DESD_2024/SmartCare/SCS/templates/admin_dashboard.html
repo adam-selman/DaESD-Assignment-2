@@ -9,6 +9,8 @@
             <th> Age</th>
             <th>Known allergies</th>
             <th>Private billing</th>
+            <th>Details</th>
+
         </tr>
     </thead>
     <tbody>
@@ -18,6 +20,7 @@
 <td>{{ patient.age }}</td>
 <td>{{ patient.allergies }}</td>
 <td>{{ patient.isPrivate }}</td>
+<td><button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal1{{patient.user_profile}}">Update</button></td>
 </tr>
    
 {% endfor %}

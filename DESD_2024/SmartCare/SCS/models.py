@@ -99,7 +99,7 @@ class Appointment(models.Model):
                                  on_delete = models.CASCADE,
                                  related_name = 'nurse_appointment')
     def __str__(self):
-        return self.description
+        return str(self.appointmentID)
 
 class Invoice(models.Model):
     invoiceID = models.AutoField(primary_key = True)

@@ -11,7 +11,7 @@ from django.middleware.csrf import get_token
 
 from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponseNotFound
-
+from django.shortcuts import get_object_or_404
 from .models import DoctorProfile, NurseProfile, UserProfile, User, Timetable, Service, Appointment, PatientProfile
 from .forms import UserRegisterForm, DoctorNurseRegistrationForm
 
@@ -418,15 +418,20 @@ def display_patients(request):
         nurse_id = request.user.id
         # Retrieve the list of patients assigned to the nurse
         patients = Appointment.objects.filter(nurse_id=nurse_id).values('patient')
-        # Retrieve the patient details
-        patient_details = PatientProfile.objects.filter(user_profile__in=patients)
-        # Render the nurse dashboard template
+        patient_names = [PatientProfile.objects.get(id=patient['patient']).user_profile for patient in patients]
+        #patient_details = PatientProfile.objects.filter(user_profile__in=patients)
+        patient_details = PatientProfile.objects.filter(user_profile__user__username__in=patient_names)
+       
+
         
-        appointment_details = []
-        for patient in patient_details:
-            appointments = Appointment.objects.filter(patient=patient)
-            appointment_details.append(appointments)
-        return render(request, 'nurse_dashboard.html', {'patients': patient_details,'appointments':appointment_details})
+    
+    
+        appointment_details = Appointment.objects.all()
+
+        
+        return render(request, 'nurse_dashboard.html', {'appointments': appointment_details, 'patients': patient_details})
+    
+
     elif is_admin(request.user):
         patient_details = PatientProfile.objects.all()
         return render(request,'admin_dashboard.html',{'patients':patient_details})
