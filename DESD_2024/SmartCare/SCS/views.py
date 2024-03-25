@@ -123,13 +123,19 @@ def doc(request):
     Returns:
         HttpResponse: Page response containing the doctor dashboard
     """
-    return render(request, 'doctor_dashboard.html')
+    user_type = "doctor"
+    user = request.user
+    user_name = user.get_full_name
+    return render(request, 'doctor_dashboard.html', {'user_type': user_type, 'user_name':user_name})
 
 @login_required(login_url='login')
 @user_passes_test(is_patient, login_url='login')
 def patient(request):
     services = get_medical_services()
-    context = {"services": services}
+    user_type = "patient"
+    user = request.user
+    user_name = user.get_full_name
+    context = {"services": services, "user_type": user_type, "user_name": user_name}
     return render(request, 'patient_dashboard.html', context)
 
 def get_practitioners_by_day_and_service(request) -> JsonResponse:
@@ -334,7 +340,10 @@ def admin(request):
     Returns:
         HttpResponse: Page response containing the admin dashboard
     """
-    return render(request, 'admin_dashboard.html')
+    user_type = "admin"
+    user = request.user
+    user_name = user.get_full_name
+    return render(request, 'admin_dashboard.html', {'user_type': user_type, "user_name": user_name})
 
 @login_required(login_url='login')
 @user_passes_test(is_nurse, login_url='login')
@@ -348,7 +357,10 @@ def nurse(request):
     Returns:
         HttpResponse: Page response containing the nurse dashboard
     """
-    return render(request, 'nurse_dashboard.html')
+    user_type = "nurse"
+    user = request.user
+    user_name = user.get_full_name
+    return render(request, 'nurse_dashboard.html', {'user_type': user_type, "user_name": user_name})
 
 
 def Logout(request):

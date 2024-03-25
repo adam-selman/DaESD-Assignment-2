@@ -1,4 +1,4 @@
-{% extends 'index.html' %}
+{% extends 'dashboards.html' %}
 {% block content%}
 {% include 'CheckSession.html' %}
 <div class="container">
@@ -43,8 +43,9 @@
     </form>
     </div>
   </div>
+</div>
 
-
+  
 <script>
 
 // Adding event listener that listens for changes in the service select element
@@ -58,6 +59,7 @@ document.getElementById("service").addEventListener("change", function (e) {
     var bookingDateLabel = document.getElementById('bookingDateLabel');
     bookingDate.disabled = true;
     bookingDate.innerHTML = createSelectPlaceholderElement("Select a Date");
+    bookingDate.style.backgroundColor = "red"
     practitionerSelect.disabled = true;
     practitionerSelect.innerHTML = createSelectPlaceholderElement("Select a Practitioner");
     timeSlotSelect.disabled = true;
