@@ -1,4 +1,4 @@
-
+import copy
 import json
 import logging
 from datetime import datetime
@@ -138,6 +138,7 @@ def patient(request):
     context = {"services": services, "user_type": user_type, "user_name": user_name}
     return render(request, 'patient_dashboard.html', context)
 
+@login_required(login_url='login')
 def get_practitioners_by_day_and_service(request) -> JsonResponse:
     """
     Returns a list of practitioners available on a given day
@@ -235,10 +236,15 @@ def get_time_slots_by_day_and_practitioner(request) -> JsonResponse:
     Returns:
         JsonResponse: A JSON response containing the list of time slots and if the request was successful.
     """
-    print("Reached get_time_slots_by_day_and_practitioner")
 
     if request.method == 'POST':
         booking_date = request.POST.get('bookingDate')
+        current_date = datetime.now().strftime("%Y-%m-%d")
+        current_time = datetime.now().time()
+        if booking_date < current_date:
+            return JsonResponse({'success': 'false', 'error': 'Invalid date'})
+        
+
         practitioner = request.POST.get('practitioner')
 
         parsed_date = datetime.strptime(booking_date, "%Y-%m-%d")
@@ -253,13 +259,12 @@ def get_time_slots_by_day_and_practitioner(request) -> JsonResponse:
             booked_appointments = Appointment.objects.filter(nurse_id=practitioner_user_profile, date=parsed_date).all()
 
         booked_times = []
-
         # Get the booked times
         for appointment in booked_appointments:
             booked_times.append([appointment.time, appointment.duration_id])
         
         
-        available_times = APPOINTMENT_TIMES
+        available_times = copy.deepcopy(APPOINTMENT_TIMES)
 
         # Remove booked times from available times
         for time, duration in booked_times:
@@ -267,7 +272,17 @@ def get_time_slots_by_day_and_practitioner(request) -> JsonResponse:
                 # Remove the time and the following n times based on the duration
                 index = available_times.index(time)
                 for i in range(duration):
-                    available_times.pop(index)
+                    available_times.pop(index + i)
+        if booking_date == current_date:
+            # removing invalid times
+            times_to_remove = []
+            for time in available_times:
+                # removing times before now
+                if time < current_time:
+                    times_to_remove.append(time)
+
+            for time in times_to_remove:
+                available_times.remove(time)
 
         available_times = parse_times_for_view(available_times)
     return JsonResponse({'success': 'true', 'timeSlots': available_times})
@@ -310,7 +325,7 @@ def patient_appointment_booking(request) -> JsonResponse:
                                                                 doctor_id=practitioner,
                                                                 patient_id=patient.id,
                                                                 service_id=service_id,
-                                                                duration_id=service.duration)
+                                                                duration_id=service_id)
                 else:
                     new_appointment = Appointment.objects.create(date=booking_date,
                                                                 time=time,
@@ -318,9 +333,12 @@ def patient_appointment_booking(request) -> JsonResponse:
                                                                 doctor_id=practitioner,
                                                                 patient_id=patient.id,
                                                                 service_id=service_id,
-                                                                duration=service.duration)
+                                                                duration=service_id)
 
                 new_appointment.save()
+                logger.info("New appointment created successfully for patient: " + str(patient.id) + \
+                            " with doctor: " + str(practitioner) + " on date: "  + str(booking_date) + \
+                            " at time: " + str(time) + " for service: " + str(service_id) + " with reason: " + str(reason))
                 data = {'success': 'true'}
             else:
                 data = {'success': 'false', 'error': 'Appointment already exists'}
