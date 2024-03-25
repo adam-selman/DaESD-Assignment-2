@@ -149,10 +149,21 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
-# Add this below line in settings.py
+STATIC_URL = '/static/'
+
+# Define the directory where collected static files will be stored
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Define additional directories to find static files
 STATICFILES_DIRS = [
-    BASE_DIR / "SCS/static",
+    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'SCS', 'static'),
+]
+
+# Define the list of finders that know how to discover static files in various locations
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 ]
 
 # Default primary key field type
