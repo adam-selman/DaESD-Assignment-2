@@ -1,26 +1,132 @@
 {% extends 'index.html' %}
 {% block content%}
-<button id="loginButton">Login</button>
-<button id="RegisterButton">Patient Register</button>
-<button id="AdminRegisterButton">Staff Register</button>
-
-<script>
-document.getElementById('loginButton').addEventListener('click', function() {
-    
-    
-    window.location.href = 'login';
-    this.style.display = 'none';
-});
-document.getElementById('RegisterButton').addEventListener('click', function() {
-    // Redirect to the patient register page
-    window.location.href = 'SCS/register/'; 
-});
-document.getElementById('AdminRegisterButton').addEventListener('click', function() {
-    // Redirect to the Doctor/nurse registration
-    window.location.href = 'SCS/staff_register/';
-
-});
-</script>
-
-
+{% load static %}
+<main>
+    <div id="myCarousel" class="carousel slide mb-6" data-bs-ride="carousel">
+      <div class="carousel-indicators">
+        <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="0" class="" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="1" aria-label="Slide 2" class=""></button>
+        <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="2" aria-label="Slide 3" class="active" aria-current="true"></button>
+      </div>
+      <div class="carousel-inner">
+        <div class="carousel-item">
+          <img src=" {% static "pic8.jpg" %}" id="first_pic" style="max-height: auto; width: 100%;">
+          <div class="container">
+            <div class="carousel-caption d-none d-md-block">
+              <h1>We want the best for you!!!</h1>
+              <p class="opacity-75">Our products make it easier for you to look back on your previous visits as well as your previous conditions, prescriptions and suggested 
+                recovery advice. This will greatly speed up response times so you aren't left in the dark.
+              </p>
+              <p><a class="btn btn-lg btn-primary" href="#">Sign up today</a></p>
+            </div>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <img src=" {% static "pic3.jpg" %}" id="first_pic" style="max-height: auto; width: 100%;">
+          <div class="container">
+            <div class="carousel-caption">
+              <h1>Healthy life = Long Life</h1>
+              <p>Going for healthier foods will greatly prolong your life and allows you to enjoy it.</p>
+              <p><a class="btn btn-lg btn-primary" href="#">Learn more</a></p>
+            </div>
+          </div>
+        </div>
+        <div class="carousel-item active">
+          <img src=" {% static "pic1.jpg" %}" id="first_pic" style="max-height: auto; width: 100%;">
+          <div class="container">
+            <div class="carousel-caption text-end">
+              <h1>We are here for you!!!</h1>
+              <p>If you ever feel alone or your mental health is on the decline then there are more than enough mental health professionals available to speak with you on anything that may
+                concern you. Free from judgement and fully confidential. </p>
+              <p><a class="btn btn-lg btn-primary" href="#">Browse gallery</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#myCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
+  
+  
+    <!-- Marketing messaging and featurettes
+    ================================================== -->
+    <!-- Wrap the rest of the page in another container to center all the content. -->
+  
+    <div class="container marketing">
+  
+      <!-- Three columns of text below the carousel -->
+      <div class="row">
+        <div class="col-lg-4">
+          <h2 class="fw-normal">Sign in!!!</h2>
+          <p>If you are already a user of the SmartCare products please click the button below to be redirected to the login page.</p>
+          <p><a class="btn btn-secondary" href="login">Login »</a></p>
+        </div><!-- /.col-lg-4 -->
+        <div class="col-lg-4">
+          
+        </div><!-- /.col-lg-4 -->
+        <div class="col-lg-4">
+          <h2 class="fw-normal">Register</h2>
+          <p>If you are not yet registered you can click the button below to see what our website has to offer.</p>
+          <p><a class="btn btn-secondary" href="register">Sign up »</a></p>
+        </div><!-- /.col-lg-4 -->
+      </div><!-- /.row -->
+  
+  
+      <!-- START THE FEATURETTES -->
+  
+      <hr class="featurette-divider">
+  
+      <div class="row featurette">
+        <div class="col-md-7">
+          <h2 class="featurette-heading fw-normal lh-1">Healthy life happy life!!<span class="text-body-secondary"> Things to improve your wellbeing.</span></h2>
+          <p class="lead">Eating healthy involves consuming a balanced diet rich in fruits, vegetables, lean proteins, whole grains, and healthy fats while minimizing processed foods, sugars, and excessive salts. Portion control is crucial, as is staying hydrated with water. Incorporating diverse nutrients ensures optimal health and energy levels. Strive for moderation and variety, listening to your body's hunger and fullness cues. Regular physical activity complements a healthy diet, contributing to overall well-being and longevity.</p>
+        </div>
+        <div class="col-md-5">
+          <img src=" {% static "pic7.jpg" %}" id="first_pic" style="max-height: auto; width: 100%;">
+        </div>
+      </div>
+  
+      <hr class="featurette-divider">
+  
+      <div class="row featurette">
+        <div class="col-md-7 order-md-2">
+          <h2 class="featurette-heading fw-normal lh-1">Checl your dashboards. <span class="text-body-secondary">Stay up-to-date with your health!!!.</span></h2>
+          <p class="lead">Patients should regularly check their dashboards for updated health statuses by their doctors due to several critical reasons. Firstly, it ensures timely awareness of any changes in their health condition, facilitating proactive measures for treatment or lifestyle adjustments. Secondly, it promotes active involvement in their healthcare journey, fostering a sense of empowerment and control. Additionally, it enables patients to track progress, understand treatment plans better, and ask informed questions during medical consultations. Moreover, it enhances communication between patients and healthcare providers, leading to more personalized and effective care. Ultimately, staying informed through dashboard updates contributes to better health outcomes and overall well-being.          </p>
+        </div>
+        <div class="col-md-5 order-md-1">
+          <img src="{% static "health-stats.jpg" %}" style="max-height: auto; width: 100%;">
+        </div>
+      </div>
+  
+      <!--<hr class="featurette-divider">-->
+  
+      {% comment %} <div class="row featurette">
+        <div class="col-md-7">
+          <h2 class="featurette-heading fw-normal lh-1">And lastly, this one. <span class="text-body-secondary">Checkmate.</span></h2>
+          <p class="lead">And yes, this is the last block of representative placeholder content. Again, not really intended to be actually read, simply here to give you a better view of what this would look like with some actual content. Your content.</p>
+        </div>
+        <div class="col-md-5">
+          <svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 500x500" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="var(--bs-secondary-bg)"></rect><text x="50%" y="50%" fill="var(--bs-secondary-color)" dy=".3em">500x500</text></svg>
+        </div>
+      </div> 
+  
+      <hr class="featurette-divider">{% endcomment %}
+  
+      <!-- /END THE FEATURETTES -->
+  
+    </div><!-- /.container -->
+  
+  
+    <!-- FOOTER -->
+    <footer class="container">
+      <p class="float-end"><a href="#">Back to top</a></p>
+      <p>© 2017–2024 Company, Inc. · <a href="#">Privacy</a> · <a href="#">Terms</a></p>
+    </footer>
+</main>
 {% endblock %}
