@@ -302,3 +302,26 @@ def make_patient_appointment_booking(patient, booking_date, service_id, practiti
 
     return data
     
+
+def set_invoice_status(invoice_id: int, status: bool) -> bool:
+    """
+    Sets the status of an invoice
+
+    Args:
+        invoice_id (int): The id of the invoice
+        status (bool): The status of the invoice
+
+    Returns:
+        None
+    """
+    success = False
+    try:
+        invoice = Invoice.objects.get(invoiceID=invoice_id)
+        invoice.status = status
+        invoice.save()
+        success = True
+        
+    except Exception as e:
+        logger.info(e)
+    
+    return success
