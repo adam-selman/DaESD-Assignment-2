@@ -168,7 +168,7 @@ def retrieve_practitioners_by_day_and_service(request) -> JsonResponse:
         data = {'success': 'true', 'practitioners': practitioners}
     return JsonResponse(data) 
 
-
+@login_required(login_url='login')
 def retrieve_time_slots_by_day_and_practitioner(request) -> JsonResponse:
     """
     Returns a list of time slots available for a given practitioner on a given day
@@ -179,6 +179,8 @@ def retrieve_time_slots_by_day_and_practitioner(request) -> JsonResponse:
     Returns:
         JsonResponse: A JSON response containing the list of time slots and if the request was successful.
     """
+
+    csrf_token = get_token(request)
 
     if request.method == 'POST':
         booking_date = request.POST.get('bookingDate')
@@ -193,6 +195,7 @@ def retrieve_time_slots_by_day_and_practitioner(request) -> JsonResponse:
 
         available_times = get_time_slots_by_day_and_practitioner(practitioner, parsed_date)
         available_times = parse_times_for_view(available_times)
+        logger.info(f"Available times: {available_times}")
 
     return JsonResponse({'success': 'true', 'timeSlots': available_times})
 
