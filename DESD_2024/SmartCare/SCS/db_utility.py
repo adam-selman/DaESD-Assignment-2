@@ -214,6 +214,7 @@ def get_time_slots_by_day_and_practitioner(practitioner_id: int, booking_date) -
     """
 
     current_date = datetime.now().strftime("%Y-%m-%d")
+    booking_date = booking_date.strftime("%Y-%m-%d")
     current_time = datetime.now().time()
 
     practitioner_user_profile = get_user_profile_by_user_id(practitioner_id)
