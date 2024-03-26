@@ -71,15 +71,9 @@
                 <td>£{{amount}}</td>
                 <td>{{issue_date}}</td>
                 <td>
-                  {% if status %}
-                  Invoice Paid
-                  {% else %}
                   <a href="generate_invoice?invoiceID={{invoice_id}}">Download Invoice</a></td>
-
-                  {% endif %}
               </tr>
             {% endfor %}
-
 
 <script>
 
