@@ -276,7 +276,7 @@ def populate_appointment(csvFileName, modelClass):
                 continue
 
             if 'patient' in objData:
-                patient_profile = get_user_profile(objData['patient'])
+                patient_profile = get_patient_profile(objData['patient'])
                 objData['patient'] = patient_profile
 
             if 'doctor' in objData:

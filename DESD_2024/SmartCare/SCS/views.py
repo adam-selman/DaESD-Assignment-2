@@ -14,7 +14,7 @@ from django.http import HttpResponseNotFound
 from django.shortcuts import get_object_or_404
 from .models import DoctorProfile, NurseProfile, UserProfile, User, Timetable, Service, Appointment, PatientProfile
 from .forms import UserRegisterForm, DoctorNurseRegistrationForm
-
+from datetime import date
 from .utility import get_medical_services, check_practitioner_service , APPOINTMENT_TIMES, get_user_profile_by_user_id, parse_times_for_view
 
 logger = logging.getLogger(__name__)
@@ -419,14 +419,14 @@ def display_patients(request):
         # Retrieve the list of patients assigned to the nurse
         patients = Appointment.objects.filter(nurse_id=nurse_id).values('patient')
         patient_names = [PatientProfile.objects.get(id=patient['patient']).user_profile for patient in patients]
-        #patient_details = PatientProfile.objects.filter(user_profile__in=patients)
+        
         patient_details = PatientProfile.objects.filter(user_profile__user__username__in=patient_names)
        
-
-        
-    
-    
         appointment_details = Appointment.objects.all()
+        ##patient_details_json = json.dumps(list(patient_details.values()))
+        #appointment_details_json = json.dumps(list(appointment_details.values()))
+
+        #return render(request, 'nurse_dashboard.html', {'patient_details_json': patient_details_json, 'appointment_details_json': appointment_details_json})
 
         
         return render(request, 'nurse_dashboard.html', {'appointments': appointment_details, 'patients': patient_details})
@@ -434,14 +434,20 @@ def display_patients(request):
 
     elif is_admin(request.user):
         patient_details = PatientProfile.objects.all()
-        return render(request,'admin_dashboard.html',{'patients':patient_details})
+        appointment_details = Appointment.objects.all()
+        return render(request,'admin_dashboard.html',{'patients':patient_details,'appointments': appointment_details})
 
     else:
         return HttpResponseNotFound("404 Error: Page not found")
     
 
 
-
+def currentAppt(request):
+    current_date = date.today()
+    nurse = request.user.id  # Assuming the logged-in user is the nurse
+    appointments = Appointment.objects.filter(date=current_date, nurse=nurse)
+    #return JsonResponse({'success':True,'data':{'Appointments':appointments}})
+    return render(request, 'nurse_dashboard.html', {'Appointments': appointments})
 
 
 

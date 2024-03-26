@@ -8,6 +8,7 @@ from .models import UserProfile, DoctorProfile, NurseProfile, PatientProfile,\
 class AppointmentAdmin(admin.ModelAdmin):
   list_display = ( "appointmentID","service","date","time","description","notes","status","patient","doctor","nurse",)
 admin.site.register(Appointment,AppointmentAdmin)
+
 admin.site.register(UserProfile)
 admin.site.register(DoctorProfile)
 admin.site.register(NurseProfile)

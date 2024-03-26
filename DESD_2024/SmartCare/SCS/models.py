@@ -78,6 +78,8 @@ class Service(models.Model):
     service = models.CharField(max_length = 100)
     description = models.TextField()
     duration = models.IntegerField()
+    def __str__(self):
+        return self.service
 
 class Appointment(models.Model):
     appointmentID = models.AutoField(primary_key = True)

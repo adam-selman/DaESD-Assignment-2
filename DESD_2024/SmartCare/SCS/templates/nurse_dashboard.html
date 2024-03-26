@@ -2,10 +2,8 @@
 {% block content%}
 {% include 'CheckSession.html' %}
 <p> nurse page</p>
-{{nurse}}
-{% for p in nurse %}
-{{p.patient.age}}
-{% endfor %}
+
+
 <table class="table table-hover">
     <thead>
         <tr class="table-info">
@@ -30,6 +28,35 @@
 {% endfor %}
 </tbody>
 </table>
+
+<table class="table table-hover">
+    <thead>
+        <tr class="table-info">
+            <th>Appointemnt </th>
+            <th> Date</th>
+            <th>Service</th>
+            <th>Description </th>
+            <th>Note</th>
+        </tr>
+    </thead>
+    <tbody>
+
+    {% for appointment in Appointments %}
+       
+    <tr class="table-dark" >
+      
+        <td>{{appointment.time}}</td>
+        <td>{{ appointment.patient.user_profile }}</td>
+        <td>{{ appointment.service}}</td>
+        <td>{{ appointment.service.duration }}</td>
+        <td>{{ appointment.notes }}</td>
+
+  
+    {% endfor %}
+</tr>
+    </tbody>
+</table>
+
 {% for patient in patients %}
 
 <div class="modal fade" id="modal1{{ patient.user_profile }}" tabindex="-1" role="dialog" aria-labelledby="modal{{ patient.user_profile}}Label" aria-hidden="true">
@@ -84,3 +111,46 @@
 </div>
 {% endfor %}
 {% endblock %}
+
+
+<script>
+    function fetchAppointments() {
+    fetch('/api/appointments/')  // Replace with the actual API endpoint URL
+        .then(response => response.json())
+        .then(data => {
+            const appointmentData = document.getElementById('appointment-data');
+            appointmentData.innerHTML = '';  // Clear any existing data
+
+            data.forEach(appointment => {
+                const row = document.createElement('tr');
+                row.classList.add('table-dark');
+
+                const timeCell = document.createElement('td');
+                timeCell.textContent = appointment.time;
+                row.appendChild(timeCell);
+
+                const patientCell = document.createElement('td');
+                patientCell.textContent = appointment.patient.user_profile;
+                row.appendChild(patientCell);
+
+                const serviceCell = document.createElement('td');
+                serviceCell.textContent = appointment.service;
+                row.appendChild(serviceCell);
+
+                const durationCell = document.createElement('td');
+                durationCell.textContent = appointment.service.duration;
+                row.appendChild(durationCell);
+
+                const notesCell = document.createElement('td');
+                notesCell.textContent = appointment.notes;
+                row.appendChild(notesCell);
+
+                appointmentData.appendChild(row);
+            });
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+}
+
+</script>
