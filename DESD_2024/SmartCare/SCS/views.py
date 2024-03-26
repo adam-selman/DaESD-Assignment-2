@@ -8,10 +8,11 @@ from django.http import JsonResponse
 from django.contrib import messages
 from django.contrib.auth import authenticate, login , logout
 from django.middleware.csrf import get_token
+from .utility import get_appointments_for_practitioner, get_prescriptions_for_practitioner
 
 from django.contrib.auth.decorators import user_passes_test
 
-from .models import DoctorProfile, NurseProfile, UserProfile, User, Timetable, Service, Appointment
+from .models import DoctorProfile, NurseProfile, UserProfile, User, Timetable, Service, Appointment, Prescription
 
 from .utility import get_medical_services, check_practitioner_service , APPOINTMENT_TIMES, get_user_profile_by_user_id, parse_times_for_view
 
@@ -123,7 +124,20 @@ def doc(request):
     Returns:
         HttpResponse: Page response containing the doctor dashboard
     """
-    return render(request, 'doctor_dashboard.html')
+    # Call the JSON requests
+    prescription_pending_data = prescription_pending_approval(request)
+    historic_prescription_data = historic_practitioner_prescriptions(request)
+    upcoming_appointments_data = upcoming_practitioner_appointments(request)
+    historic_appointments_data = historic_practitioner_appointments(request)
+
+    # Render the doctor dashboard template with the JSON data
+    return render(request, 'doctor_dashboard.html', {
+        'prescription_pending_data': prescription_pending_data,
+        'historic_prescription_data': historic_prescription_data,
+        'upcoming_appointments_data': upcoming_appointments_data,
+        'historic_appointments_data': historic_appointments_data
+    })
+
 
 @login_required(login_url='login')
 @user_passes_test(is_patient, login_url='login')
@@ -396,5 +410,122 @@ def check_session(request):
         return JsonResponse({'status': 'active'}, status=200)
     else:
         return JsonResponse({'status': 'expired'}, status=401)
+    
+@login_required(login_url='login')
+def prescription_pending_approval(request):
+    """
+    Function to handle prescription pending approval
+    
+    Args:
+        request (HttpRequest): Django view request object
+        
+    Returns:
+        JsonResponse: JSON response containing the prescription pending approval
+    """
+    
+    user = request.user
+    prescriptions = get_prescriptions_for_practitioner(user)
+    if prescriptions is not None:
+        pending_prescriptions = [prescription for prescription in prescriptions if prescription.approved == False and prescription.repeatable == True]
+        prescriptions_data = [
+            {
+                'prescriptionID': prescription.prescriptionID,
+                'repeatable': prescription.repeatable,
+                'medication': prescription.medication.name,
+                'dosage': prescription.dosage,
+                'quantity': prescription.quantity,
+                'instructions': prescription.instructions,
+                'issueDate': prescription.issueDate.strftime('%Y-%m-%d %H:%M:%S'),
+                'reissueDate': prescription.reissueDate.strftime('%Y-%m-%d %H:%M:%S'),
+                'appointment': prescription.appointment.id,
+                'patient': prescription.patient.user.username,
+                'doctor': prescription.doctor.user.username if prescription.doctor else None,
+                'nurse': prescription.nurse.user.username if prescription.nurse else None
+            }
+        for prescription in pending_prescriptions
+        ]
+        data = {'success': 'true', 'prescriptions': prescriptions_data}
+    else:
+        data = {'success': 'false', 'error': 'User is not a doctor or Nurse'}
+    return JsonResponse(data)
 
+@login_required(login_url='login')
+def historic_practitioner_prescriptions(request):
+    user = request.user
+    prescriptions = get_prescriptions_for_practitioner(user)
+    if prescriptions is not None:
+        print("Prescriptions found for Doctor" + user.name)
+        prescriptions_data = [
+            {
+                'prescriptionID': prescription.prescriptionID,
+                'repeatable': prescription.repeatable,
+                'medication': prescription.medication.name,
+                'dosage': prescription.dosage,
+                'quantity': prescription.quantity,
+                'instructions': prescription.instructions,
+                'issueDate': prescription.issueDate.strftime('%Y-%m-%d %H:%M:%S'),
+                'reissueDate': prescription.reissueDate.strftime('%Y-%m-%d %H:%M:%S'),
+                'appointment': prescription.appointment.id,
+                'patient': prescription.patient.user.username,
+                'doctor': prescription.doctor.user.username if prescription.doctor else None,
+                'nurse': prescription.nurse.user.username if prescription.nurse else None
+            }
+        for prescription in prescriptions
+        
+        ]
+        data = {'success': 'true', 'prescriptions': prescriptions_data}
+    else:
+        print("Prescriptions not found for Doctor" + user.name)
+        data = {'success': 'false', 'error': 'User is not a doctor or Nurse'}
+    return JsonResponse(data)
 
+def upcoming_practitioner_appointments(request):
+    user = request.user
+    appointments= get_appointments_for_practitioner(user)
+    if appointments is not None:
+        upcoming_appointments = [appointment for appointment in appointments if appointment.date >= datetime.now().date()]
+        appointments_data = [
+            {
+                'AppointmentID': appointment.appointmentID,
+                'service': appointment.service.name,
+                'date': appointment.date.strftime('%Y-%m-%d'),
+                'time': appointment.time.strftime('%H:%M:%S'),
+                'duration': appointment.service.duration,
+                'description': appointment.description,
+                'notes': appointment.notes,
+                'status': appointment.status,
+                'patient': appointment.patient.user.username,
+                'doctor': appointment.doctor.user.username if appointment.doctor else None,
+                'nurse': appointment.nurse.user.username if appointment.nurse else None
+            }
+            for appointment in appointments
+        ]
+        data = {'success': 'true', 'appointments': appointments_data}
+    else:
+        data = {'success': 'false', 'error': 'User is not a doctor or Nurse'}
+    return JsonResponse(data)
+
+def historic_practitioner_appointments(request):
+    user = request.user
+    appointments= get_appointments_for_practitioner(user)
+    if appointments is not None:
+        appointments_data = [
+            {
+                'AppointmentID': appointment.appointmentID,
+                'service': appointment.service.name,
+                'date': appointment.date.strftime('%Y-%m-%d'),
+                'time': appointment.time.strftime('%H:%M:%S'),
+                'duration': appointment.service.duration,
+                'description': appointment.description,
+                'notes': appointment.notes,
+                'status': appointment.status,
+                'patient': appointment.patient.user.username,
+                'doctor': appointment.doctor.user.username if appointment.doctor else None,
+                'nurse': appointment.nurse.user.username if appointment.nurse else None
+            }
+            for appointment in appointments
+        ]
+        data = {'success': 'true', 'appointments': appointments_data}
+    else:
+        data = {'success': 'false', 'error': 'User is not a doctor or Nurse'}
+    return JsonResponse(data)
