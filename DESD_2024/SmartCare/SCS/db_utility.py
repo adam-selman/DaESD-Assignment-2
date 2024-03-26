@@ -136,69 +136,69 @@ def get_user_profile_by_user_id(user_id: int) -> int:
 
 def get_practitioners_by_day_and_service(service, day_of_week) -> dict:
 
-        doctors = []
-        nurses = []
+    doctors = []
+    nurses = []
 
-        doctor_can_perform = check_practitioner_service(service, doctor=True)
-        nurse_can_perform = check_practitioner_service(service, nurse=True)
+    doctor_can_perform = check_practitioner_service(service, doctor=True)
+    nurse_can_perform = check_practitioner_service(service, nurse=True)
 
-        if doctor_can_perform:
-            all_doctors = DoctorProfile.objects.all()
+    if doctor_can_perform:
+        all_doctors = DoctorProfile.objects.all()
 
-            for doctor in all_doctors:
-                doctor_user_profile = UserProfile.objects.filter(id=doctor.user_profile_id).first()
-                doctor_user_info = User.objects.filter(id=doctor_user_profile.user_id).first()
-                doctor_timetable = Timetable.objects.filter(practitioner_id=doctor.user_profile_id).first()
-                doctor_available = False
-                if day_of_week == "monday":
-                    doctor_available = doctor_timetable.monday
-                elif day_of_week == "tuesday":
-                    doctor_available = doctor_timetable.tuesday
-                elif day_of_week == "wednesday":
-                    doctor_available = doctor_timetable.wednesday
-                elif day_of_week == "thursday":
-                    doctor_available = doctor_timetable.thursday
-                elif day_of_week == "friday":
-                    doctor_available = doctor_timetable.friday
-                elif day_of_week == "saturday":
-                    doctor_available = doctor_timetable.saturday
-                elif day_of_week == "sunday":
-                    doctor_available = doctor_timetable.sunday
-                
-                if doctor_available:
-                    doctors.append((doctor_user_info.first_name + " " + doctor_user_info.last_name, doctor_user_info.id))
-    
-        if nurse_can_perform:
-            all_nurses = NurseProfile.objects.all()
+        for doctor in all_doctors:
+            doctor_user_profile = UserProfile.objects.filter(id=doctor.user_profile_id).first()
+            doctor_user_info = User.objects.filter(id=doctor_user_profile.user_id).first()
+            doctor_timetable = Timetable.objects.filter(practitioner_id=doctor.user_profile_id).first()
+            doctor_available = False
+            if day_of_week == "monday":
+                doctor_available = doctor_timetable.monday
+            elif day_of_week == "tuesday":
+                doctor_available = doctor_timetable.tuesday
+            elif day_of_week == "wednesday":
+                doctor_available = doctor_timetable.wednesday
+            elif day_of_week == "thursday":
+                doctor_available = doctor_timetable.thursday
+            elif day_of_week == "friday":
+                doctor_available = doctor_timetable.friday
+            elif day_of_week == "saturday":
+                doctor_available = doctor_timetable.saturday
+            elif day_of_week == "sunday":
+                doctor_available = doctor_timetable.sunday
+            
+            if doctor_available:
+                doctors.append((doctor_user_info.first_name + " " + doctor_user_info.last_name, doctor_user_info.id))
 
-            for nurse in all_nurses:
-                nurse_user_profile = UserProfile.objects.filter(id=nurse.user_profile_id).first()
-                nurse_user_info = User.objects.filter(id=nurse_user_profile.user_id).first()
+    if nurse_can_perform:
+        all_nurses = NurseProfile.objects.all()
 
-                nurse_timetable = Timetable.objects.filter(practitioner_id=nurse.user_profile_id).first()
-                
-                nurse_available = False
-                if day_of_week == "monday":
-                    nurse_available = nurse_timetable.monday
-                elif day_of_week == "tuesday":
-                    nurse_available = nurse_timetable.tuesday
-                elif day_of_week == "wednesday":
-                    nurse_available = nurse_timetable.wednesday
-                elif day_of_week == "thursday":
-                    nurse_available = nurse_timetable.thursday
-                elif day_of_week == "friday":
-                    nurse_available = nurse_timetable.friday
-                elif day_of_week == "saturday":
-                    nurse_available = nurse_timetable.saturday
-                elif day_of_week == "sunday":
-                    nurse_available = nurse_timetable.sunday
-                
-                if nurse_available:
-                    nurses.append((nurse_user_info.first_name + " " + nurse_user_info.last_name, nurse_user_info.id))
-        practitioners = {"doctors": doctors,
-                        "nurses": nurses}
+        for nurse in all_nurses:
+            nurse_user_profile = UserProfile.objects.filter(id=nurse.user_profile_id).first()
+            nurse_user_info = User.objects.filter(id=nurse_user_profile.user_id).first()
 
-        return practitioners
+            nurse_timetable = Timetable.objects.filter(practitioner_id=nurse.user_profile_id).first()
+            
+            nurse_available = False
+            if day_of_week == "monday":
+                nurse_available = nurse_timetable.monday
+            elif day_of_week == "tuesday":
+                nurse_available = nurse_timetable.tuesday
+            elif day_of_week == "wednesday":
+                nurse_available = nurse_timetable.wednesday
+            elif day_of_week == "thursday":
+                nurse_available = nurse_timetable.thursday
+            elif day_of_week == "friday":
+                nurse_available = nurse_timetable.friday
+            elif day_of_week == "saturday":
+                nurse_available = nurse_timetable.saturday
+            elif day_of_week == "sunday":
+                nurse_available = nurse_timetable.sunday
+            
+            if nurse_available:
+                nurses.append((nurse_user_info.first_name + " " + nurse_user_info.last_name, nurse_user_info.id))
+    practitioners = {"doctors": doctors,
+                    "nurses": nurses}
+
+    return practitioners
 
 
 def get_time_slots_by_day_and_practitioner(practitioner_id: int, booking_date) -> list:
@@ -320,7 +320,7 @@ def set_invoice_status(invoice_id: int, status: bool) -> bool:
         invoice.status = status
         invoice.save()
         success = True
-        
+
     except Exception as e:
         logger.info(e)
     
