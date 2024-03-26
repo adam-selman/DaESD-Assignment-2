@@ -1,3 +1,4 @@
+{% if clicked %}
 <table class="table table-hover">
     <thead>
         <tr class="table-info">
@@ -9,7 +10,7 @@
         </tr>
     </thead>
     <tbody>
-
+{% endif %}
 {% for patient in patients %}
 <tr class="table-dark">
 <td>{{ patient.user_profile }}</td>
@@ -23,6 +24,7 @@
 </tbody>
 </table>
 
+{% if clicked2 %}
 <table class="table table-hover">
     <thead>
         <tr class="table-info">
@@ -33,6 +35,7 @@
             <th>Note</th>
         </tr>
     </thead>
+    {% endif %}
     <tbody>
 
     {% for appointment in Appointments %}

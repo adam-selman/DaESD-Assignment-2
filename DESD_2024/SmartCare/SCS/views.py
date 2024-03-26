@@ -178,7 +178,7 @@ def doc(request):
     Returns:
         HttpResponse: Page response containing the doctor dashboard
     """
-    return render(request, 'doctor_dashboard.html')
+    return render(request, 'doctor_dashboard.html',{'clicked':False,'clicked2':False})
 
 @login_required(login_url='login')
 @custom_user_passes_test(is_patient)
@@ -421,7 +421,7 @@ def nurse(request):
     Returns:
         HttpResponse: Page response containing the nurse dashboard
     """
-    return render(request, 'nurse_dashboard.html')
+    return render(request, 'nurse_dashboard.html',{'clicked':False,'clicked2':False})
 
 @login_required(login_url='login')
 @custom_user_passes_test(is_doctor_or_nurse_or_admin)
@@ -438,7 +438,7 @@ def display_patients(request):
        # this query gets all the history appointments to the dashboard 
         appointment_details = Appointment.objects.all()
         # Render the doctor dashboard template
-        return render(request, 'doctor_dashboard.html', {'appointments': appointment_details, 'patients': patient_details})
+        return render(request, 'doctor_dashboard.html', {'appointments': appointment_details, 'patients': patient_details,'clicked':True})
     
     elif is_nurse(request.user):
         # Get the nurse's ID
@@ -452,7 +452,7 @@ def display_patients(request):
         appointment_details = Appointment.objects.all()
 
         
-        return render(request, 'nurse_dashboard.html', {'appointments': appointment_details, 'patients': patient_details})
+        return render(request, 'nurse_dashboard.html', {'appointments': appointment_details, 'patients': patient_details,'clicked':True})
     
 
     elif is_admin(request.user):
@@ -473,13 +473,13 @@ def currentAppt(request):
         doctor = request.user.id 
         appointments = Appointment.objects.filter(date=current_date, doctor=doctor)
 
-        return render(request, 'doctor_dashboard.html', {'Appointments': appointments})
+        return render(request, 'doctor_dashboard.html', {'Appointments': appointments ,'clicked2':True})
     elif is_nurse(request.user):
         current_date = date.today()
         nurse = request.user.id 
         appointments = Appointment.objects.filter(date=current_date, nurse=nurse)
 
-        return render(request, 'nurse_dashboard.html', {'Appointments': appointments})
+        return render(request, 'nurse_dashboard.html', {'Appointments': appointments,'clicked2':True})
 
 
 
