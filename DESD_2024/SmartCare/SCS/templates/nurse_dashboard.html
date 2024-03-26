@@ -113,44 +113,4 @@
 {% endblock %}
 
 
-<script>
-    function fetchAppointments() {
-    fetch('/api/appointments/')  // Replace with the actual API endpoint URL
-        .then(response => response.json())
-        .then(data => {
-            const appointmentData = document.getElementById('appointment-data');
-            appointmentData.innerHTML = '';  // Clear any existing data
 
-            data.forEach(appointment => {
-                const row = document.createElement('tr');
-                row.classList.add('table-dark');
-
-                const timeCell = document.createElement('td');
-                timeCell.textContent = appointment.time;
-                row.appendChild(timeCell);
-
-                const patientCell = document.createElement('td');
-                patientCell.textContent = appointment.patient.user_profile;
-                row.appendChild(patientCell);
-
-                const serviceCell = document.createElement('td');
-                serviceCell.textContent = appointment.service;
-                row.appendChild(serviceCell);
-
-                const durationCell = document.createElement('td');
-                durationCell.textContent = appointment.service.duration;
-                row.appendChild(durationCell);
-
-                const notesCell = document.createElement('td');
-                notesCell.textContent = appointment.notes;
-                row.appendChild(notesCell);
-
-                appointmentData.appendChild(row);
-            });
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-}
-
-</script>

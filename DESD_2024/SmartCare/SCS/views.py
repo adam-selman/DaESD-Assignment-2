@@ -429,9 +429,14 @@ def display_patients(request):
         # Retrieve the list of patients assigned to the doctor
         patients = Appointment.objects.filter(doctor_id=doctor_id).values('patient')
         # Retrieve the patient details
-        patient_details = PatientProfile.objects.filter(user_profile__in=patients)
+        patient_names = [PatientProfile.objects.get(id=patient['patient']).user_profile for patient in patients]
+        
+        patient_details = PatientProfile.objects.filter(user_profile__user__username__in=patient_names)
+       # this query gets all the history appointments to the dashboard 
+        appointment_details = Appointment.objects.all()
         # Render the doctor dashboard template
-        return render(request, 'doctor_dashboard.html', {'patients': patient_details})
+        return render(request, 'doctor_dashboard.html', {'appointments': appointment_details, 'patients': patient_details})
+    
     elif is_nurse(request.user):
         # Get the nurse's ID
         nurse_id = request.user.id
@@ -440,18 +445,15 @@ def display_patients(request):
         patient_names = [PatientProfile.objects.get(id=patient['patient']).user_profile for patient in patients]
         
         patient_details = PatientProfile.objects.filter(user_profile__user__username__in=patient_names)
-       
+        # this query gets all the history appointments to the dashboard 
         appointment_details = Appointment.objects.all()
-        ##patient_details_json = json.dumps(list(patient_details.values()))
-        #appointment_details_json = json.dumps(list(appointment_details.values()))
-
-        #return render(request, 'nurse_dashboard.html', {'patient_details_json': patient_details_json, 'appointment_details_json': appointment_details_json})
 
         
         return render(request, 'nurse_dashboard.html', {'appointments': appointment_details, 'patients': patient_details})
     
 
     elif is_admin(request.user):
+        # get all patients details and appointments rregardless of the staff memeber allocated to them 
         patient_details = PatientProfile.objects.all()
         appointment_details = Appointment.objects.all()
         return render(request,'admin_dashboard.html',{'patients':patient_details,'appointments': appointment_details})
@@ -462,11 +464,18 @@ def display_patients(request):
 
 
 def currentAppt(request):
-    current_date = date.today()
-    nurse = request.user.id  # Assuming the logged-in user is the nurse
-    appointments = Appointment.objects.filter(date=current_date, nurse=nurse)
-    #return JsonResponse({'success':True,'data':{'Appointments':appointments}})
-    return render(request, 'nurse_dashboard.html', {'Appointments': appointments})
+    if is_doctor(request.user):
+        current_date = date.today()
+        doctor = request.user.id 
+        appointments = Appointment.objects.filter(date=current_date, doctor=doctor)
+
+        return render(request, 'doctor_dashboard.html', {'Appointments': appointments})
+    elif is_nurse(request.user):
+        current_date = date.today()
+        nurse = request.user.id 
+        appointments = Appointment.objects.filter(date=current_date, nurse=nurse)
+
+        return render(request, 'nurse_dashboard.html', {'Appointments': appointments})
 
 
 
