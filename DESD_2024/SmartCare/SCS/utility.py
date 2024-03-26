@@ -189,8 +189,7 @@ def create_invoice_file(invoice_id: int) -> tuple:
     user = User.objects.get(id=patient.user_id)
 
     # getting files ready
-    static_dir = settings.STATIC_ROOT
-    invoice_template_path = os.path.join(static_dir, settings.INVOICE_TEMPLATE_FILENAME)
+    invoice_template_path = settings.INVOICE_TEMPLATE_PATH
     file_name = f"{user.first_name}_{user.last_name}_invoice_{invoice_id}.txt"
 
     with open(invoice_template_path, 'r') as file:
