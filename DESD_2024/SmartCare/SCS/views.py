@@ -71,6 +71,9 @@ def is_admin(user):
 def is_doctor_or_nurse_or_admin(user):
     return user.groups.filter(name__in=['doctor_group', 'nurse_group','admin_group']).exists()
 
+def is_doctor_or_nurse(user):
+    return user.groups.filter(name__in=['doctor_group', 'nurse_group']).exists()
+
 def custom_user_passes_test(test_func):
     def decorator(view_func):
         def wrapper(request, *args, **kwargs):
@@ -462,7 +465,8 @@ def display_patients(request):
         return HttpResponseNotFound("404 Error: Page not found")
     
 
-
+@login_required(login_url='login')
+@custom_user_passes_test(is_doctor_or_nurse)
 def currentAppt(request):
     if is_doctor(request.user):
         current_date = date.today()
