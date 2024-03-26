@@ -21,6 +21,40 @@ from .models import DoctorProfile, NurseProfile, UserProfile, User, Timetable, S
 from .utility import get_medical_services, check_practitioner_service , APPOINTMENT_TIMES, get_user_profile_by_user_id, parse_times_for_view
 
 logger = logging.getLogger(__name__)
+def register_doctor_nurse(request):
+    if request.method == 'POST':
+        form = DoctorNurseRegistrationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            user_type = form.cleaned.data.get('user_type')
+            UserProfile.objects.create(user=user, user_type=user_type)
+            if user_type == 'doctor':
+                DoctorProfile.objects.create(
+                    user_profile=user.userprofile,
+                    specialization=form.cleaned_data['specialization'],
+                    isPartTime=form.cleaned_data['isPartTime']
+                )
+            elif user_type == 'nurse':
+                NurseProfile.objects.create(user_profile=user.userprofile)
+            return redirect('home')
+        else:
+            form = DoctorNurseRegistrationForm()
+        return render(request, 'staff_register.html', {'form': form})
+            
+
+def register(request):
+    if request.method == 'POST':
+        form = UserRegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            # Create a profile for the new user
+            profile = UserProfile(user=user, user_type='patient')
+            profile.save()
+            login(request, user)
+            return redirect('home')
+    else:
+        form = UserRegisterForm()
+    return render(request, 'register.html', {'form': form})
 
 def is_doctor(user):
     return user.groups.filter(name='doctor_group').exists()
