@@ -2,5 +2,84 @@
 {% block content%}
 {% include 'CheckSession.html' %}
 <p>admin page</p>
+<table class="table table-hover">
+    <thead>
+        <tr class="table-info">
+            <th>Patient name</th>
+            <th> Age</th>
+            <th>Known allergies</th>
+            <th>Private billing</th>
+            <th>Details</th>
+
+        </tr>
+    </thead>
+    <tbody>
+{% for patient in patients %}
+<tr class="table-dark">
+<td>{{ patient.user_profile }}</td>
+<td>{{ patient.age }}</td>
+<td>{{ patient.allergies }}</td>
+<td>{{ patient.isPrivate }}</td>
+<td><button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal1{{patient.user_profile}}">History</button>
+<button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal2{{patient.user_profile}}">Update</button>
+<button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal3{{patient.user_profile}}">Delete</button></td>
+</tr>
+   
+{% endfor %}
+</tbody>
+</table>
+{% for patient in patients %}
+
+<div class="modal fade" id="modal1{{ patient.user_profile }}" tabindex="-1" role="dialog" aria-labelledby="modal{{ patient.user_profile}}Label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal{{patient.user_profile}}Label">Details for {{ patient.user_profile }}</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-hover">
+                    <thead>
+                        <tr class="table-info">
+                            <th>Appointemnt </th>
+                            <th> Date</th>
+                            <th>Service</th>
+                            <th>Description </th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+               
+                    {% for appt in appointments %}
+                   
+                    {% if appt.patient.user_profile == patient.user_profile %}
+                  
+                 
+                
+                       
+                    <tr class="table-dark" data1-row-id="{{patient.user_profile}}">
+                      
+                        <td>{{appt.appointmentID}}</td>
+                        <td>{{ appt.date }}</td>
+                        <td>{{ appt.service}}</td>
+                        <td>{{ appt.description }}</td>
+                        <td>{{ appt.notes }}</td>
+    
+                    
+                    {% endif %}
+                    {% endfor %}
+                </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
 
 {% endblock %}
