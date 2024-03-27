@@ -47,6 +47,12 @@ def get_user_profile(user_id):
     except UserProfile.DoesNotExist:
         return None
     
+def get_patient_profile(user_id):
+    try:
+        return PatientProfile.objects.get(pk=int(user_id))
+    except PatientProfile.DoesNotExist:
+        return None 
+    
 def check_duplicate_user(username):
     try:
         User.objects.get(username = username)
@@ -272,7 +278,7 @@ def populate_appointment(csvFileName, modelClass):
                 continue
 
             if 'patient' in objData:
-                patient_profile = get_user_profile(objData['patient'])
+                patient_profile = get_patient_profile(objData['patient'])
                 objData['patient'] = patient_profile
 
             if 'doctor' in objData:

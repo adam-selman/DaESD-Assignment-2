@@ -14,6 +14,11 @@ from django.contrib.auth import authenticate, login , logout
 from django.middleware.csrf import get_token
 
 from django.contrib.auth.decorators import user_passes_test
+from django.http import HttpResponseNotFound
+from django.shortcuts import get_object_or_404
+from .models import DoctorProfile, NurseProfile, UserProfile, User, Timetable, Service, Appointment, PatientProfile
+from .forms import UserRegisterForm, DoctorNurseRegistrationForm
+from datetime import date
 
 from .models import DoctorProfile, NurseProfile, UserProfile, User, Timetable, Service, Appointment, Invoice
 
@@ -24,6 +29,40 @@ from .db_utility import get_service_by_appointment_id, check_practitioner_servic
 from .utility import APPOINTMENT_TIMES, parse_times_for_view, calculate_appointment_cost, generate_invoice_file_content
 
 logger = logging.getLogger(__name__)
+def register_doctor_nurse(request):
+    if request.method == 'POST':
+        form = DoctorNurseRegistrationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            user_type = form.cleaned.data.get('user_type')
+            UserProfile.objects.create(user=user, user_type=user_type)
+            if user_type == 'doctor':
+                DoctorProfile.objects.create(
+                    user_profile=user.userprofile,
+                    specialization=form.cleaned_data['specialization'],
+                    isPartTime=form.cleaned_data['isPartTime']
+                )
+            elif user_type == 'nurse':
+                NurseProfile.objects.create(user_profile=user.userprofile)
+            return redirect('home')
+        else:
+            form = DoctorNurseRegistrationForm()
+        return render(request, 'staff_register.html', {'form': form})
+            
+
+def register(request):
+    if request.method == 'POST':
+        form = UserRegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            # Create a profile for the new user
+            profile = UserProfile(user=user, user_type='patient')
+            profile.save()
+            login(request, user)
+            return redirect('home')
+    else:
+        form = UserRegisterForm()
+    return render(request, 'register.html', {'form': form})
 
 def is_doctor(user):
     return user.groups.filter(name='doctor_group').exists()
@@ -37,11 +76,27 @@ def is_patient(user):
 def is_admin(user):
     return user.groups.filter(name='admin_group').exists()
 
+def is_doctor_or_nurse_or_admin(user):
+    return user.groups.filter(name__in=['doctor_group', 'nurse_group','admin_group']).exists()
+
+def is_doctor_or_nurse(user):
+    return user.groups.filter(name__in=['doctor_group', 'nurse_group']).exists()
+
+def custom_user_passes_test(test_func):
+    def decorator(view_func):
+        def wrapper(request, *args, **kwargs):
+            if test_func(request.user):
+                return view_func(request, *args, **kwargs)
+            else:
+                return HttpResponseNotFound("404 Error: Page does not exist")
+        return wrapper
+    return decorator
+
 def index(request):
     """
     View function for the index page
 
-    Args:
+    Args:  
         request (HttpRequest): Django view request object 
 
     Returns:
@@ -120,7 +175,7 @@ def Login(request):
     return render(request, 'login.html',{'csrf_token':csrf_token,'check':check}) 
 
 @login_required(login_url='login')
-@user_passes_test(is_doctor, login_url='login')
+@custom_user_passes_test(is_doctor)
 def doc(request):
     """
     View function for the doctor dashboard
@@ -131,10 +186,10 @@ def doc(request):
     Returns:
         HttpResponse: Page response containing the doctor dashboard
     """
-    return render(request, 'doctor_dashboard.html')
+    return render(request, 'doctor_dashboard.html',{'clicked':False,'clicked2':False})
 
 @login_required(login_url='login')
-@user_passes_test(is_patient, login_url='login')
+@custom_user_passes_test(is_patient)
 def patient(request):
     invoices = get_invoice_information_by_user_id(request.user.id)
     logger.info(f"Invoices: {invoices}")
@@ -229,7 +284,7 @@ def patient_appointment_booking(request) -> JsonResponse:
     return JsonResponse(data) 
 
 @login_required(login_url='login')
-@user_passes_test(is_admin, login_url='login')
+@custom_user_passes_test(is_admin)
 def admin(request):
     """
     View function for the admin dashboard
@@ -243,7 +298,7 @@ def admin(request):
     return render(request, 'admin_dashboard.html')
 
 @login_required(login_url='login')
-@user_passes_test(is_nurse, login_url='login')
+@custom_user_passes_test(is_nurse)
 def nurse(request):
     """
     View function for the nurse dashboard
@@ -254,7 +309,71 @@ def nurse(request):
     Returns:
         HttpResponse: Page response containing the nurse dashboard
     """
-    return render(request, 'nurse_dashboard.html')
+    return render(request, 'nurse_dashboard.html',{'clicked':False,'clicked2':False})
+
+@login_required(login_url='login')
+@custom_user_passes_test(is_doctor_or_nurse_or_admin)
+def display_patients(request):
+    if is_doctor(request.user):
+        # Get the doctor's ID
+        doctor_id = request.user.id
+        # Retrieve the list of patients assigned to the doctor
+        patients = Appointment.objects.filter(doctor_id=doctor_id).values('patient')
+        # Retrieve the patient details
+        patient_names = [PatientProfile.objects.get(id=patient['patient']).user_profile for patient in patients]
+        
+        patient_details = PatientProfile.objects.filter(user_profile__user__username__in=patient_names)
+       # this query gets all the history appointments to the dashboard 
+        appointment_details = Appointment.objects.all()
+        # Render the doctor dashboard template
+        return render(request, 'doctor_dashboard.html', {'appointments': appointment_details, 'patients': patient_details,'clicked':True})
+    
+    elif is_nurse(request.user):
+        # Get the nurse's ID
+        nurse_id = request.user.id
+        # Retrieve the list of patients assigned to the nurse
+        patients = Appointment.objects.filter(nurse_id=nurse_id).values('patient')
+        patient_names = [PatientProfile.objects.get(id=patient['patient']).user_profile for patient in patients]
+        
+        patient_details = PatientProfile.objects.filter(user_profile__user__username__in=patient_names)
+        # this query gets all the history appointments to the dashboard 
+        appointment_details = Appointment.objects.all()
+
+        
+        return render(request, 'nurse_dashboard.html', {'appointments': appointment_details, 'patients': patient_details,'clicked':True})
+    
+
+    elif is_admin(request.user):
+        # get all patients details and appointments rregardless of the staff memeber allocated to them 
+        patient_details = PatientProfile.objects.all()
+        appointment_details = Appointment.objects.all()
+        return render(request,'admin_dashboard.html',{'patients':patient_details,'appointments': appointment_details})
+
+    else:
+        return HttpResponseNotFound("404 Error: Page not found")
+    
+
+@login_required(login_url='login')
+@custom_user_passes_test(is_doctor_or_nurse)
+def currentAppt(request):
+    if is_doctor(request.user):
+        current_date = date.today()
+        doctor = request.user.id 
+        appointments = Appointment.objects.filter(date=current_date, doctor=doctor)
+
+        return render(request, 'doctor_dashboard.html', {'Appointments': appointments ,'clicked2':True})
+    elif is_nurse(request.user):
+        current_date = date.today()
+        nurse = request.user.id 
+        appointments = Appointment.objects.filter(date=current_date, nurse=nurse)
+
+        return render(request, 'nurse_dashboard.html', {'Appointments': appointments,'clicked2':True})
+
+
+
+
+
+
 
 
 def Logout(request):
