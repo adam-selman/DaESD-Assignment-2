@@ -158,18 +158,20 @@ if (data.success) {
 
   // resetting form fields
   service = document.getElementById('service')
-  service.value = createSelectPlaceholderElement("Select a Service");
+  servicePlaceHolder = createSelectPlaceholderElement("Select a Service");
+  service.append(servicePlaceHolder); 
 
   bookingDate = document.getElementById('bookingDate')
-  bookingDate.value = createSelectPlaceholderElement("Select a Date");
-  bookingDate.disabled = true;
+  bookingDate.value = "";
 
   practitionerSelect = document.getElementById('practitioner')
-  practitionerSelect.value = createSelectPlaceholderElement("Select a Practitioner");
+  practitionerPlaceHolder = createSelectPlaceholderElement("Select a Practitioner");
+  practitionerSelect.append(practitionerPlaceHolder);
   practitionerSelect.disabled = true;
 
   timeSlotSelect = document.getElementById('timeSlot')
-  timeSlotSelect.value = createSelectPlaceholderElement("Select a Time Slot");
+  timeSlotPlaceHolder = createSelectPlaceholderElement("Select a Time Slot");
+  timeSlotSelect.append(timeSlotPlaceHolder);
   timeSlotSelect.disabled = true;
 
   reason = document.getElementById('reason').value = "";    
