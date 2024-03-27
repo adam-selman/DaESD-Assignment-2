@@ -42,6 +42,18 @@ def index(request):
     csrf_token = get_token(request)
     return render(request, 'index.html',{'csrf_token':csrf_token})
 
+def get_user_type(user_id):
+    try:
+        # Retrieve the user profile associated with the user_id
+        user_profile = UserProfile.objects.get(user_id=user_id)
+        
+        # Access the user type from the user profile
+        user_type = user_profile.user_type
+        
+        return user_type
+    except UserProfile.DoesNotExist:
+        return None  # Handle case where user profile does not exist for the given user ID
+
 def Auth(request):
     """
     View function for the authentication page
@@ -52,7 +64,20 @@ def Auth(request):
     Returns:
         HttpResponse: Page response containing the authentication page
     """
-    return render(request, 'Auth.html')
+    user_type = ""
+    if request.user.is_authenticated:
+        user = request.user
+        user_id = request.user.id
+        user_name = user.get_full_name()
+        user_type = get_user_type(user_id)
+        if user_type is None:
+            user_type = ""
+    else:
+        user_name = ""
+    
+    
+        
+    return render(request, 'Auth.html', {'user_name':user_name, 'user_type':user_type})
 
 @login_required
 def Session(request):

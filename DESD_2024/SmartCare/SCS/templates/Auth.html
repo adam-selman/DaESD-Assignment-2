@@ -65,7 +65,14 @@
         <div class="col-lg-4">
           <h2 class="fw-normal">Sign in!!!</h2>
           <p>If you are already a user of the SmartCare products please click the button below to be redirected to the login page.</p>
-          <p><a class="btn btn-secondary" href="login">Login »</a></p>
+          {% if user.is_authenticated %}
+            <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-html="true" title="Already signed in!!" onclick="show_message()">
+              Login »
+            </button>
+          {% else %}
+            <p><a class="btn btn-secondary" href="login">Login »</a></p>
+          {% endif %}
+          <p id="message"></p>
         </div><!-- /.col-lg-4 -->
         <div class="col-lg-4">
           
@@ -129,4 +136,10 @@
       <p>© 2017–2024 Company, Inc. · <a href="#">Privacy</a> · <a href="#">Terms</a></p>
     </footer>
 </main>
+<script>
+  function show_message(){
+    var message = document.getElementById("message")
+    message.innerHTML = "You have already signed in!!!"
+  }
+</script>
 {% endblock %}
