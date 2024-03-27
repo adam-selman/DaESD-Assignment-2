@@ -206,7 +206,7 @@ def doc(request):
     user_type = "doctor"
     user = request.user
     user_name = user.get_full_name
-    return render(request, 'doctor_dashboard.html',{'clicked':False,'clicked2':False}, {'user_type': user_type, 'user_name':user_name})
+    return render(request, 'doctor_dashboard.html',{'clicked':False,'clicked2':False,'user_type': user_type, 'user_name':user_name})
 
 @login_required(login_url='login')
 @custom_user_passes_test(is_patient)
@@ -458,7 +458,7 @@ def nurse(request):
     user_type = "nurse"
     user = request.user
     user_name = user.get_full_name
-    return render(request, 'nurse_dashboard.html', {'user_type': user_type, "user_name": user_name},{'clicked':False,'clicked2':False})
+    return render(request, 'nurse_dashboard.html', {'user_type': user_type, "user_name": user_name,'clicked':False,'clicked2':False})
 
 @login_required(login_url='login')
 @custom_user_passes_test(is_doctor_or_nurse_or_admin)
