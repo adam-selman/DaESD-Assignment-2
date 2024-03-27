@@ -2,7 +2,7 @@ from datetime import datetime
 import logging 
 import copy 
 
-from .models import Service, Invoice, DoctorServiceRate, Timetable, NurseServiceRate, User, DoctorProfile, NurseProfile, UserProfile, Appointment
+from .models import Service, Invoice, DoctorServiceRate, Timetable, NurseServiceRate, User, DoctorProfile, NurseProfile, UserProfile, Appointment, PatientProfile
 from .utility import BILLABLE_PARTIES, calculate_appointment_cost, APPOINTMENT_TIMES
 
 
@@ -133,7 +133,20 @@ def get_user_profile_by_user_id(user_id: int) -> int:
         UserProfile: The user profile of the user
     """
     user_profile = UserProfile.objects.get(user_id=user_id)
-    return user_profile.user_type
+    return user_profile
+
+def get_patient_profile_by_user_id(user_id: int) -> int:
+    """
+    Returns the patient profile 
+    Args:
+        user_id (int): The user id 
+
+    Returns:
+        PatientProfile: The patient profile of the user
+    """
+    user_profile = UserProfile.objects.get(user_id=user_id)
+    patient_profile = PatientProfile.objects.get(user_profile_id=user_profile.id)
+    return patient_profile
 
 def get_practitioners_by_day_and_service(service, day_of_week) -> dict:
 
@@ -230,7 +243,7 @@ def get_time_slots_by_day_and_practitioner(practitioner_id: int, booking_date) -
     booked_times = []
     # Get the booked times
     for appointment in booked_appointments:
-        booked_times.append([appointment.time, appointment.duration_id])
+        booked_times.append([appointment.time, appointment.service.duration])
     
     
     available_times = copy.deepcopy(APPOINTMENT_TIMES)
@@ -273,6 +286,7 @@ def make_patient_appointment_booking(patient, booking_date, service_id, practiti
         data = {'success': 'false', 'error': 'Invalid form data'}
     else:
         practitioner_user_profile = get_user_profile_by_user_id(practitioner)
+        patient_profile = get_patient_profile_by_user_id(patient)
 
         existing_appointment = len(Appointment.objects.filter(patient_id=patient.id, date=booking_date, time=time).all()) != 0
         if not existing_appointment:
@@ -281,17 +295,15 @@ def make_patient_appointment_booking(patient, booking_date, service_id, practiti
                                                             time=time,
                                                             description=reason,
                                                             doctor_id=practitioner,
-                                                            patient_id=patient.id,
-                                                            service_id=service_id,
-                                                            duration_id=service_id)
+                                                            patient_id=patient_profile.id,
+                                                            service_id=service_id)
             else:
                 new_appointment = Appointment.objects.create(date=booking_date,
                                                             time=time,
                                                             description=reason,
                                                             nurse_id=practitioner,
                                                             patient_id=patient.id,
-                                                            service_id=service_id, 
-                                                            duration=service_id)
+                                                            service_id=service_id)
 
             new_appointment.save()
             logger.info("New appointment created successfully for patient: " + str(patient.id) + \
