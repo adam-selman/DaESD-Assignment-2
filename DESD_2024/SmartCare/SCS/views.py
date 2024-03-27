@@ -51,7 +51,12 @@ def register(request):
             profile = UserProfile(user=user, user_type='patient')
             profile.save()
             login(request, user)
-            return redirect('home')
+            firstname = form.cleaned_data['firstname']
+            lastname = form.cleaned_data['lastname']
+            
+            user_name = f"{firstname} {lastname}"
+            request.session['user_name'] = user_name
+            return redirect('auth')
     else:
         form = UserRegisterForm()
     return render(request, 'register.html', {'form': form})
@@ -119,20 +124,21 @@ def Auth(request):
     Returns:
         HttpResponse: Page response containing the authentication page
     """
+    msg = ""
     user_type = ""
     if request.user.is_authenticated:
-        user = request.user
         user_id = request.user.id
-        user_name = user.get_full_name()
         user_type = get_user_type(user_id)
-        if user_type is None:
-            user_type = ""
+        user_name = request.session.get('user_name')
+        if user_name == "" or user_name is None:
+            user = request.user
+            user_name = user.get_full_name()
     else:
         user_name = ""
     
     
         
-    return render(request, 'Auth.html', {'user_name':user_name, 'user_type':user_type})
+    return render(request, 'Auth.html', {'user_name':user_name, 'user_type':user_type, 'msg': msg})
 
 @login_required
 def Session(request):
@@ -171,8 +177,9 @@ def Login(request):
             user_profile = UserProfile.objects.get(user=user)
             user_type = user_profile.user_type
             
+            
             login(request, user)
-        
+            
             if user_type == 'doctor':
                 return redirect('docDash')
             elif user_type == 'patient':
@@ -215,6 +222,10 @@ def patient(request):
     user_type = "patient"
     user = request.user
     user_name = user.get_full_name
+    if user_name == "" or user_name is None:
+        user_name = request.session.get('user_name')
+        if user_name is None:
+            user_name = ""
     context = {"services": services, "user_type": user_type, "user_name": user_name}
     return render(request, 'patient_dashboard.html', context)
 

@@ -19,21 +19,20 @@
     </head>
     <body>
        
-     
-        <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
-            <div class="container-fluid">
-              <a class="navbar-brand" href="/">SmartCare</a>
-              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-              </button>
-              <div class="collapse navbar-collapse" id="navbarNavDropdown">
-                <ul class="navbar-nav me-auto">
-                  <li class="nav-item">
-                    <a class="nav-link active" href="/">Home
-                      <span class="visually-hidden">(current)</span>
-                    </a>
-                  </li>
-                  {% if user.is_authenticated %}
+      <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="/">SmartCare</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarColor02">
+            <ul class="navbar-nav me-auto">
+              <li class="nav-item">
+                <a class="nav-link active" href="/">Home
+                  <span class="visually-hidden">(current)</span>
+                </a>
+              </li>
+              {% if user.is_authenticated %}
                   <li class="nav-item dropdown">
                     <a a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false" href="logout">
                       {% if user_type == 'doctor' %}
@@ -65,13 +64,14 @@
                     <a class="nav-link active" href="login">Login</a>
                   </li>
                   {% endif %}
-                  
-                 
-                </ul>
-               
-              </div>
-            </div>
-          </nav>
+             
+             
+            </ul>
+           
+          </div>
+        </div>
+      </nav>
+        
         
 <div id='1' class='container' >
 

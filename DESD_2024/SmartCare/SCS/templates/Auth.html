@@ -2,6 +2,14 @@
 {% block content%}
 {% load static %}
 <main>
+    {% if user_name != ''%}
+      <div class="alert alert-primary alert-dismissible fade show" role="alert">
+        <strong>Welcome {{user_name}}!! {{msg}}!!!</strong> 
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    {% endif %}
     <div id="myCarousel" class="carousel slide mb-6" data-bs-ride="carousel">
       <div class="carousel-indicators">
         <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="0" class="" aria-label="Slide 1"></button>
@@ -141,5 +149,17 @@
     var message = document.getElementById("message")
     message.innerHTML = "You have already signed in!!!"
   }
+
+  var closeButton = document.querySelector('.close');
+
+  // Add click event listener to the close button
+  closeButton.addEventListener('click', function() {
+    // Get the alert element
+    var alert = document.querySelector('.alert');
+
+    // Hide the alert using Bootstrap's built-in method
+    var bsAlert = new bootstrap.Alert(alert);
+    bsAlert.close();
+  });
 </script>
 {% endblock %}
