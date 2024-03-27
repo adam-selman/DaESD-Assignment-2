@@ -1,7 +1,7 @@
 {% extends 'index.html' %}
 {% block content%}
 {% include 'CheckSession.html' %}
-<p>doc page</p>
+<p>Welcome {{ user.username }}</p>
 {% include 'extendedNurseDocDash.html' %}
 
 {% endblock %}
