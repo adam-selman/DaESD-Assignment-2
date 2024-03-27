@@ -5,6 +5,7 @@ import copy
 from .models import Service, Invoice, DoctorServiceRate, Timetable, NurseServiceRate, User, DoctorProfile, NurseProfile, UserProfile, Appointment
 from .utility import BILLABLE_PARTIES, calculate_appointment_cost, APPOINTMENT_TIMES
 
+
 logger = logging.getLogger(__name__)
 
 def get_service_by_appointment_id(appointment_id: int) -> Service:
@@ -132,7 +133,7 @@ def get_user_profile_by_user_id(user_id: int) -> int:
         UserProfile: The user profile of the user
     """
     user_profile = UserProfile.objects.get(user_id=user_id)
-    return user_profile
+    return user_profile.user_type
 
 def get_practitioners_by_day_and_service(service, day_of_week) -> dict:
 
@@ -325,3 +326,16 @@ def set_invoice_status(invoice_id: int, status: bool) -> bool:
         logger.info(e)
     
     return success
+
+def get_user_type_by_id(user_id: int) -> str:
+    """
+    Returns the user type of a user
+
+    Args:
+        user_id (int): The id of the user
+
+    Returns:
+        str: The user type of the user
+    """
+    user_profile = UserProfile.objects.get(user_id=user_id)
+    return user_profile.user_type

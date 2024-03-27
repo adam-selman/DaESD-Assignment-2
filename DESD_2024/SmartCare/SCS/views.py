@@ -23,7 +23,7 @@ from datetime import date
 from .models import DoctorProfile, NurseProfile, UserProfile, User, Timetable, Service, Appointment, Invoice
 
 
-from .db_utility import get_service_by_appointment_id, check_practitioner_service, get_invoice_information_by_user_id, \
+from .db_utility import get_user_profile_by_user_id, check_practitioner_service, get_invoice_information_by_user_id, \
                     get_medical_services, get_user_profile_by_user_id, get_practitioners_by_day_and_service,  \
                          make_patient_appointment_booking, get_time_slots_by_day_and_practitioner
 from .utility import APPOINTMENT_TIMES, parse_times_for_view, calculate_appointment_cost, generate_invoice_file_content
@@ -59,7 +59,14 @@ def register(request):
             profile = UserProfile(user=user, user_type='patient')
             profile.save()
             login(request, user)
-            return redirect('home')
+            if profile.user_type == 'doctor':
+                return redirect('docDash')
+            elif profile.user_type == 'patient':
+                return redirect('patDash')
+            elif profile.user_type == 'nurse':
+                return redirect('nursDash')
+            else:
+                raise ValueError("User type not recognized")
     else:
         form = UserRegisterForm()
     return render(request, 'register.html', {'form': form})
