@@ -253,8 +253,10 @@ def get_time_slots_by_day_and_practitioner(practitioner_id: int, booking_date) -
         if time in available_times:
             # Remove the time and the following n times based on the duration
             index = available_times.index(time)
-            for i in range(duration):
-                available_times.pop(index + i)
+            appointment_segments = available_times[index:index + duration]
+            for time in appointment_segments:
+                available_times.remove(time)
+
     if booking_date == current_date:
         # removing invalid times
         times_to_remove = []
