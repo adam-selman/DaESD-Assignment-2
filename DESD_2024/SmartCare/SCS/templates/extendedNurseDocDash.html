@@ -4,11 +4,18 @@
     <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-html="true" title="Already signed in!!" >
         <a class = "link_style" href="DisplayPatients">Display patients</a>
     </button>
-    
+   
     <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-html="true" title="Already signed in!!" >
         <a class = "link_style" href="DisplayAppt">Display today's appointments</a>
     </button>
-    {% endif %}
+      <br>
+    <a href="DisplayHistoricAppointments">Display all appointments</a>
+    <br>
+    <a href="DisplayPendingPrescriptions">Display pending prescriptions</a>
+    <br>
+    <a href="DisplayPrescriptions">Display all prescriptions</a>
+
+  {% endif %}
 </div>
 <br>
 {% if clicked %}
@@ -19,22 +26,24 @@
             <th> Age</th>
             <th>Known allergies</th>
             <th>Private billing</th>
-            <th>Details</Details></th>
+            <th>Details</Details>
+            </th>
         </tr>
     </thead>
     <tbody>
-{% endif %}
-{% for patient in patients %}
-<tr class="table-dark">
-<td>{{ patient.user_profile }}</td>
-<td>{{ patient.age }}</td>
-<td>{{ patient.allergies }}</td>
-<td>{{ patient.isPrivate }}</td>
-<td><button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal1{{patient.user_profile}}">History</button></td>
-</tr>
-   
-{% endfor %}
-</tbody>
+        {% endif %}
+        {% for patient in patients %}
+        <tr class="table-dark">
+            <td>{{ patient.user_profile }}</td>
+            <td>{{ patient.age }}</td>
+            <td>{{ patient.allergies }}</td>
+            <td>{{ patient.isPrivate }}</td>
+            <td><button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#modal1{{patient.user_profile}}">History</button></td>
+        </tr>
+
+        {% endfor %}
+    </tbody>
 </table>
 
 {% if clicked2 %}
@@ -51,29 +60,125 @@
     {% endif %}
     <tbody>
 
-    {% for appointment in Appointments %}
-       
-    <tr class="table-dark" >
-      
-        <td>{{appointment.time}}</td>
-        <td>{{ appointment.patient.user_profile }}</td>
-        <td>{{ appointment.service}}</td>
-        <td>{{ appointment.service.duration }}</td>
-        <td>{{ appointment.notes }}</td>
+        {% for appointment in Appointments %}
 
-  
-    {% endfor %}
-</tr>
+        <tr class="table-dark">
+
+            <td>{{appointment.time}}</td>
+            <td>{{ appointment.patient.user_profile }}</td>
+            <td>{{ appointment.service}}</td>
+            <td>{{ appointment.service.description }}</td>
+            <td>{{ appointment.notes }}</td>
+
+
+            {% endfor %}
+        </tr>
     </tbody>
 </table>
 
+{% if clicked3 %}
+<table class="table table-hover">
+    <thead>
+        <tr class="table-info">
+            <th>Appointemnt </th>
+            <th> Date</th>
+            <th>Service</th>
+            <th>Description </th>
+            <th>Note</th>
+        </tr>
+    </thead>
+    {% endif %}
+    <tbody>
+
+        {% for appointment in historic_appointments %}
+
+        <tr class="table-dark">
+
+            <td>{{appointment.time}}</td>
+            <td>{{ appointment.patient.user_profile }}</td>
+            <td>{{ appointment.service}}</td>
+            <td>{{ appointment.service.description }}</td>
+            <td>{{ appointment.notes }}</td>
+
+
+            {% endfor %}
+        </tr>
+    </tbody>
+</table>
+
+{% if clicked4 %}
+<table class="table table-hover">
+    <thead>
+        <tr class="table-info">
+            <th>Patient name </th>
+            <th>Medication</th>
+            <th>Quantity</th>
+            <th>Issue Date</th>
+            <th>Reissue Before</th>
+            <th>Approve Prescription</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% endif %}
+        {% for prescription in pending_prescriptions %}
+        <tr class="table-dark">
+            <td>{{ prescription.patient }}</td>
+            <td>{{ prescription.medication.name }} {{ prescription.dosage }}</td>
+            <td>{{ prescription.quantity }}</td>
+            <td>{{ prescription.issueDate }}</td>
+            <td>{{ prescription.reissueDate }}</td>
+            <td>
+                <form id="approveForm" method="post" action="approve_prescription">
+                    {% csrf_token %}
+                    <input type="hidden" name="prescriptionID" id="prescriptionID_{{ prescription.prescriptionID }}" ,
+                        value="{{ prescription.prescriptionID }}">
+                    <button type="submit" class="btn btn-primary">Approve</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% if clicked5 %}
+<table class="table table-hover">
+    <thead>
+        <tr class="table-info">
+            <th>Patient name </th>
+            <th>Medication</th>
+            <th>Quantity</th>
+            <th>Issue Date</th>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% endif %}
+        {% for prescription in historic_prescriptions %}
+        <tr class="table-dark">
+            <td>{{ prescription.patient }}</td>
+            <td>{{ prescription.medication.name }} {{ prescription.dosage }}</td>
+            <td>{{ prescription.quantity }}</td>
+            <td>{{ prescription.issueDate }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
 {% for patient in patients %}
 
-<div class="modal fade" id="modal1{{ patient.user_profile }}" tabindex="-1" role="dialog" aria-labelledby="modal{{ patient.user_profile}}Label" aria-hidden="true">
+
+
+<div class="modal fade" id="modal1{{ patient.user_profile }}" tabindex="-1" role="dialog"
+    aria-labelledby="modal{{ patient.user_profile}}Label" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modal{{patient.user_profile}}Label">Details for {{ patient.user_profile }}</h5>
+                <h5 class="modal-title" id="modal{{patient.user_profile}}Label">Details for {{ patient.user_profile }}
+                </h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <div class="modal-body">
                 <table class="table table-hover">
@@ -87,26 +192,26 @@
                         </tr>
                     </thead>
                     <tbody>
-               
-                    {% for appt in appointments %}
-                   
-                    {% if appt.patient.user_profile == patient.user_profile %}
-                  
-                 
-                
-                       
-                    <tr class="table-dark" data1-row-id="{{patient.user_profile}}">
-                      
-                        <td>{{appt.appointmentID}}</td>
-                        <td>{{ appt.date }}</td>
-                        <td>{{ appt.service}}</td>
-                        <td>{{ appt.description }}</td>
-                        <td>{{ appt.notes }}</td>
-    
-                    
-                    {% endif %}
-                    {% endfor %}
-                </tr>
+
+                        {% for appt in appointments %}
+
+                        {% if appt.patient.user_profile == patient.user_profile %}
+
+
+
+
+                        <tr class="table-dark" data1-row-id="{{patient.user_profile}}">
+
+                            <td>{{appt.appointmentID}}</td>
+                            <td>{{ appt.date }}</td>
+                            <td>{{ appt.service}}</td>
+                            <td>{{ appt.description }}</td>
+                            <td>{{ appt.notes }}</td>
+
+
+                            {% endif %}
+                            {% endfor %}
+                        </tr>
                     </tbody>
                 </table>
             </div>
