@@ -164,7 +164,8 @@ def create_invoice_file(invoice_id: int) -> tuple:
     invoice = Invoice.objects.get(invoiceID=invoice_id)
     invoice_creation_date = invoice.dateIssued
     invoice_creation_date = invoice_creation_date.strftime("%d/%m/%Y")
-    duration = invoice.appointment.service.duration
+    duration = invoice.appointment.service.duration * 15
+    duration = f"{duration} minutes"
     amount = round(float(invoice.amount),2 )
     tax_amount = round((amount * 0.2), 2)
     pre_tax_amount = amount - tax_amount
