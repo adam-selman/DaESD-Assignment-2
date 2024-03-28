@@ -8,8 +8,9 @@ import os
 import shutil
 
 from django.conf import settings
-
-from .models import Service, Invoice, DoctorServiceRate, NurseServiceRate, User, NurseProfile, UserProfile, Appointment, Address
+from .models import Service, DoctorServiceRate, NurseServiceRate, User, \
+        UserProfile, Prescription, Appointment, Service, \
+        Invoice, Address
 
 logger = logging.getLogger(__name__)
 
@@ -231,3 +232,24 @@ def populate_invoice(template, invoice_data) -> str:
         filled_template = filled_template.replace('{{' + key + '}}', str(value))
 
     return filled_template
+ 
+def get_prescriptions_for_practitioner(user):
+    if user.groups.filter(name='Doctor').exists():
+        print("Prescriptions found for Doctor" + User.username)
+        return Prescription.objects.filter(doctor=user)
+    elif user.groups.filter(name='Nurse').exists():
+        print("Prescriptions found for Nurse" + User.username)
+        return Prescription.objects.filter(nurse=user)
+    else:
+        return None
+    
+    
+def get_appointments_for_practitioner(user):
+    if user.groups.filter(name='Doctor').exists():
+        print("Appointments found for Doctor" + User.username)
+        return Appointment.objects.filter(doctor=user)
+    elif user.groups.filter(name='Nurse').exists():
+        print("Appointments found for Nurse" + User.username)
+        return Appointment.objects.filter(nurse=user)
+    else:
+        return None

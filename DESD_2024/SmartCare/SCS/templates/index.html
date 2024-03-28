@@ -19,32 +19,62 @@
     </head>
     <body>
        
-     
-        <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
-            <div class="container-fluid">
-              <a class="navbar-brand" href="/">SmartCare</a>
-              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-              </button>
-              <div class="collapse navbar-collapse" id="navbarColor02">
-                <ul class="navbar-nav me-auto">
-                  <li class="nav-item">
-                    <a class="nav-link active" href="/">Home
-                      <span class="visually-hidden">(current)</span>
+      <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="/">SmartCare</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarColor02">
+            <ul class="navbar-nav me-auto">
+              <li class="nav-item">
+                <a class="nav-link active" href="/">Home
+                  <span class="visually-hidden">(current)</span>
+                </a>
+              </li>
+              {% if user.is_authenticated %}
+                  <li class="nav-item dropdown">
+                    <a a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false" href="logout">
+                      {% if user_type == 'doctor' %}
+                      <img src="{% static "doctor.png" %}" alt="" width="32" height="32" class="rounded-circle me-2">
+                      <strong>Dr. {{ user_name }}</strong>
+                      {% elif user_type == 'patient' %}
+                      <img src="{% static "patient.png" %}" alt="" width="32" height="32" class="rounded-circle me-2">
+                      <strong>{{ user_name }}</strong>
+                      {% elif user_type == 'nurse' %}
+                      <img src="{% static "nurse.png" %}" alt="" width="32" height="32" class="rounded-circle me-2">
+                      <strong>Nurse {{ user_name }}</strong>
+                      {% elif user_type == 'admin' %}
+                      <img src="{% static "admin.png" %}" alt="" width="32" height="32" class="rounded-circle me-2">
+                      <strong>{{ user_name }}</strong>
+                      {% endif %}
                     </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                      {% if user_type == 'doctor' %}
+                      <li><a class="dropdown-item" href="doctor_dashboard">Dashboard</a></li>
+                      {% elif user_type == 'patient' %}
+                      <li><a class="dropdown-item" href="patient_dashboard">Dashboard</a></li>
+                      {% elif user_type == 'nurse' %}
+                      <li><a class="dropdown-item" href="nurse_dashboard">Dashboard</a></li>
+                      {% elif user_type == 'admin' %}
+                      <li><a class="dropdown-item" href="admin_dashboard">Dashboard</a></li>
+                      {% endif %}
+                      <li><a class="dropdown-item" href="logout">Logout</a></li>
+                    </ul>
                   </li>
-                  {% if user.is_authenticated %}
+                  {% else %}
                   <li class="nav-item">
-                    <a class="nav-link" href="logout">Logout</a>
+                    <a class="nav-link active" href="login">Login</a>
                   </li>
                   {% endif %}
-                 
-                 
-                </ul>
-               
-              </div>
-            </div>
-          </nav>
+             
+             
+            </ul>
+           
+          </div>
+        </div>
+      </nav>
+        
         
 <div id='1' class='container' >
 
@@ -53,4 +83,4 @@
         {% endblock %}
     </div>
    
-    </body>
+</body>

@@ -20,4 +20,8 @@ urlpatterns = [
    path('staff_register/', views.register_doctor_nurse, name='staff_register'),
    path('DisplayPatients',views.display_patients),
    path('DisplayAppt',views.currentAppt),
+   path('DisplayHistoricAppointments',views.historic_appointments),
+   path('DisplayPendingPrescriptions',views.prescription_approval),
+   path('DisplayPrescriptions',views.historic_prescriptions),
+   path('approve_prescription',views.approve_prescription),
 ]

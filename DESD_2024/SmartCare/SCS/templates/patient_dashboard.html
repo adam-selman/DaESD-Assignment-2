@@ -7,7 +7,7 @@
 
 <div class="container">
   <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-10">
       <h2>Book Appointment</h2>
       <p>Book an appointment with a doctor or nurse</p>
       <form id ="patient-booking-form" method="post">
@@ -47,6 +47,7 @@
     </form>
     </div>
   </div>
+</div>
 
 <br>
 
@@ -92,6 +93,7 @@ document.getElementById("service").addEventListener("change", function (e) {
     var bookingDateLabel = document.getElementById('bookingDateLabel');
     bookingDate.disabled = true;
     bookingDate.innerHTML = createSelectPlaceholderElement("Select a Date");
+    bookingDate.style.backgroundColor = "red"
     practitionerSelect.disabled = true;
     practitionerSelect.innerHTML = createSelectPlaceholderElement("Select a Practitioner");
     timeSlotSelect.disabled = true;

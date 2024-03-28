@@ -331,6 +331,12 @@ def populate_prescription(csvFileName, modelClass):
                 issueDate = timezone.make_aware(issueDate)
                 objData['issueDate'] = issueDate
 
+            if 'reissueDate' in objData:
+                reissueDateStr = objData['reissueDate']
+                reissueDate = datetime.strptime(reissueDateStr, '%Y-%m-%d %H:%M:%S')
+                reissueDate = timezone.make_aware(reissueDate)
+                objData['reissueDate'] = reissueDate
+
             existingPrescription = modelClass.objects.filter(issueDate=objData['issueDate'], patient = objData['patient']).exists()
             if existingPrescription:
                 print(f"Skipping duplicate prescription for patient {objData['patient']} with date issued {objData['issueDate']}")
