@@ -159,14 +159,24 @@ def create_invoice_file(invoice_id: int) -> tuple:
         str, str: The file contents of the invoice and the file name
     """
 
-
     # invoice info
     invoice = Invoice.objects.get(invoiceID=invoice_id)
+
+    # appointment info
+    appointment = Appointment.objects.get(appointmentID=invoice.appointment.appointmentID)
+
+    # service info
+    service = Service.objects.get(serviceID=appointment.service.serviceID)
+    service_name = service.service.title()
+    service_rate = float(get_service_rate_by_appointment(appointment))
+
+    
     invoice_creation_date = invoice.dateIssued
     invoice_creation_date = invoice_creation_date.strftime("%d/%m/%Y")
-    duration = invoice.appointment.service.duration * 15
+    duration = invoice.appointment.service.duration 
+    amount = round(float(service_rate * duration),2 )
+    duration = duration * 15
     duration = f"{duration} minutes"
-    amount = round(float(invoice.amount),2 )
     tax_amount = round((amount * 0.2), 2)
     pre_tax_amount = amount - tax_amount
 
@@ -175,13 +185,7 @@ def create_invoice_file(invoice_id: int) -> tuple:
     tax_amount = "{:.2f}".format(tax_amount)
     pre_tax_amount = "{:.2f}".format(pre_tax_amount)
 
-    # appointment info
-    appointment = Appointment.objects.get(appointmentID=invoice.appointment.appointmentID)
-
-    # service info
-    service = Service.objects.get(serviceID=appointment.service.serviceID)
-    service_name = service.service.title()
-    service_rate = get_service_rate_by_appointment(appointment)
+    
     
     # patient info
     patient = invoice.patient
