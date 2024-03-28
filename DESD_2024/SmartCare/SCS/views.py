@@ -486,7 +486,10 @@ def display_patients(request):
        # this query gets all the history appointments to the dashboard 
         appointment_details = Appointment.objects.all()
         # Render the doctor dashboard template
-        return render(request, 'doctor_dashboard.html', {'appointments': appointment_details, 'patients': patient_details,'clicked':True})
+        user = request.user
+        user_name = user.get_full_name
+        user_type = 'doctor'
+        return render(request, 'doctor_dashboard.html', {'appointments': appointment_details, 'patients': patient_details,'clicked':True, 'user_name':user_name, 'user_type':user_type})
     
     elif is_nurse(request.user):
         # Get the nurse's ID
@@ -498,16 +501,21 @@ def display_patients(request):
         patient_details = PatientProfile.objects.filter(user_profile__user__username__in=patient_names)
         # this query gets all the history appointments to the dashboard 
         appointment_details = Appointment.objects.all()
-
+        user = request.user
+        user_name = user.get_full_name
+        user_type = 'nurse'
         
-        return render(request, 'nurse_dashboard.html', {'appointments': appointment_details, 'patients': patient_details,'clicked':True})
+        return render(request, 'nurse_dashboard.html', {'appointments': appointment_details, 'patients': patient_details,'clicked':True, 'user_name':user_name, 'user_type':user_type})
     
 
     elif is_admin(request.user):
         # get all patients details and appointments rregardless of the staff memeber allocated to them 
         patient_details = PatientProfile.objects.all()
         appointment_details = Appointment.objects.all()
-        return render(request,'admin_dashboard.html',{'patients':patient_details,'appointments': appointment_details})
+        user = request.user
+        user_name = user.get_full_name
+        user_type = 'admin'
+        return render(request,'admin_dashboard.html',{'patients':patient_details,'appointments': appointment_details, 'user_name':user_name, 'user_type':user_type})
 
     else:
         return HttpResponseNotFound("404 Error: Page not found")
@@ -520,14 +528,18 @@ def currentAppt(request):
         current_date = date.today()
         doctor = request.user.id 
         appointments = Appointment.objects.filter(date=current_date, doctor=doctor)
-
-        return render(request, 'doctor_dashboard.html', {'Appointments': appointments ,'clicked2':True})
+        user = request.user
+        user_name = user.get_full_name
+        user_type = 'doctor'
+        return render(request, 'doctor_dashboard.html', {'Appointments': appointments ,'clicked2':True, 'user_name':user_name, 'user_type':user_type})
     elif is_nurse(request.user):
         current_date = date.today()
         nurse = request.user.id 
         appointments = Appointment.objects.filter(date=current_date, nurse=nurse)
-
-        return render(request, 'nurse_dashboard.html', {'Appointments': appointments,'clicked2':True})
+        user = request.user
+        user_name = user.get_full_name
+        user_type = 'nurse'
+        return render(request, 'nurse_dashboard.html', {'Appointments': appointments,'clicked2':True, 'user_name':user_name, 'user_type':user_type})
 
 
 
