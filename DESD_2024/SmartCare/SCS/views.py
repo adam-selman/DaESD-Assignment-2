@@ -9,7 +9,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login , logout
 from django.middleware.csrf import get_token
 
-from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import user_passes_test , permission_required
 
 from .models import DoctorProfile, NurseProfile, UserProfile, User, Timetable, Service, Appointment, PatientProfile
 from .forms import UserRegisterForm, DoctorNurseRegistrationForm
@@ -55,6 +55,7 @@ def register_doctor_nurse(request):
     else:
         form = UserRegisterForm()
     return render(request, 'register.html', {'form': form})'''
+
 #fixs for the register view which takes age and first creates a user profile 
 def register(request):
     if request.method == 'POST':
