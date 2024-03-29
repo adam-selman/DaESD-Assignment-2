@@ -38,7 +38,7 @@ def admin_dash(request):
                 )
             elif user_type == 'nurse':
                 NurseProfile.objects.create(
-                    user_profile=user.profile  # Assuming a related name or method to access UserProfile from User
+                    user_profile=user.profile 
                 )
             return redirect('admin_dash')
 

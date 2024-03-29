@@ -45,6 +45,11 @@ class PatientProfile(models.Model):
 class AdminProfile(models.Model):
     user_profile = models.OneToOneField(UserProfile, on_delete = models.CASCADE, 
                                         related_name = 'admin_user')
+     
+    class Meta:
+        permissions = (
+            ('can_access_admin_dash')
+        )
 
     def __str__(self):
         return self.user_profile.user.username
