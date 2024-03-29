@@ -18,6 +18,39 @@ from .utility import get_medical_services, check_practitioner_service , APPOINTM
 
 logger = logging.getLogger(__name__)
 
+@permission_required('SCS.can_access_admin_dash', raise_exception=True)
+def admin_dash(request):
+    registration_form = DoctorNurseRegistrationForm()
+    appointments = Appointment.objects.all()
+
+    if request.method == 'POST':
+        registration_form = DoctorNurseRegistrationForm(request.POST)
+        if registration_form.is_valid():
+            user = registration_form.save()  # Saves the User instance
+
+            # Determine the type of user and create corresponding profile
+            user_type = registration_form.cleaned_data.get('user_type')
+            if user_type == 'doctor':
+                DoctorProfile.objects.create(
+                    user_profile=user.profile,  # Assuming a related name or method to access UserProfile from User
+                    specialization=registration_form.cleaned_data.get('specialization'),
+                    isPartTime=registration_form.cleaned_data.get('isPartTime')
+                )
+            elif user_type == 'nurse':
+                NurseProfile.objects.create(
+                    user_profile=user.profile  # Assuming a related name or method to access UserProfile from User
+                )
+            return redirect('admin_dash')
+
+    context = {
+        'registration_form': registration_form,
+        'appointments': appointments,
+    }
+
+    return render(request, 'SCS/admin_dash.html', context)
+
+
+
 
 def register_doctor_nurse(request):
     if request.method == 'POST':
