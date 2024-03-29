@@ -51,6 +51,7 @@ class AdminProfile(models.Model):
             ("SCS.can_access_my_model_admin_dash", "Can access admin dash" ),
         ]
 
+
     def __str__(self):
         return self.user_profile.user.username
 
