@@ -18,7 +18,7 @@ from .utility import get_medical_services, check_practitioner_service , APPOINTM
 
 logger = logging.getLogger(__name__)
 
-@permission_required('SCS.can_access_admin_dash', raise_exception=True)
+#@permission_required('SCS.can_access_my_model_admin_dash', raise_exception=True)
 def admin_dash(request):
     registration_form = DoctorNurseRegistrationForm()
     appointments = Appointment.objects.all()
@@ -47,7 +47,7 @@ def admin_dash(request):
         'appointments': appointments,
     }
 
-    return render(request, 'SCS/admin_dash.html', context)
+    return render(request, 'admin_dashboard.html', context)
 
 
 
@@ -56,21 +56,31 @@ def register_doctor_nurse(request):
     if request.method == 'POST':
         form = DoctorNurseRegistrationForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            user_type = form.cleaned.data.get('user_type')
-            UserProfile.objects.create(user=user, user_type=user_type)
+            user = form.save()  # Saves the User instance
+            user_type = form.cleaned_data.get('user_type')  # Fixed typo from cleaned.data to cleaned_data
+
+            # Create UserProfile
+            user_profile = UserProfile.objects.create(user=user, user_type=user_type)
+
+            # Depending on the user_type, create the corresponding profile
             if user_type == 'doctor':
                 DoctorProfile.objects.create(
-                    user_profile=user.userprofile,
+                    user_profile=user_profile,  # Refer to the just created user_profile
                     specialization=form.cleaned_data['specialization'],
                     isPartTime=form.cleaned_data['isPartTime']
                 )
             elif user_type == 'nurse':
-                NurseProfile.objects.create(user_profile=user.userprofile)
-            return redirect('home')
-        else:
-            form = DoctorNurseRegistrationForm()
-        return render(request, 'staff_register.html', {'form': form})
+                NurseProfile.objects.create(
+                    user_profile=user_profile  # Refer to the just created user_profile
+                )
+
+            # Assuming you want the user to be logged in after registration
+            login(request, user)
+            return redirect('/login')  # Ensure 'home' is the name of your home page's URL pattern
+    else:
+        form = DoctorNurseRegistrationForm()
+
+    return render(request, 'staff_register.html', {'form': form})
             
 
 '''def register(request):
@@ -192,7 +202,7 @@ def Login(request):
             elif user_type == 'nurse':
                 return redirect('nursDash')
             elif user_type == 'admin':
-                return redirect('admDash')
+                return redirect('admin_dash')
             
             
         else:

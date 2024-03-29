@@ -1,62 +1,11 @@
 {% extends 'index.html' %}
 {% block content %}
-!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Admin Dashboard</title>
-</head>
-<body>
-    <div class="container">
-        <h1>Admin Dashboard</h1>
-
-        <!-- Doctor/Nurse Registration Form -->
-        <section>
-            <h2>Register Doctor/Nurse</h2>
-            <form method="post">
-                {% csrf_token %}
-                {{ registration_form.as_p }}
-                <button type="submit">Register</button>
-            </form>
-        </section>
-
-        <!-- Appointments List -->
-        <section>
-            <h2>Appointments</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Appointment ID</th>
-                        <th>Date</th>
-                        <th>Time</th>
-                        <th>Duration</th>
-                        <th>Description</th>
-                        <th>Notes</th>
-                        <th>Status</th>
-                        <th>Patient</th>
-                        <th>Doctor</th>
-                        <th>Nurse</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for appointment in appointments %}
-                    <tr>
-                        <td>{{ appointment.appointmentID }}</td>
-                        <td>{{ appointment.date }}</td>
-                        <td>{{ appointment.time }}</td>
-                        <td>{{ appointment.duration }}</td> 
-                        <td>{{ appointment.description }}</td>
-                        <td>{{ appointment.notes }}</td>
-                        <td>{{ appointment.status }}</td>
-                        <td>{{ appointment.patient.user.username }}</td> 
-                        <td>{{ appointment.doctor.user.username if appointment.doctor else 'N/A' }}</td>
-                        <td>{{ appointment.nurse.user.username if appointment.nurse else 'N/A' }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </section>
-    </div>
-</body>
-</
-{%endblock%}
+<div class="container">
+    <h1>Register Doctor/Nurse</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ registration_form.as_p }}
+        <button type="submit">Register</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,14 +1,13 @@
 {% extends 'index.html' %}
-{% block content%}
-<form id ="login-form" method="post">
+{% block content %}
+<form id="login-form" method="post" action="/login/">
     {% csrf_token %}
-    <input type="text" name="username" placeholder="Username">
-    <input type="password" name="password" placeholder="Password">
+    <input type="text" name="username" placeholder="Username" required>
+    <input type="password" name="password" placeholder="Password" required>
     
-    <button  onclick="Click()" >Login</button>
-    
-    
+    <button type="submit" onclick="return Click();">Login</button>
 </form>
+
 {% if check %}
 {% if messages %}
 {% for message in messages %}
@@ -16,55 +15,21 @@
 {% endfor %}
 {% endif %}
 {% endif %}
+
 <script>
 function Click() {
-  var username = document.forms["login-form"]["username"].value;
-  var password = document.forms["login-form"]["password"].value;
-  var empty = true;
+    var username = document.forms["login-form"]["username"].value;
+    var password = document.forms["login-form"]["password"].value;
 
-  if (username === "" ) {
-    alert("Username field should not be left empty!");
-    empty = false;
-    return;
-    
-  }
-  if (password === "") {
-    alert("password field should not be left empty!");
-    empty = false;
-    return;
-    
-  }
- 
-
-  if (empty) {
-    
-    var formData = new FormData(document.getElementById('login-form'));
-    var token = "{{ csrf_token }}";
-
-    fetch('login', {
-      method: 'POST',
-      headers: {
-        'X-CSRFToken': token
-      },
-      body: formData
-    })
-    .then(response => {
-      if (response.redirected) {
-       
-        
-        // 
-      } else if (response.status === 403) {
-        alert('403 Forbidden: incorrect CSRF token. Page will be refreshed.');
-        
-        window.location.href = response.url;
-      } else {
-        alert('An error occurred while processing your request.');
-      }
-    });
-    
-  }
-  
+    if (username === "") {
+        alert("Username field should not be left empty!");
+        return false; // Prevent form submission
+    }
+    if (password === "") {
+        alert("Password field should not be left empty!");
+        return false; // Prevent form submission
+    }
+    return true; // Allow form submission
 }
 </script>
-
 {% endblock %}

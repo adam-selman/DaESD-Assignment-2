@@ -10,7 +10,7 @@ class UserProfile(models.Model):
         ('admin', 'Admin'),
     ]
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES)
     
     def __str__(self):
@@ -47,9 +47,9 @@ class AdminProfile(models.Model):
                                         related_name = 'admin_user')
      
     class Meta:
-        permissions = (
-            ('can_access_admin_dash')
-        )
+        permissions = [
+            ("SCS.can_access_my_model_admin_dash", "Can access admin dash" ),
+        ]
 
     def __str__(self):
         return self.user_profile.user.username

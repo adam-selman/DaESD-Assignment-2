@@ -2,6 +2,7 @@ from django import forms
 from .models import Appointment, UserProfile, PatientProfile, DoctorProfile, NurseProfile
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.db import transaction
 
 #form now takes age as required by table to not be null 
 class UserRegisterForm(UserCreationForm):
@@ -14,35 +15,46 @@ class UserRegisterForm(UserCreationForm):
         model = User
         fields = ["username", "email", "password1", "password2", "age"]
 
+
 class DoctorNurseRegistrationForm(UserCreationForm):
     user_type = forms.ChoiceField(choices=[('doctor', 'Doctor'), ('nurse', 'Nurse')])
     specialization = forms.CharField(required=False)  # Optional, shown only if Doctor is selected
     isPartTime = forms.BooleanField(required=False, initial=False)
 
-    class Meta(UserCreationForm.Meta):
-        model = User
-        fields = UserCreationForm.Meta.fields + ('email', 'user_type', 'specialization', 'isPartTime')
-
     def save(self, commit=True):
-        user = super().save(commit=False)  # Save the user instance
+        user = super().save(commit=False)
         if commit:
             user.save()
-            # Create or update the UserProfile instance
-            UserProfile.objects.update_or_create(user=user)
             user_type = self.cleaned_data.get('user_type')
 
-            # Create specific profiles based on user type
+            # Create or update the UserProfile instance.
+            user_profile, _ = UserProfile.objects.update_or_create(
+                user=user, defaults={'user_type': user_type}
+            )
+
             if user_type == 'doctor':
-                DoctorProfile.objects.create(
-                    user_profile=user.profile,  # Adjust this according to how you access UserProfile from User
-                    specialization=self.cleaned_data.get('specialization'),
-                    isPartTime=self.cleaned_data.get('isPartTime')
-                )
+                # Check explicitly for an existing DoctorProfile.
+                doctor_profile = DoctorProfile.objects.filter(user_profile=user_profile).first()
+                if doctor_profile:
+                    # Update existing DoctorProfile.
+                    doctor_profile.specialization = self.cleaned_data.get('specialization')
+                    doctor_profile.isPartTime = self.cleaned_data.get('isPartTime')
+                    doctor_profile.save()
+                else:
+                    # Create a new DoctorProfile.
+                    DoctorProfile.objects.create(
+                        user_profile=user_profile,
+                        specialization=self.cleaned_data.get('specialization'),
+                        isPartTime=self.cleaned_data.get('isPartTime')
+                    )
+
             elif user_type == 'nurse':
-                NurseProfile.objects.create(
-                    user_profile=user.profile  # Adjust this according to how you access UserProfile from User
-                )
+                # Ensure only one NurseProfile exists for the UserProfile.
+                NurseProfile.objects.get_or_create(user_profile=user_profile)
+
         return user
+
+
 
 '''class DoctorNurseRegistrationForm(UserCreationForm):
     user_type = forms.ChoiceField(choices=[('doctor', 'Doctor'), ('nurse', 'Nurse')])
