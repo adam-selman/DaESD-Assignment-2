@@ -8,16 +8,19 @@ from django.http import JsonResponse
 from django.contrib import messages
 from django.contrib.auth import authenticate, login , logout
 from django.middleware.csrf import get_token
+
+from django.utils import timezone
+
 from .utility import get_appointments_for_practitioner, get_prescriptions_for_practitioner
 
 from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponseNotFound
 from django.shortcuts import get_object_or_404
 from .models import DoctorProfile, NurseProfile, UserProfile, User, Timetable, Service, Appointment, PatientProfile
-from .forms import UserRegisterForm, DoctorNurseRegistrationForm
+from .forms import UserRegisterForm, DoctorNurseRegistrationForm, PrescriptionForm
 from datetime import date
 
-from .models import DoctorProfile, NurseProfile, UserProfile, User, Timetable, Service, Appointment, Prescription
+from .models import DoctorProfile, NurseProfile, PatientProfile, UserProfile, User, Timetable, Service, Appointment, Prescription
 
 from .utility import get_medical_services, check_practitioner_service , APPOINTMENT_TIMES, get_user_profile_by_user_id, parse_times_for_view
 
@@ -223,11 +226,14 @@ def patient(request):
     user_type = "patient"
     user = request.user
     user_name = user.get_full_name
+    patient_profile = PatientProfile.objects.get(user_profile__user=request.user)
+    historic_appointments = Appointment.objects.filter(patient=patient_profile)
+    historic_prescriptions = Prescription.objects.filter(patient=patient_profile.user_profile)
     if user_name == "" or user_name is None:
         user_name = request.session.get('user_name')
         if user_name is None:
             user_name = ""
-    context = {"services": services, "user_type": user_type, "user_name": user_name}
+    context = {"services": services, "user_type": user_type, "user_name": user_name, "historic_appointments": historic_appointments, "historic_prescriptions": historic_prescriptions}
     return render(request, 'patient_dashboard.html', context)
 
 @login_required(login_url='login')
@@ -593,6 +599,8 @@ def approve_prescription(request):
         prescription_id = request.POST.get('prescriptionID')
         prescription = Prescription.objects.get(prescriptionID=prescription_id)
         prescription.approved = True
+        prescription.issueDate = timezone.now().date()
+        prescription.reissueDate = timezone.now().date() + timezone.timedelta(days=30)
         prescription.save()
         return render(request, 'doctor_dashboard.html')
     else:
@@ -666,3 +674,43 @@ def prescription_pending_approval(request):
     else:
         data = {'success': 'false', 'error': 'User is not a doctor or Nurse'}
     return JsonResponse(data)
+
+from django.http import JsonResponse
+
+from django.http import JsonResponse
+
+@login_required(login_url='login')
+@custom_user_passes_test(is_patient)
+def request_repeat_prescription(request):
+    if request.method == 'POST':
+        prescription_id = request.POST.get('prescription_id')
+        existing_prescription = get_object_or_404(Prescription, prescriptionID=prescription_id)
+        new_prescription_data = {
+            'repeatable': existing_prescription.repeatable,
+            'medication': existing_prescription.medication,
+            'dosage': existing_prescription.dosage,
+            'quantity': existing_prescription.quantity,
+            'instructions': existing_prescription.instructions,
+            'patient': existing_prescription.patient,
+            'doctor': existing_prescription.doctor,
+            'nurse': existing_prescription.nurse,
+            'approved': False,
+            'issueDate': None,
+            'reissueDate': None,
+            'appointment': existing_prescription.appointment,
+        }
+
+        form = PrescriptionForm(new_prescription_data)
+        if form.is_valid():
+            existing_prescription.repeatable = False
+            existing_prescription.save()
+
+            prescription = form.save()
+            return redirect('patDash')  # Redirect to another page after object creation
+        else:
+            # Return a JsonResponse with the form errors
+            return JsonResponse({'success': False, 'errors': form.errors})
+    else:
+        # Handle GET request if needed
+        pass
+
