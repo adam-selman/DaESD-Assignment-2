@@ -485,16 +485,16 @@ def create_groups():
 
     for user in doctor_users:
         user.groups.add(groups[0])
-
+    print("Doctors added to group")
     for user in nurse_users:
         user.groups.add(groups[1])
-
+    print("Nurses added to group")
     for user in patient_users:
         user.groups.add(groups[2])
-
+    print("Patients added to group")
     for user in admin_users:
         user.groups.add(groups[3])
-    
+    print("Admins added to group")
 if __name__ == '__main__':
     print("Starting to populate the database... ")
     populate_users('data/doctors.csv', 'doctor', DoctorProfile, ['specialization', 'isPartTime'])
