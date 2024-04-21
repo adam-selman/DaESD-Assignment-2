@@ -63,6 +63,7 @@
               <th>Amount</th>
               <th>Date Issued</th>
               <th>Invoice</th>
+              <th>Payment Status</th>
             </tr>
           </thead>
           <tbody>
@@ -73,6 +74,12 @@
                 <td>{{issue_date}}</td>
                 <td>
                   <a href="generate_invoice?invoiceID={{invoice_id}}">Download Invoice</a></td>
+                <td>{% if status == 1 %}
+                        Paid
+                    {% elif status == 0 %}
+                        Awaiting Payment
+                    {% endif %}
+                </td>
               </tr>
             {% endfor %}
 
