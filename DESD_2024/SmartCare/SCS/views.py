@@ -189,14 +189,7 @@ def Login(request):
             
             login(request, user)
             
-            if user_type == 'doctor':
-                return redirect('docDash')
-            elif user_type == 'patient':
-                return redirect('patDash')
-            elif user_type == 'nurse':
-                return redirect('nursDash')
-            elif user_type == 'admin':
-                return redirect('admDash')
+            return redirect('dashboard')
             
             
         else:
@@ -326,6 +319,29 @@ def patient_appointment_booking(request) -> JsonResponse:
     else:
         check = False
     return JsonResponse(data) 
+
+def dashboard_resolver(request):
+    """
+    Function to resolve the dashboard based on the user type
+
+    Args:
+        request (HttpRequest): Django view request object
+
+    Returns:
+        HttpResponse: Page response containing the dashboard
+    """
+    user_id = request.user.id
+    user_type = get_user_type(user_id)
+    if user_type == 'doctor':
+        return doc(request)
+    elif user_type == 'patient':
+        return patient(request)
+    elif user_type == 'nurse':
+        return nurse(request)
+    elif user_type == 'admin':
+        return admin(request)
+    else:
+        return redirect('login')
 
 @login_required(login_url='login')
 @custom_user_passes_test(is_admin)
