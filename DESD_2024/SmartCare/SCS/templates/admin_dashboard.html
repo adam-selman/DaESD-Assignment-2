@@ -10,23 +10,21 @@
             <th>Known allergies</th>
             <th>Private billing</th>
             <th>Details</th>
-
         </tr>
     </thead>
     <tbody>
-{% for patient in patients %}
-<tr class="table-dark">
-<td>{{ patient.user_profile }}</td>
-<td>{{ patient.age }}</td>
-<td>{{ patient.allergies }}</td>
-<td>{{ patient.isPrivate }}</td>
-<td><button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal1{{patient.user_profile}}">History</button>
-<button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal2{{patient.user_profile}}">Update</button>
-<button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal3{{patient.user_profile}}">Delete</button></td>
-</tr>
-
-{% endfor %}
-</tbody>
+        {% for patient in patients %}
+        <tr class="table-dark">
+            <td>{{ patient.user_profile }}</td>
+            <td>{{ patient.age }}</td>
+            <td>{{ patient.allergies }}</td>
+            <td>{{ patient.isPrivate }}</td>
+            <td><button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal1{{patient.user_profile}}">History</button>
+            <button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal2{{patient.user_profile}}">Update</button>
+            <button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal3{{patient.user_profile}}">Delete</button></td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
 
 <div class="container">
@@ -81,7 +79,7 @@
                 <table class="table table-hover">
                     <thead>
                         <tr class="table-info">
-                            <th>Appointemnt </th>
+                            <th>Appointment </th>
                             <th> Date</th>
                             <th>Service</th>
                             <th>Description </th>

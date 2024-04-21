@@ -155,27 +155,7 @@ if (data.success) {
   // show success message
   // refresh page
   alert('Appointment booked successfully');
-
-  // resetting form fields
-  service = document.getElementById('service')
-  servicePlaceHolder = createSelectPlaceholderElement("Select a Service");
-  service.append(servicePlaceHolder); 
-
-  bookingDate = document.getElementById('bookingDate')
-  bookingDate.value = "";
-
-  practitionerSelect = document.getElementById('practitioner')
-  practitionerPlaceHolder = createSelectPlaceholderElement("Select a Practitioner");
-  practitionerSelect.append(practitionerPlaceHolder);
-  practitionerSelect.disabled = true;
-
-  timeSlotSelect = document.getElementById('timeSlot')
-  timeSlotPlaceHolder = createSelectPlaceholderElement("Select a Time Slot");
-  timeSlotSelect.append(timeSlotPlaceHolder);
-  timeSlotSelect.disabled = true;
-
-  reason = document.getElementById('reason').value = "";    
-
+  window.location.reload();
 } else {
   
   alert(data.error);

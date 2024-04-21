@@ -51,6 +51,84 @@
 
 <br>
 
+
+<div class="container">
+  {% if future_appointments %}
+    <div class="row">
+      <div class="col-md-12">
+        <h2>Upcoming Appointments</h2>
+        <table class="table">
+          <thead class="table-info">
+            <tr class="table-info">
+              <th>Date</th>
+              <th>Service</th>
+          </tr>
+          </thead>
+          <tbody>
+            {% for service_name, appointment_date, appointment_time, appointmentID in future_appointments %}
+
+            <tr class="table-dark">
+            <td>{{appointment_time}} on {{appointment_date}}</td>
+            <td>{{service_name}}</td>
+            {% endfor %}
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% else %}
+    <div class="row">
+      <div class="col-md-12">
+        <h2>Upcoming Appointments</h2>
+        <p>No appointments booked.</p>
+      </div>
+    </div>
+
+  {% endif %}
+</div>
+
+<br>
+
+<div class="container">
+  {% if past_appointments %}
+    <div class="row">
+      <div class="col-md-12">
+        <h2>Appointment History</h2>
+        <table class="table">
+          <thead class="table-info">
+            <tr class="table-info">
+              <th>Date</th>
+              <th>Service</th>
+          </tr>
+          </thead>
+          <tbody>
+            {% for service_name, appointment_date, appointment_time, appointmentID in past_appointments %}
+
+            <tr class="table-dark">
+            <td>{{appointment_time}} on {{appointment_date}}</td>
+            <td>{{service_name}}</td>
+            {% endfor %}
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  
+  {% else %}
+    <div class="row">
+      <div class="col-md-12">
+        <h2>Appointment History</h2>
+        <p>No past appointments</p>
+      </div>
+    </div>
+
+  {% endif %}
+
+
+</div>
+
+<br>
+
 <div class="container">
   <div class="row">
     <div class="col-md-12">
@@ -87,7 +165,6 @@
     </div>
   </div>
 </div>
-
 
 <script>
 

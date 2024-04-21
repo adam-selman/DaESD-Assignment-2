@@ -26,7 +26,8 @@ from .models import DoctorProfile, NurseProfile, UserProfile, User, Timetable, S
 
 from .db_utility import get_user_profile_by_user_id, check_practitioner_service, get_invoice_information_by_user_id, \
                     get_medical_services, get_user_profile_by_user_id, get_practitioners_by_day_and_service,  \
-                         make_patient_appointment_booking, get_time_slots_by_day_and_practitioner, get_all_invoice_information
+                    make_patient_appointment_booking, get_time_slots_by_day_and_practitioner, get_all_invoice_information, \
+                    get_patient_appointments_by_user_id
 from .utility import APPOINTMENT_TIMES, parse_times_for_view, calculate_appointment_cost, generate_invoice_file_content
 
 logger = logging.getLogger(__name__)
@@ -221,7 +222,17 @@ def doc(request):
 @custom_user_passes_test(is_patient)
 def patient(request):
     invoices = get_invoice_information_by_user_id(request.user.id)
+    future_appointments = get_patient_appointments_by_user_id(request.user.id, future=True)
+    past_appointments = get_patient_appointments_by_user_id(request.user.id, past=True)
+
+    if len(future_appointments) < 1:
+        future_appointments = None
+    if len(past_appointments) < 1:
+        past_appointments = None
+    
     logger.info(f"Invoices: {invoices}")
+    logger.info(f"past_appointments: {past_appointments}")
+    logger.info(f"future_appointments: {future_appointments}")
     services = get_medical_services()
     user_type = "patient"
     user = request.user
@@ -231,7 +242,8 @@ def patient(request):
         if user_name is None:
             user_name = ""
     context = {"services": services, "user_type": user_type,
-                "user_name": user_name, "invoices": invoices}
+                "user_name": user_name, "invoices": invoices,
+                "past_appointments": past_appointments, "future_appointments": future_appointments}
     return render(request, 'patient_dashboard.html', context)
 
 @login_required(login_url='login')
@@ -417,7 +429,7 @@ def display_patients(request):
     
 
     elif is_admin(request.user):
-        # get all patients details and appointments rregardless of the staff memeber allocated to them 
+        # get all patients details and appointments regardless of the staff member allocated to them 
         patient_details = PatientProfile.objects.all()
         appointment_details = Appointment.objects.all()
         user = request.user

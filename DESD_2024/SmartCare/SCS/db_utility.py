@@ -140,6 +140,34 @@ def get_all_invoice_information() -> list:
         invoice_info.append([service_name, amount, issue_date, invoice.invoiceID, invoice.status])
     return invoice_info
 
+def get_patient_appointments_by_user_id(user_id: int, future=False, past=False) -> list:
+    """
+    Returns the appointments for a patient
+
+    Args:
+        user_id (int): The user id
+
+    Returns:
+        list: The appointments for the patient
+    """
+    user_profile = UserProfile.objects.get(user_id=user_id)
+    patient_profile = PatientProfile.objects.get(user_profile_id=user_profile.id)
+    appointments = Appointment.objects.filter(patient_id=patient_profile.id).all()
+    appointment_info = []
+    for appointment in appointments:
+        service = get_service_by_appointment_id(appointment.appointmentID)
+        service_name = service.service.title()
+
+        if future:
+            if appointment.date >= datetime.now().date():
+                appointment_info.append([service_name, appointment.date, appointment.time, appointment.appointmentID])
+        elif past:
+            if appointment.date < datetime.now().date():
+                appointment_info.append([service_name, appointment.date, appointment.time, appointment.appointmentID])
+        else:
+            appointment_info.append([service_name, appointment.date, appointment.time, appointment.appointmentID])
+    return appointment_info
+
 def get_user_profile_by_user_id(user_id: int) -> int:
     """
     Returns the user profile 
