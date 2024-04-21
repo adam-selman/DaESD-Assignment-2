@@ -51,37 +51,43 @@
 
 <br>
 
-  <div class="container">
-    <div class="row">
-      <div class="col-md-12">
-        <h2>My Invoices</h2>
-        <p>View your issued invoices</p>
-        <table class="table">
-          <thead class="table-info">
-            <tr class="table-info">
-              <th >Service</th>
-              <th>Amount</th>
-              <th>Date Issued</th>
-              <th>Invoice</th>
-              <th>Payment Status</th>
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <h2>My Invoices</h2>
+      <p>View your issued invoices</p>
+      <table class="table">
+        <thead class="table-info">
+          <tr class="table-info">
+            <th >Service</th>
+            <th>Amount</th>
+            <th>Date Issued</th>
+            <th>Invoice</th>
+            <th>Payment Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for service_name, amount, issue_date, invoice_id, status in invoices %}
+            <tr class="table-dark">
+              <td>{{service_name}}</td>
+              <td>£{{amount}}</td>
+              <td>{{issue_date}}</td>
+              <td>
+                <a href="generate_invoice?invoiceID={{invoice_id}}">Download Invoice</a></td>
+              <td>{% if status == 1 %}
+                      Paid
+                  {% elif status == 0 %}
+                      Awaiting Payment
+                  {% endif %}
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {% for service_name, amount, issue_date, invoice_id, status in invoices %}
-              <tr class="table-dark">
-                <td>{{service_name}}</td>
-                <td>£{{amount}}</td>
-                <td>{{issue_date}}</td>
-                <td>
-                  <a href="generate_invoice?invoiceID={{invoice_id}}">Download Invoice</a></td>
-                <td>{% if status == 1 %}
-                        Paid
-                    {% elif status == 0 %}
-                        Awaiting Payment
-                    {% endif %}
-                </td>
-              </tr>
-            {% endfor %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
 
 <script>
 
