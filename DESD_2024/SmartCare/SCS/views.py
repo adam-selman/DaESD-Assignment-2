@@ -8,6 +8,7 @@ from django.http import JsonResponse
 from django.contrib import messages
 from django.contrib.auth import authenticate, login , logout
 from django.middleware.csrf import get_token
+from django.template import RequestContext
 
 from django.utils import timezone
 
@@ -595,14 +596,24 @@ def historic_prescriptions(request):
 @login_required(login_url='login')
 @custom_user_passes_test(is_doctor_or_nurse)
 def approve_prescription(request):
-    if request.method == 'POST':
-        prescription_id = request.POST.get('prescriptionID')
-        prescription = Prescription.objects.get(prescriptionID=prescription_id)
-        prescription.approved = True
-        prescription.issueDate = timezone.now().date()
-        prescription.reissueDate = timezone.now().date() + timezone.timedelta(days=30)
-        prescription.save()
-        return render(request, 'doctor_dashboard.html')
+    if is_doctor(request.user):
+        if request.method == 'POST':
+            prescription_id = request.POST.get('prescriptionID')
+            prescription = Prescription.objects.get(prescriptionID=prescription_id)
+            prescription.approved = True
+            prescription.issueDate = timezone.now().date()
+            prescription.reissueDate = timezone.now().date() + timezone.timedelta(days=30)
+            prescription.save()
+            return render(request, 'doctor_dashboard.html')
+    elif is_nurse(request.user):
+        if request.method == 'POST':
+            prescription_id = request.POST.get('prescriptionID')
+            prescription = Prescription.objects.get(prescriptionID=prescription_id)
+            prescription.approved = True
+            prescription.issueDate = timezone.now().date()
+            prescription.reissueDate = timezone.now().date() + timezone.timedelta(days=30)
+            prescription.save()
+            return render(request, 'nurse_dashboard.html')
     else:
         return JsonResponse({'success': 'false', 'error': 'Invalid request method'})
 

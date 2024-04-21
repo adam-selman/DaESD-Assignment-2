@@ -5,6 +5,8 @@
 
 <script src="{% static 'js/patient_dashboard.js' %}"></script>
 
+<h1>Welcome {{ user.first_name }}</h1>
+<h2>Historic Appointments</h2>
 <table class="table table-hover">
   <thead>
     <tr class="table-info">
@@ -33,6 +35,39 @@
   </tbody>
 </table>
 
+<h2>Historic Prescriptions</h2>
+{% if historic_prescriptions %}
+<table class="table table-hover">
+  <thead>
+    <tr class="table-info">
+      <th>Medication</th>
+      <th>Quantity</th>
+      <th>Issue Date</th>
+      <th>Practitioner</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for prescription in historic_prescriptions %}
+    {% if prescription.approved %}
+    <tr class="table-dark">
+      <td>{{ prescription.medication.name }} {{ prescription.dosage }}</td>
+      <td>{{ prescription.quantity }}</td>
+      <td>{{ prescription.issueDate }}</td>
+      <td>
+        {% if not prescription.doctor %}
+        {{ prescription.nurse }}
+        {% else %}
+        {{ prescription.doctor }}
+        {% endif %}
+      </td>
+    </tr>
+    {% endif %}
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+
+<h2>Repeatable Prescriptions</h2>
 <table class="table table-hover">
   <thead>
     <tr class="table-info">
@@ -46,23 +81,42 @@
   </thead>
   <tbody>
     {% for prescription in historic_prescriptions %}
-    {% if prescription.approved %}
+    {% if prescription.repeatable and prescription.approved %}
     <tr class="table-dark">
       <td>{{ prescription.patient }}</td>
       <td>{{ prescription.medication.name }} {{ prescription.dosage }}</td>
       <td>{{ prescription.quantity }}</td>
       <td>{{ prescription.issueDate }}</td>
       <td>{{ prescription.reissueDate }}</td>
-      <td>{% if prescription.repeatable %}
+      <td>
         <form action="{% url 'requestRepeatPrescription' %}" method="post">
           {% csrf_token %}
           <input type="hidden" name="prescription_id" value="{{ prescription.prescriptionID }}">
           <button type="submit" class="btn btn-primary">Request Repeat</button>
         </form>
-        {% else %}
-        <p>Not repeatable</p>
-        {% endif %}
       </td>
+    </tr>
+    {% endif %}
+    {% endfor %}
+  </tbody>
+</table>
+
+<h2>Pending Prescription Requests</h2>
+<table class="table table-hover">
+  <thead>
+    <tr class="table-info">
+      <th>Patient name </th>
+      <th>Medication</th>
+      <th>Quantity</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for prescription in historic_prescriptions %}
+    {% if prescription.repeatable and not prescription.approved %}
+    <tr class="table-dark">
+      <td>{{ prescription.patient }}</td>
+      <td>{{ prescription.medication.name }} {{ prescription.dosage }}</td>
+      <td>{{ prescription.quantity }}</td>
     </tr>
     {% endif %}
     {% endfor %}
