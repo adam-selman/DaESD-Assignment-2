@@ -16,7 +16,7 @@ from .utility import get_appointments_for_practitioner, get_prescriptions_for_pr
 
 from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponseNotFound
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, Http404
 from .models import DoctorProfile, NurseProfile, UserProfile, User, Timetable, Service, Appointment, PatientProfile
 from .forms import UserRegisterForm, DoctorNurseRegistrationForm
 from datetime import date
@@ -24,7 +24,7 @@ from datetime import date
 from .models import DoctorProfile, NurseProfile, UserProfile, User, Timetable, Service, Appointment, Invoice, Prescription
 
 
-from .db_utility import get_user_profile_by_user_id, check_practitioner_service, get_invoice_information_by_user_id, \
+from .db_utility import get_user_profile_by_user_id, get_invoices_awaiting_payment, get_invoice_information_by_user_id, \
                     get_medical_services, get_user_profile_by_user_id, get_practitioners_by_day_and_service,  \
                     make_patient_appointment_booking, get_time_slots_by_day_and_practitioner, get_all_invoice_information, \
                     get_patient_appointments_by_user_id
@@ -313,7 +313,6 @@ def patient_appointment_booking(request) -> JsonResponse:
     Returns:
         JsonResponse: JsonResponse containing the result of the request
     """
-    print("Reached patient_appointment_booking")
     csrf_token = get_token(request)
     check = False
     print(request.method)
@@ -370,8 +369,10 @@ def admin(request):
     user_type = "admin"
     user = request.user
     user_name = user.get_full_name
-    invoices = get_all_invoice_information()
-    return render(request, 'admin_dashboard.html', {'user_type': user_type, "user_name": user_name, "invoices": invoices})
+    all_invoices = get_all_invoice_information()
+    invoices_to_be_paid = get_invoices_awaiting_payment()
+    return render(request, 'admin_dashboard.html', {'user_type': user_type, "user_name": user_name,
+                                                     "all_invoices": all_invoices, "invoices_to_be_paid": invoices_to_be_paid})
 
 @login_required(login_url='login')
 @custom_user_passes_test(is_nurse)
@@ -623,3 +624,33 @@ def prescription_pending_approval(request):
     else:
         data = {'success': 'false', 'error': 'User is not a doctor or Nurse'}
     return JsonResponse(data)
+
+
+def mark_invoice_as_paid(request):
+    """
+    Function to mark an invoice as paid
+
+    Args:
+        request (HttpRequest): Django view request object
+
+    Returns:
+        JsonResponse: JSON response containing the result of the request
+    """
+
+    csrf_token = get_token(request)
+    if request.method == 'POST':
+        admin_user = request.user
+
+        if is_admin(admin_user):
+            invoice_id = request.POST.get('invoice_id')
+            invoice = Invoice.objects.get(invoiceID=invoice_id)
+            invoice.status = 1
+            invoice.save()
+
+            data = {'success': 'true'}
+        # redirect to 404 if the user is not an admin
+        else:
+            return redirect(Http404)
+    else:
+        data = {'success': 'false'}
+    return JsonResponse(data) 

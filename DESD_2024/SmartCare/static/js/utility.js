@@ -56,3 +56,34 @@
     var inputElement = document.getElementById(datepickerId);
     inputElement.min = formattedDate;
   }
+
+/**
+ * Method to mark an invoice as paid 
+ * @param {HTMLFormElement} form - The form element to be submitted
+ */
+function markInvoiceAsPaid(form) {
+  var formData = new FormData(form);
+  var token = getCsrfToken();
+
+  fetch('mark_invoice_as_paid', {
+  method: 'POST',
+  headers: {
+          'X-CSRFToken': token
+          },
+  body: formData
+})
+.then(response => response.json())
+.then(data => {
+if (data.success) {
+  // show success message
+  // refresh page
+  alert('Invoice Marked as Paid.');
+  location.reload();
+
+} else {
+  
+  alert(data.error);
+}
+});
+
+}

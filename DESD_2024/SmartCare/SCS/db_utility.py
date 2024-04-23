@@ -140,6 +140,24 @@ def get_all_invoice_information() -> list:
         invoice_info.append([service_name, amount, issue_date, invoice.invoiceID, invoice.status])
     return invoice_info
 
+def get_invoices_awaiting_payment() -> list:
+    """
+    Returns a list of invoices awaiting payment
+
+    Returns:
+        list: A list of invoices awaiting payment
+    """
+    invoices = Invoice.objects.filter(status=False).all()
+    invoice_info = []
+    for invoice in invoices:
+        service = get_service_by_appointment_id(invoice.appointment_id)
+        service_name = service.service.title()
+        amount = invoice.amount
+        issue_date = invoice.dateIssued.strftime("%d-%m-%Y")
+        if invoice.status == 0:
+            invoice_info.append([service_name, amount, issue_date, invoice.invoiceID, invoice.status])
+    return invoice_info
+
 def get_patient_appointments_by_user_id(user_id: int, future=False, past=False) -> list:
     """
     Returns the appointments for a patient
