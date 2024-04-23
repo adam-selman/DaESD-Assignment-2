@@ -2,6 +2,11 @@
 {% block content%}
 {% include 'CheckSession.html' %}
 <p>admin page</p>
+<div>
+    {% if user.is_authenticated %}
+    <a href="DisplayPatients">Display patients</a>
+{% endif %}
+  </div>
 <table class="table table-hover">
     <thead>
         <tr class="table-info">
@@ -80,6 +85,74 @@
         </div>
     </div>
 </div>
+
+
+
+
+<div class="modal fade" id="modal3{{ patient.user_profile }}" tabindex="-1" role="dialog" aria-labelledby="modal{{ patient.user_profile }}Label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal{{ patient.user_profile }}Label">Details of {{ patient.user_profile }}</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+             <p>Are you sure you would like to delete the row? </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" data-id="{{ patient.user_profile }}" class="delete-button btn btn-danger " >Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endfor %}
 
 {% endblock %}
+<script>
+   
+    
+    const deleteButtons = document.querySelectorAll('.delete-button');
+    deleteButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const id = button.dataset.id;
+        var token = "{{ csrf_token }}";
+        console.error(token);
+
+        const rowElement = document.querySelector(`tr[data-row-id="${id}"]`);
+        
+        
+        
+        
+        fetch(`/delete/${id}`, {
+          method: 'DELETE',
+          headers: {
+            'X-CSRFToken': token},
+            
+        })
+        .then(response => {
+          if (response.ok) {
+            // Row deleted successfully, update the UI
+            rowElement.remove();
+            const modal = button.closest('.modal');
+            const modalInstance = bootstrap.Modal.getInstance(modal);
+            modalInstance.hide();
+            alert('Row has been deleted');
+          } else {
+            response.text().then(errorMessage => {
+            alert('Error: ' + errorMessage);
+            });
+            // Handle error response
+            console.error('Failed to delete row');
+          }
+        })
+        .catch(error => {
+          // Handle network or other errors
+          console.error('Failed to delete row', error);
+          alert('Failed to delete row: ' + error.message);
+        });
+      });
+    });
+    </script>

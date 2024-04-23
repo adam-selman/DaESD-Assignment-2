@@ -10,7 +10,7 @@ from django.contrib.auth import authenticate, login , logout
 from django.middleware.csrf import get_token
 
 from django.contrib.auth.decorators import user_passes_test
-from django.http import HttpResponseNotFound
+from django.http import HttpResponseNotFound,HttpResponseNotAllowed
 from django.shortcuts import get_object_or_404
 from .models import DoctorProfile, NurseProfile, UserProfile, User, Timetable, Service, Appointment, PatientProfile
 from .forms import UserRegisterForm, DoctorNurseRegistrationForm
@@ -483,7 +483,25 @@ def currentAppt(request):
 
 
 
-
+def delete_patient(request,id):
+     
+     if request.method == 'DELETE':
+        try:
+            # Filter the rows per patient_id
+            p_details = PatientProfile.objects.get(id=id)
+          
+            if(p_details):
+                p_details.delete()
+                
+            else:
+                return HttpResponse("Could not delete the row , please try agin", status=400)
+            # Return a success response
+            return HttpResponse(status=204) 
+        except PatientProfile.DoesNotExist:
+            # If the row doesn't exist, return a not found response
+            return HttpResponse(status=404)  # 404 Not Found
+     else:
+       return HttpResponseNotAllowed(['DELETE'])
 
 
 
