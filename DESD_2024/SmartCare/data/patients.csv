@@ -1,11 +1,11 @@
-username,password,first_name,last_name,email,age,allergies,isPrivate
-p-r5-smith,19043780,Rob,Smith,robsmith@email.com,22,,TRUE
-p-5-chapman,19027149,Tim,Chapman,timc@email.com,32,,FALSE
-p-d5-victorsajowa,19043780,Daniel,Victor-Sajowa,danielvs@email.com,22,,TRUE
-p-t5-chapman,19027149,Tim,Chapman,timc@email.com,32,,FALSE
-p-d5-victorsajowa,19043780,Daniel,Victor-Sajowa,danielvs@email.com,22,,TRUE
-p-t5-chapman,19027149,Tim,Chapman,timc@email.com,32,,FALSE
-p-d5-victorsajowa,19043780,Daniel,Victor-Sajowa,danielvs@email.com,22,,TRUE
-p-t5-chapman,19027149,Tim,Chapman,timc@email.com,32,,FALSE
-p-d5-victorsajowa,19043780,Daniel,Victor-Sajowa,danielvs@email.com,22,,TRUE
-p-t5-chapman,19027149,Tim,Chapman,timc@email.com,32,,FALSE
+username,password,first_name,last_name,email,age,allergies,isPrivate, dob
+p-r5-smith,19043780,Rob,Smith,robsmith@email.com,22,,TRUE, 2002-03-09
+p-l5-brown,19027149,Lis,Brown,lizbrown@email.com,34,,FALSE, 1990-04-15
+p-h5-hesitant,19043780,Harrold,Hesitant,danielvs@email.com,29,,TRUE, 1995-07-15
+p-k5-ashford,19027149,Kevin,Ashford, kevinashford@email.com,32,,FALSE, 1990-01-15
+p-w5-wallowitz,19043780,Wendy,Wallowitz,wendywallowitz@email.com,46,,TRUE, 1978-02-15
+p-c5-bolton,19027149,Coren,Bolton, corenbolton@email.com,32,,FALSE, 1990-01-15
+p-m5-wright,19043780,Miranda,Wright,mirandawright@email.com,50,,TRUE, 1964-02-15
+p-r5-brooks,19027149,Rupert,Brooks,rupertbrooks@email.com,32,,FALSE, 1990-01-15
+p-r5-stacey,19043780,Rebecca,Stacey,rebeccastacey@email.com,22,,TRUE, 2002-03-09
+p-j5-smith,19027149,John,Smith,johnsmith@email.com,32,,FALSE, 1990-01-15

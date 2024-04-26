@@ -7,16 +7,10 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 
-
 class SeleniumTestSuite:
     def __init__(self):
         self.base_url = "http://127.0.0.1:8000"
         self.driver = self.get_driver()
-        self.admin = {"username": "a-a5-wearne", "password": "29936827"}
-        self.patient = {"username": "p-d5-victorsajowa", "password": "19043780"}
-        self.doctor = {"username": "d-a5-selman", "password": "20049296"}
-        self.nurse = {"username": "n-t5-chapman", "password": "19027149"}
-        
 
     def install_chromedriver(self):
         """
@@ -33,13 +27,13 @@ class SeleniumTestSuite:
         """
         self.install_chromedriver()
         return webdriver.Chrome()
-    
+
     def close_driver(self):
         """
         Closes the Chrome driver instance
         """
         self.driver.close()
-    
+
     def get_element_by_id(self, element_id: str) -> WebElement:
         """
         Return a single element by its ID
@@ -52,7 +46,7 @@ class SeleniumTestSuite:
             WebElement: Element found by ID
         """
         return self.driver.find_element(By.ID, element_id)
-    
+
     def get_element_by_name(self, element_name: str) -> WebElement:
         """
         Return a single element by its name
@@ -65,7 +59,7 @@ class SeleniumTestSuite:
             WebElement: Element found by ID
         """
         return self.driver.find_element(By.NAME, element_name)
-    
+
     def get_element_by_class_name(self, element_class_name: str) -> WebElement:
         """
         Return a single element by its class
@@ -78,7 +72,7 @@ class SeleniumTestSuite:
             WebElement: Element found by ID
         """
         return self.driver.find_element(By.CLASS_NAME, element_class_name)
-    
+
     def get_dropdown_by_id(self, dropdown_id: str) -> Select:
         """
         Return a dropdown element by its ID
@@ -91,7 +85,7 @@ class SeleniumTestSuite:
             Select: Dropdown element found by ID
         """
         return Select(self.driver.find_element(By.ID, dropdown_id))
-    
+
     def get_element_group_by_name(self, element_name: str) -> list[WebElement]:
         """
         Return a list of element by their name
@@ -104,7 +98,7 @@ class SeleniumTestSuite:
             WebElement: Element found by ID
         """
         return self.driver.find_elements(By.NAME, element_name)
-    
+
     def get_element_group_by_class_name(self, element_class_name: str) -> list[WebElement]:
         """
         Return an element by its ID
@@ -116,12 +110,16 @@ class SeleniumTestSuite:
 
         return self.driver.find_elements(By.CLASS_NAME, element_class_name)
     
-    def navigate_to_login(self):
+    def navigate_to_login(self, credentials: dict):
         """
         Navigates to the login page
         """
-        self.driver.get({self.base_url})
+        self.driver.get(self.base_url)
         self.get_element_by_id("login_button").click()
+        self.get_element_by_id("login_button").click()
+        self.get_element_by_name("username").send_keys(credentials["username"])
+        self.get_element_by_name("password").send_keys(credentials["password"])
+        self.get_element_by_id("login_submit_button").click()
 
     def navigate_to_dashboard(self):
         """
@@ -130,50 +128,35 @@ class SeleniumTestSuite:
         self.driver.get(f"{self.base_url}")
         self.get_element_by_id("navbarDropdownMenuLink").click()
         self.get_element_by_id("dashboard_button").click()
-    
+
     def logout(self):
         """
         Logs out of the system and returns to the login page.
         """
+        self.get_element_by_id("navbarDropdownMenuLink").click()
         self.get_element_by_id("logout_button").click()
 
-    def login_as_admin(self):
+    def populate_and_submit_login(self, credentials: dict):
         """
-        Logs in as an admin. Must be used once navigated to the login page
+        Logs in a user with their credentials. Must be on the login page.
         """
         self.get_element_by_id("login_button").click()
-        self.get_element_by_name("username").send_keys(self.admin["username"])
-        self.get_element_by_name("password").send_keys(self.admin["password"])
+        self.get_element_by_name("username").send_keys(credentials["username"])
+        self.get_element_by_name("password").send_keys(credentials["password"])
         self.get_element_by_id("login_submit_button").click()
 
-    
-    def login_as_patient(self):
+    def populate_and_submit_appointment(self, appointment: dict):
         """
-        Logs in as a patient. Must be used once navigated to the login page
-        """
-        self.get_element_by_id("login_button").click()
-        self.get_element_by_name("username").send_keys("patient")
-        self.get_element_by_name("password").send_keys("patient")
-        self.get_element_by_id("login_submit_button").click()
+        Populates and submits the appointment form
 
-    def login_as_doctor(self):
+        Args:
+            appointment (dict): Dictionary containing the appointment details
         """
-        Logs in as a doctor. Must be used once navigated to the login page
-        """
-        self.get_element_by_id("login_button").click()
-        self.get_element_by_name("username").send_keys("doctor")
-        self.get_element_by_name("password").send_keys("doctor")
-        self.get_element_by_id("login_submit_button").click()
-    
-    def login_as_nurse(self):
-        """
-        Logs in as a nurse. Must be used once navigated to the login page
-        """
-        self.get_element_by_id("login_button").click()
-        self.get_element_by_name("username").send_keys("nurse")
-        self.get_element_by_name("password").send_keys("nurse")
-        self.get_element_by_id("login_submit_button").click()
-    
+        self.get_element_by_name("date").send_keys(appointment["date"])
+        self.get_element_by_name("time").send_keys(appointment["time"])
+        self.get_element_by_name("reason").send_keys(appointment["reason"])
+        self.get_element_by_id("appointment_submit_button").click()
+
     def register_patient(self, new_patient: dict):
         """
         Registers a patient
