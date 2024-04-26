@@ -5,6 +5,7 @@ from selenium.webdriver.remote.webelement import WebElement
 import chromedriver_autoinstaller
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import Select
 
 
 class SeleniumTestSuite:
@@ -77,6 +78,19 @@ class SeleniumTestSuite:
             WebElement: Element found by ID
         """
         return self.driver.find_element(By.CLASS_NAME, element_class_name)
+    
+    def get_dropdown_by_id(self, dropdown_id: str) -> Select:
+        """
+        Return a dropdown element by its ID
+
+        Args:
+            driver (Chrome): Chrome driver instance
+            dropdown_id (str): ID of the dropdown to be found
+
+        Returns:
+            Select: Dropdown element found by ID
+        """
+        return Select(self.driver.find_element(By.ID, dropdown_id))
     
     def get_element_group_by_name(self, element_name: str) -> list[WebElement]:
         """
@@ -160,33 +174,63 @@ class SeleniumTestSuite:
         self.get_element_by_name("password").send_keys("nurse")
         self.get_element_by_id("login_submit_button").click()
     
-    def register_user(self, new_user: dict):
+    def register_patient(self, new_patient: dict):
         """
-        Registers a user
+        Registers a patient
 
         Args:
-            new_user (dict): Dictionary containing the user details
+            new_patient (dict): Dictionary containing the user details
         """
         self.driver.get(f"{self.base_url}")
         sleep(0.5)
         self.get_element_by_id("register_button").click()
         sleep(0.5)
-        self.get_element_by_name("firstname").send_keys(new_user["first_name"])
-        self.get_element_by_name("lastname").send_keys(new_user["last_name"])
-        self.get_element_by_name("username").send_keys(new_user["username"])
+        self.get_element_by_name("firstname").send_keys(new_patient["first_name"])
+        self.get_element_by_name("lastname").send_keys(new_patient["last_name"])
+        self.get_element_by_name("username").send_keys(new_patient["username"])
         try:
-            self.get_element_by_name("address").send_keys(new_user["address"])
+            self.get_element_by_name("address").send_keys(new_patient["address"])
         except:
             pass
         try:
-            self.get_element_by_name("dob").send_keys(new_user["date_of_birth"])
+            self.get_element_by_name("dob").send_keys(new_patient["date_of_birth"])
         except:
             pass
         try:
-            self.get_element_by_name("email").send_keys(new_user["email"])
+            self.get_element_by_name("email").send_keys(new_patient["email"])
         except:
             pass
-        self.get_element_by_name("password1").send_keys(new_user["password"])
-        self.get_element_by_name("password2").send_keys(new_user["password"])
+        self.get_element_by_name("password1").send_keys(new_patient["password"])
+        self.get_element_by_name("password2").send_keys(new_patient["password"])
         self.get_element_by_id("register_submit_button").click()
+        sleep(1)
+
+    def register_doctor_or_nurse(self, new_practitioner: dict):
+        """
+        Registers a patient
+
+        Args:
+            new_patient (dict): Dictionary containing the user details
+        """
+        self.driver.get(f"{self.base_url}/staff_register/")
+        sleep(0.5)
+        #! self.get_element_by_name("firstname").send_keys(new_practitioner["first_name"])
+        #! self.get_element_by_name("lastname").send_keys(new_practitioner["last_name"])
+        self.get_element_by_name("username").send_keys(new_practitioner["username"])
+        self.get_dropdown_by_id("id_user_type").select_by_visible_text(new_practitioner["role"])
+        try:
+            self.get_element_by_name("address").send_keys(new_practitioner["address"])
+        except:
+            pass
+        try:
+            self.get_element_by_name("dob").send_keys(new_practitioner["date_of_birth"])
+        except:
+            pass
+        try:
+            self.get_element_by_name("email").send_keys(new_practitioner["email"])
+        except:
+            pass
+        self.get_element_by_name("password1").send_keys(new_practitioner["password"])
+        self.get_element_by_name("password2").send_keys(new_practitioner["password"])
+        #! self.get_element_by_id("register_submit_button").click()
         sleep(1)
