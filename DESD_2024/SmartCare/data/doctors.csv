@@ -1,3 +1,4 @@
 username,password,first_name,last_name,email,specialization,isPartTime
-d-a5-selman,20049296,Adam,Selman,aselman@scs.nhs.uk,obgyn,TRUE
 d-s5-tadlaoui,21039395,Sonia,Tadlaoui,stadlaoui@scs.nhs.uk,pediatrics,FALSE
+d-f5-first,21039395,Finley, First,first@scs.nhs.uk,pediatrics,FALSE
+d-a5-selman,12345678,Adam,Selman,aselman@scs.nhs.uk,obgyn,TRUE

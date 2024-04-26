@@ -1,3 +1,11 @@
 username,password,first_name,last_name,email,age,allergies,isPrivate
+p-r5-smith,19043780,Rob,Smith,robsmith@email.com,22,,TRUE
+p-5-chapman,19027149,Tim,Chapman,timc@email.com,32,,FALSE
+p-d5-victorsajowa,19043780,Daniel,Victor-Sajowa,danielvs@email.com,22,,TRUE
+p-t5-chapman,19027149,Tim,Chapman,timc@email.com,32,,FALSE
+p-d5-victorsajowa,19043780,Daniel,Victor-Sajowa,danielvs@email.com,22,,TRUE
+p-t5-chapman,19027149,Tim,Chapman,timc@email.com,32,,FALSE
+p-d5-victorsajowa,19043780,Daniel,Victor-Sajowa,danielvs@email.com,22,,TRUE
+p-t5-chapman,19027149,Tim,Chapman,timc@email.com,32,,FALSE
 p-d5-victorsajowa,19043780,Daniel,Victor-Sajowa,danielvs@email.com,22,,TRUE
 p-t5-chapman,19027149,Tim,Chapman,timc@email.com,32,,FALSE
