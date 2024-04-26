@@ -50,13 +50,13 @@
                       {% endif %}
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                      <li><a class="dropdown-item" href="dashboard">Dashboard</a></li>
-                      <li><a class="dropdown-item" href="logout">Logout</a></li>
+                      <li><a class="dropdown-item" href="dashboard" id="dashboard_button">Dashboard</a></li>
+                      <li><a class="dropdown-item" href="logout" id="logout_button">Logout</a></li>
                     </ul>
                   </li>
                   {% else %}
                   <li class="nav-item">
-                    <a class="nav-link active" href="login">Login</a>
+                    <a class="nav-link active" href="login" id="login_button">Login</a>
                   </li>
                   {% endif %}
              
