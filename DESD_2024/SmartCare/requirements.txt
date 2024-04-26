@@ -1,3 +1,5 @@
 Django
 mysqlclient
 django-session-timeout
+selenium
+chromedriver-autoinstaller
