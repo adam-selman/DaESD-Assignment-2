@@ -490,8 +490,12 @@ def delete_patient(request,id):
             # Filter the rows per patient_id
             p_details = PatientProfile.objects.get(id=id)
           
-            if(p_details):
+            if (p_details):
+                user_profile = p_details.user_profile
+                user = user_profile.user
                 p_details.delete()
+                user_profile.delete()
+                user.delete()
                 
             else:
                 return HttpResponse("Could not delete the row , please try agin", status=400)

@@ -19,4 +19,5 @@ urlpatterns = [
    path('staff_register/', views.register_doctor_nurse, name='staff_register'),
    path('DisplayPatients',views.display_patients),
    path('DisplayAppt',views.currentAppt),
+   path('delete/<int:id>/',views.delete_patient),
 ]

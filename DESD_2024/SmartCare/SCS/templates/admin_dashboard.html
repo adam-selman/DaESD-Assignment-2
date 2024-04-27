@@ -20,7 +20,7 @@
     </thead>
     <tbody>
 {% for patient in patients %}
-<tr class="table-dark">
+<tr class="table-dark" data-row-id="{{patient.id}}">
 <td>{{ patient.user_profile }}</td>
 <td>{{ patient.age }}</td>
 <td>{{ patient.allergies }}</td>
@@ -103,25 +103,30 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" data-id="{{ patient.user_profile }}" class="delete-button btn btn-danger " >Delete</button>
+                <button type="button" data-id="{{ patient.id }}" data-user-profile-id="{{ patient.user_profile.id }}" class="delete-button btn btn-danger " >Delete</button>
             </div>
         </div>
     </div>
 </div>
 {% endfor %}
 
-{% endblock %}
+
 <script>
    
     
     const deleteButtons = document.querySelectorAll('.delete-button');
     deleteButtons.forEach(button => {
       button.addEventListener('click', () => {
+        alert('hi')
         const id = button.dataset.id;
+        const userProfileId = button.dataset.userProfileId;
+        alert(id)
+        alert(userProfileId)
         var token = "{{ csrf_token }}";
         console.error(token);
 
         const rowElement = document.querySelector(`tr[data-row-id="${id}"]`);
+        alert(rowElement)
         
         
         
@@ -141,6 +146,7 @@
             modalInstance.hide();
             alert('Row has been deleted');
           } else {
+            alert('we here')
             response.text().then(errorMessage => {
             alert('Error: ' + errorMessage);
             });
@@ -156,3 +162,4 @@
       });
     });
     </script>
+{% endblock %}
