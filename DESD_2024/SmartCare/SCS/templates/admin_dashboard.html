@@ -1,13 +1,13 @@
 {% extends 'index.html' %}
 {% block content%}
 {% include 'CheckSession.html' %}
-<p>admin page</p>
+<h2>Dashboard</h2>
 <div>
     {% if user.is_authenticated %}
     <a href="DisplayPatients">Display patients</a>
 {% endif %}
   </div>
-<h2>Dashboard</h2>
+
 <table class="table table-hover">
     <thead>
         <tr class="table-info">
@@ -65,7 +65,7 @@
                  
                 
                        
-                    <tr class="table-dark" data1-row-id="{{patient.user_profile}}">
+                    <tr class="table-dark" data1-row-id="{{patient.id}}">
                       
                         <td>{{appt.appointmentID}}</td>
                         <td>{{ appt.date }}</td>
@@ -109,6 +109,39 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="modal2{{ patient.user_profile }}" tabindex="-1" role="dialog" aria-labelledby="modal{{ patient.id }}Label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal2{{ patient.user_profile }}Label">Details of {{ patient.user_profile }} </h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="updateForm" id="updateForm" data-button-id="{{ patient.id}}"  method="POST">
+                    {% csrf_token %}
+                    <input type="text" name="Name" value="{{ patient.user_profile }}">
+                    <input type="text" name="Age" value="{{ patient.age}}">
+                    <input type="text" name="Allergies" value="{{ patient.allergies }}">
+                    <input type="text" name="Status" value="{{ patient.isPrivate }}">
+                
+                   
+                    <button type="submit" data-id="{{ row.patient_id }}"  class="update-button btn btn-warning" >Update</button>
+                </form>
+            </div>
+        
+             
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+             </div>
+       
+           
+        </div>
+    </div>
+</div>
+
 {% endfor %}
 
 
@@ -163,4 +196,5 @@
       });
     });
     </script>
+   
 {% endblock %}
