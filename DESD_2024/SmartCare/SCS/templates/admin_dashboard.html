@@ -125,10 +125,14 @@
                     <input type="text" name="Name" value="{{ patient.user_profile }}">
                     <input type="text" name="Age" value="{{ patient.age}}">
                     <input type="text" name="Allergies" value="{{ patient.allergies }}">
-                    <input type="text" name="Status" value="{{ patient.isPrivate }}">
+                    <select name="Status">
+                        <option value= "True" {% if patient.isPrivate %}selected{% endif %}>Private</option>
+                        <option value=  "False" {% if not patient.isPrivate %}selected{% endif %}>Public</option>
+                    </select>
+
                 
                    
-                    <button type="submit" data-id="{{ row.patient_id }}"  class="update-button btn btn-warning" >Update</button>
+                    <button type="submit" data-id="{{ patient.id }}"  class="update-button btn btn-warning" >Update</button>
                 </form>
             </div>
         
@@ -197,4 +201,58 @@
     });
     </script>
    
+   <script>
+    const forms = document.querySelectorAll('.updateForm');
+    forms.forEach(form => {
+      form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        var submitButton = event.submitter;
+      
+      // Get the ID of the submit button
+        var id = submitButton.dataset.id;
+        alert(id)
+        
+        var formData =  new FormData(document.querySelector(`form[data-button-id="${id}"]`));
+        formData.append('id', id);
+        alert(formData)
+        var token = "{{ csrf_token }}";
+      
+      
+        fetch('/update-patient/', {
+          method: 'POST',
+          headers: {
+            'X-CSRFToken': token
+          },
+          body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+          
+          if (data.success) {
+            // Handle success case
+            alert('Model row updated successfully!');
+           
+            
+            
+            
+    
+          } else {
+            // Handle error case
+            alert('Failed to update the model row: ' + data.message);
+          }
+        })
+        .catch(error => {
+          // Handle error case
+          alert('Failed fetch error ' + error);
+        });
+      });
+    });
+    
+    
+    </script>
+
+
+
+
+
 {% endblock %}

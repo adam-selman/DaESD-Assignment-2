@@ -580,6 +580,56 @@ def delete_patient(request,id):
        return HttpResponseNotAllowed(['DELETE'])
         
 
+
+def update_patient(request):
+    if request.method == 'POST':
+        # Get the rowId from the POST data
+        id = request.POST.get('id')
+        name = request.POST.get('Name')
+        age = request.POST.get('Age')
+        allergies = request.POST.get('Allergies')
+        isPrivate = request.POST.get('Status')
+
+        #if not re.match(r"^[A-Za-z]+$", last_name) or not re.match(r"^[A-Za-z]+$", first_name):
+            #return JsonResponse({'success': False, 'message': 'Invalid name format'})
+
+        #elif not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+            #return JsonResponse({'success': False, 'message': 'Invalid email'})
+       
+        #elif not re.match(r"^(?:[0-9] ?){6,14}[0-9]$", telephone_number):
+            #return JsonResponse({'success': False, 'message': 'Invalid telephone number'})
+
+        # Age Validation
+        #elif  not (0 <= int(age) <= 110):
+           # return JsonResponse({'success': False, 'message': 'Invalid age range'})
+        try:
+            user_profile = UserProfile.objects.get(user__username=name)
+            # Retrieve the model instance based on the rowId
+            model_instance = PatientProfile.objects.get(id=id)
+          
+            
+            # Update the model fields with the form data
+            model_instance.user_profile = user_profile
+            model_instance.age = age
+            model_instance.allergies = allergies
+            model_instance.isPrivate = isPrivate
+        
+            
+            # Save the changes to the model instance
+            model_instance.save()
+            
+            # Return a JSON response indicating success
+            return JsonResponse({'success': True})
+        
+        except PatientProfile.DoesNotExist:
+            # Return a JSON response indicating failure if the model instance does not exist
+            return JsonResponse({'success': False, 'message': 'Model instance does not exist'})
+        except UserProfile.DoesNotExist:
+            # Return a JSON response indicating failure if the model instance does not exist
+            return JsonResponse({'success': False, 'message': 'Model instance does not exist'})
+    else:
+        return JsonResponse({'success': False, 'message': 'Invalid request method'})
+
 @login_required(login_url='login')
 @custom_user_passes_test(is_doctor_or_nurse)
 def prescription_approval(request):
@@ -594,6 +644,7 @@ def prescription_approval(request):
         pending_prescriptions = Prescription.objects.filter(nurse=nurse, approved=False)
 
         return render(request, 'nurse_dashboard.html', {'pending_prescriptions': pending_prescriptions, 'clicked4':True})
+
 
 @login_required(login_url='login')
 @custom_user_passes_test(is_doctor_or_nurse)
