@@ -8,6 +8,7 @@ from django.http import JsonResponse
 from django.contrib import messages
 from django.contrib.auth import authenticate, login , logout
 from django.middleware.csrf import get_token
+from .utility import get_appointments_for_practitioner, get_prescriptions_for_practitioner
 
 from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponseNotFound,HttpResponseNotAllowed
@@ -16,7 +17,7 @@ from .models import DoctorProfile, NurseProfile, UserProfile, User, Timetable, S
 from .forms import UserRegisterForm, DoctorNurseRegistrationForm
 from datetime import date
 
-from .models import DoctorProfile, NurseProfile, UserProfile, User, Timetable, Service, Appointment
+from .models import DoctorProfile, NurseProfile, UserProfile, User, Timetable, Service, Appointment, Prescription
 
 from .utility import get_medical_services, check_practitioner_service , APPOINTMENT_TIMES, get_user_profile_by_user_id, parse_times_for_view
 
@@ -51,7 +52,12 @@ def register(request):
             profile = UserProfile(user=user, user_type='patient')
             profile.save()
             login(request, user)
-            return redirect('home')
+            firstname = form.cleaned_data['firstname']
+            lastname = form.cleaned_data['lastname']
+            
+            user_name = f"{firstname} {lastname}"
+            request.session['user_name'] = user_name
+            return redirect('auth')
     else:
         form = UserRegisterForm()
     return render(request, 'register.html', {'form': form})
@@ -97,6 +103,18 @@ def index(request):
     csrf_token = get_token(request)
     return render(request, 'index.html',{'csrf_token':csrf_token})
 
+def get_user_type(user_id):
+    try:
+        # Retrieve the user profile associated with the user_id
+        user_profile = UserProfile.objects.get(user_id=user_id)
+        
+        # Access the user type from the user profile
+        user_type = user_profile.user_type
+        
+        return user_type
+    except UserProfile.DoesNotExist:
+        return None  # Handle case where user profile does not exist for the given user ID
+
 def Auth(request):
     """
     View function for the authentication page
@@ -107,7 +125,21 @@ def Auth(request):
     Returns:
         HttpResponse: Page response containing the authentication page
     """
-    return render(request, 'Auth.html')
+    msg = ""
+    user_type = ""
+    if request.user.is_authenticated:
+        user_id = request.user.id
+        user_type = get_user_type(user_id)
+        user_name = request.session.get('user_name')
+        if user_name == "" or user_name is None:
+            user = request.user
+            user_name = user.get_full_name()
+    else:
+        user_name = ""
+    
+    
+        
+    return render(request, 'Auth.html', {'user_name':user_name, 'user_type':user_type, 'msg': msg})
 
 @login_required
 def Session(request):
@@ -146,8 +178,9 @@ def Login(request):
             user_profile = UserProfile.objects.get(user=user)
             user_type = user_profile.user_type
             
+            
             login(request, user)
-        
+            
             if user_type == 'doctor':
                 return redirect('docDash')
             elif user_type == 'patient':
@@ -178,13 +211,23 @@ def doc(request):
     Returns:
         HttpResponse: Page response containing the doctor dashboard
     """
-    return render(request, 'doctor_dashboard.html',{'clicked':False,'clicked2':False})
+    user_type = "doctor"
+    user = request.user
+    user_name = user.get_full_name
+    return render(request, 'doctor_dashboard.html',{'clicked':False,'clicked2':False,'user_type': user_type, 'user_name':user_name})
 
 @login_required(login_url='login')
 @custom_user_passes_test(is_patient)
 def patient(request):
     services = get_medical_services()
-    context = {"services": services}
+    user_type = "patient"
+    user = request.user
+    user_name = user.get_full_name
+    if user_name == "" or user_name is None:
+        user_name = request.session.get('user_name')
+        if user_name is None:
+            user_name = ""
+    context = {"services": services, "user_type": user_type, "user_name": user_name}
     return render(request, 'patient_dashboard.html', context)
 
 @login_required(login_url='login')
@@ -407,7 +450,10 @@ def admin(request):
     Returns:
         HttpResponse: Page response containing the admin dashboard
     """
-    return render(request, 'admin_dashboard.html')
+    user_type = "admin"
+    user = request.user
+    user_name = user.get_full_name
+    return render(request, 'admin_dashboard.html', {'user_type': user_type, "user_name": user_name})
 
 @login_required(login_url='login')
 @custom_user_passes_test(is_nurse)
@@ -421,7 +467,10 @@ def nurse(request):
     Returns:
         HttpResponse: Page response containing the nurse dashboard
     """
-    return render(request, 'nurse_dashboard.html',{'clicked':False,'clicked2':False})
+    user_type = "nurse"
+    user = request.user
+    user_name = user.get_full_name
+    return render(request, 'nurse_dashboard.html', {'user_type': user_type, "user_name": user_name,'clicked':False,'clicked2':False})
 
 @login_required(login_url='login')
 @custom_user_passes_test(is_doctor_or_nurse_or_admin)
@@ -437,8 +486,12 @@ def display_patients(request):
         patient_details = PatientProfile.objects.filter(user_profile__user__username__in=patient_names)
        # this query gets all the history appointments to the dashboard 
         appointment_details = Appointment.objects.all()
+
         # Render the doctor dashboard template
-        return render(request, 'doctor_dashboard.html', {'appointments': appointment_details, 'patients': patient_details,'clicked':True})
+        user = request.user
+        user_name = user.get_full_name
+        user_type = 'doctor'
+        return render(request, 'doctor_dashboard.html', {'appointments': appointment_details, 'patients': patient_details,'clicked':True, 'user_name':user_name, 'user_type':user_type})
     
     elif is_nurse(request.user):
         # Get the nurse's ID
@@ -450,16 +503,21 @@ def display_patients(request):
         patient_details = PatientProfile.objects.filter(user_profile__user__username__in=patient_names)
         # this query gets all the history appointments to the dashboard 
         appointment_details = Appointment.objects.all()
-
+        user = request.user
+        user_name = user.get_full_name
+        user_type = 'nurse'
         
-        return render(request, 'nurse_dashboard.html', {'appointments': appointment_details, 'patients': patient_details,'clicked':True})
+        return render(request, 'nurse_dashboard.html', {'appointments': appointment_details, 'patients': patient_details,'clicked':True, 'user_name':user_name, 'user_type':user_type})
     
 
     elif is_admin(request.user):
         # get all patients details and appointments rregardless of the staff memeber allocated to them 
         patient_details = PatientProfile.objects.all()
         appointment_details = Appointment.objects.all()
-        return render(request,'admin_dashboard.html',{'patients':patient_details,'appointments': appointment_details})
+        user = request.user
+        user_name = user.get_full_name
+        user_type = 'admin'
+        return render(request,'admin_dashboard.html',{'patients':patient_details,'appointments': appointment_details, 'user_name':user_name, 'user_type':user_type})
 
     else:
         return HttpResponseNotFound("404 Error: Page not found")
@@ -472,8 +530,10 @@ def currentAppt(request):
         current_date = date.today()
         doctor = request.user.id 
         appointments = Appointment.objects.filter(date=current_date, doctor=doctor)
-
-        return render(request, 'doctor_dashboard.html', {'Appointments': appointments ,'clicked2':True})
+        user = request.user
+        user_name = user.get_full_name
+        user_type = 'doctor'
+        return render(request, 'doctor_dashboard.html', {'Appointments': appointments ,'clicked2':True, 'user_name':user_name, 'user_type':user_type})
     elif is_nurse(request.user):
         current_date = date.today()
         nurse = request.user.id 
@@ -481,7 +541,19 @@ def currentAppt(request):
 
         return render(request, 'nurse_dashboard.html', {'Appointments': appointments,'clicked2':True})
 
+@login_required(login_url='login')
+@custom_user_passes_test(is_doctor_or_nurse)
+def historic_appointments(request):
+    if is_doctor(request.user):
+        doctor = request.user.id
+        historic_appointments = Appointment.objects.filter(doctor=doctor)
 
+        return render(request, 'doctor_dashboard.html', {'historic_appointments': historic_appointments, 'clicked3':True})
+    
+    elif is_nurse(request.user):
+        nurse = request.user.id
+        historic_appointments = Appointment.objects.filter(nurse=nurse)
+        return render(request, 'nurse_dashboard.html', {'historic_appointments': historic_appointments, 'clicked3':True})
 
 def delete_patient(request,id):
      
@@ -506,6 +578,49 @@ def delete_patient(request,id):
             return HttpResponse(status=404)  # 404 Not Found
      else:
        return HttpResponseNotAllowed(['DELETE'])
+        
+
+@login_required(login_url='login')
+@custom_user_passes_test(is_doctor_or_nurse)
+def prescription_approval(request):
+    if is_doctor(request.user):
+        doctor = request.user.id
+        pending_prescriptions = Prescription.objects.filter(doctor=doctor, approved=False)
+
+        return render(request, 'doctor_dashboard.html', {'pending_prescriptions': pending_prescriptions, 'clicked4':True})
+    
+    elif is_nurse(request.user):
+        nurse = request.user.id
+        pending_prescriptions = Prescription.objects.filter(nurse=nurse, approved=False)
+
+        return render(request, 'nurse_dashboard.html', {'pending_prescriptions': pending_prescriptions, 'clicked4':True})
+
+@login_required(login_url='login')
+@custom_user_passes_test(is_doctor_or_nurse)
+def historic_prescriptions(request):
+    if is_doctor(request.user):
+        doctor = request.user.id
+        historic_prescriptions = Prescription.objects.filter(doctor=doctor)
+
+        return render(request, 'doctor_dashboard.html', {'historic_prescriptions': historic_prescriptions, 'clicked5':True})
+    
+    elif is_nurse(request.user):
+        nurse = request.user.id
+        historic_prescriptions = Prescription.objects.filter(nurse=nurse)
+
+        return render(request, 'nurse_dashboard.html', {'historic_prescriptions': historic_prescriptions, 'clicked5':True})
+
+@login_required(login_url='login')
+@custom_user_passes_test(is_doctor_or_nurse)
+def approve_prescription(request):
+    if request.method == 'POST':
+        prescription_id = request.POST.get('prescriptionID')
+        prescription = Prescription.objects.get(prescriptionID=prescription_id)
+        prescription.approved = True
+        prescription.save()
+        return render(request, 'doctor_dashboard.html')
+    else:
+        return JsonResponse({'success': 'false', 'error': 'Invalid request method'})
 
 
 
@@ -523,8 +638,6 @@ def Logout(request):
     logout(request)
     return redirect('/login') 
 
-
-
 def check_session(request):
     """
     Function to check the session status
@@ -539,5 +652,41 @@ def check_session(request):
         return JsonResponse({'status': 'active'}, status=200)
     else:
         return JsonResponse({'status': 'expired'}, status=401)
-
-
+    
+@login_required(login_url='login')
+def prescription_pending_approval(request):
+    """
+    Function to handle prescription pending approval
+    
+    Args:
+        request (HttpRequest): Django view request object
+        
+    Returns:
+        JsonResponse: JSON response containing the prescription pending approval
+    """
+    
+    user = request.user
+    prescriptions = get_prescriptions_for_practitioner(user)
+    if prescriptions is not None:
+        pending_prescriptions = [prescription for prescription in prescriptions if prescription.approved == False and prescription.repeatable == True]
+        prescriptions_data = [
+            {
+                'prescriptionID': prescription.prescriptionID,
+                'repeatable': prescription.repeatable,
+                'medication': prescription.medication.name,
+                'dosage': prescription.dosage,
+                'quantity': prescription.quantity,
+                'instructions': prescription.instructions,
+                'issueDate': prescription.issueDate.strftime('%Y-%m-%d %H:%M:%S'),
+                'reissueDate': prescription.reissueDate.strftime('%Y-%m-%d %H:%M:%S'),
+                'appointment': prescription.appointment.id,
+                'patient': prescription.patient.user.username,
+                'doctor': prescription.doctor.user.username if prescription.doctor else None,
+                'nurse': prescription.nurse.user.username if prescription.nurse else None
+            }
+        for prescription in pending_prescriptions
+        ]
+        data = {'success': 'true', 'prescriptions': prescriptions_data}
+    else:
+        data = {'success': 'false', 'error': 'User is not a doctor or Nurse'}
+    return JsonResponse(data)
