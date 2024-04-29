@@ -706,7 +706,7 @@ def request_repeat_prescription(request):
             'doctor': existing_prescription.doctor,
             'nurse': existing_prescription.nurse,
             'approved': False,
-            'issueDate': None,
+            'issueDate': datetime.date.now(),
             'reissueDate': None,
             'appointment': existing_prescription.appointment,
         }

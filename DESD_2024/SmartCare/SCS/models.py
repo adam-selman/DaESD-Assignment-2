@@ -137,7 +137,7 @@ class Prescription(models.Model):
     dosage = models.CharField(max_length = 100)
     quantity = models.IntegerField()
     instructions = models.TextField()
-    issueDate = models.DateTimeField(null = True)
+    issueDate = models.DateTimeField()
     reissueDate = models.DateTimeField(null = True)
     appointment = models.ForeignKey(Appointment, on_delete = models.CASCADE, 
                                       related_name = 'prescriptions')
