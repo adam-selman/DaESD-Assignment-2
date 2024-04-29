@@ -338,16 +338,14 @@
   const deleteButtons = document.querySelectorAll('.delete-button');
   deleteButtons.forEach(button => {
     button.addEventListener('click', () => {
-      alert('hi')
+    
       const id = button.dataset.id;
-      
-      alert(id)
     
       var token = "{{ csrf_token }}";
       console.error(token);
 
       const rowElement = document.querySelector(`tr[data-row-id="${id}"]`);
-      alert(rowElement)
+      
       
       
       
@@ -367,16 +365,16 @@
           modalInstance.hide();
           alert('Row has been deleted');
         } else {
-          alert('we here')
+          
           response.text().then(errorMessage => {
           alert('Error: ' + errorMessage);
           });
-          // Handle error response
+          
           console.error('Failed to delete row');
         }
       })
       .catch(error => {
-        // Handle network or other errors
+        
         console.error('Failed to delete row', error);
         alert('Failed to delete row: ' + error.message);
       });
