@@ -2,6 +2,7 @@ import copy
 import json
 import logging
 from datetime import datetime
+from django.forms.models import model_to_dict
 from django.shortcuts import render,redirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
@@ -610,6 +611,9 @@ def update_patient(request):
             
             # Update the model fields with the form data
             model_instance.user_profile = user_profile
+            new = model_to_dict(user_profile) 
+            t=UserProfile.objects.get(id=new['user'])
+            tt=json.dumps(t)
             model_instance.age = age
             model_instance.allergies = allergies
             model_instance.isPrivate = isPrivate
@@ -619,7 +623,13 @@ def update_patient(request):
             model_instance.save()
             
             # Return a JSON response indicating success
-            return JsonResponse({'success': True})
+            return JsonResponse({'success': True ,'data':{
+                'name': tt,
+                 'age': model_instance.age,
+                 'allergies': model_instance.allergies,
+                 'status': model_instance.isPrivate }
+                 }
+            )
         
         except PatientProfile.DoesNotExist:
             # Return a JSON response indicating failure if the model instance does not exist

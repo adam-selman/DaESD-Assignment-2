@@ -177,7 +177,7 @@
         })
         .then(response => {
           if (response.ok) {
-            // Row deleted successfully, update the UI
+            // Row deleted successfully, updating the UI
             rowElement.remove();
             const modal = button.closest('.modal');
             const modalInstance = bootstrap.Modal.getInstance(modal);
@@ -231,10 +231,15 @@
           if (data.success) {
             // Handle success case
             alert('Model row updated successfully!');
-           
+            var updatedRow = document.querySelector(`tr[data-row-id="${id}"]`);
+            updatedRow.querySelector('td:nth-child(1)').textContent = data.data.name;
+            updatedRow.querySelector('td:nth-child(2)').textContent = data.data.age;
+    
+            updatedRow.querySelector('td:nth-child(3)').textContent = data.data.allergies;
+            updatedRow.querySelector('td:nth-child(4)').textContent = data.data.status;
+
             
-            
-            
+        
     
           } else {
             // Handle error case
