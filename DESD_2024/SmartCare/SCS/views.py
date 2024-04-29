@@ -233,9 +233,6 @@ def patient(request):
     if len(past_appointments) < 1:
         past_appointments = None
     
-    logger.info(f"Invoices: {invoices}")
-    logger.info(f"past_appointments: {past_appointments}")
-    logger.info(f"future_appointments: {future_appointments}")
     services = get_medical_services()
     user_type = "patient"
     user = request.user
@@ -252,7 +249,8 @@ def patient(request):
     context = {"services": services, "user_type": user_type,
                 "user_name": user_name, "past_appointments": past_appointments,
                 "historic_prescriptions": historic_prescriptions,
-                "future_appointments": future_appointments}
+                "future_appointments": future_appointments,
+                "invoices": invoices}
     
     return render(request, 'patient_dashboard.html', context)
 

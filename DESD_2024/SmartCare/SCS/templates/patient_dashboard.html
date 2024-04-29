@@ -90,7 +90,6 @@
     {% if invoices %}
     <div class="col-md-12">
       <h2>My Invoices</h2>
-      <p>View your issued invoices</p>
       <table class="table">
         <thead class="table-info">
           <tr class="table-info">
@@ -123,7 +122,7 @@
     {% else %}
     <div class="row">
       <div class="col-md-12">
-        <h2>Invoices</h2>
+        <h2>My Invoices</h2>
         <p>No invoices to display</p>
       </div>
     </div>
@@ -131,6 +130,8 @@
   {% endif %}
   </div>
 </div>
+
+<br>
 
 <div class="container">
   <div class="row">
@@ -177,6 +178,9 @@
   </div>
 </div>
 
+<br>
+
+
 <div class="container">
   {% if historic_prescriptions %}
   <h2>Repeatable Prescriptions</h2>
@@ -221,6 +225,8 @@
   {% endif %}
 
 </div>
+
+<br>
 
 <div class="container">
   {% if historic_prescriptions %}
