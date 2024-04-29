@@ -568,7 +568,6 @@ def check_session(request):
     else:
         return JsonResponse({'status': 'expired'}, status=401)
 
-#! ADD SECURITY TO THIS
 @login_required(login_url='login')
 def generate_invoice(request):
     """
@@ -606,7 +605,42 @@ def generate_invoice(request):
             response = FileResponse(open(file_path, 'rb'))
             response['Content-Disposition'] = f'attachment; filename="{file_name}"'
             return response
-    
+
+@login_required(login_url='login')
+@custom_user_passes_test(is_doctor_or_nurse)
+def generate_patient_forwarding_file(request):
+    """
+    Function to generate a forwarding file for a patient
+
+    Args:
+        request (HttpRequest): Django view request object
+
+    Returns:
+        HttpResponse: Page response containing the invoice
+    """
+    csrf_token = get_token(request)
+    if request.method == 'GET':
+        user_id = request.user.id
+
+        
+        # generate invoice file content and name
+        file_content, file_name = generate_invoice_file_content(invoice_id)
+        bytes_data = bytes(file_content, 'utf-8')
+
+        # creating temp file to serve
+        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+            temp_file.write(bytes_data)
+            temp_file.flush()
+
+            # Get the file path
+            file_path = temp_file.name
+
+            # Serve the temporary file
+            response = FileResponse(open(file_path, 'rb'))
+            response['Content-Disposition'] = f'attachment; filename="{file_name}"'
+            return response
+
+
 @login_required(login_url='login')
 def prescription_pending_approval(request):
     """

@@ -10,7 +10,7 @@ import shutil
 from django.conf import settings
 from .models import Service, DoctorServiceRate, NurseServiceRate, User, \
         UserProfile, Prescription, Appointment, Service, \
-        Invoice, Address
+        Invoice, Address, PatientProfile
 
 logger = logging.getLogger(__name__)
 
@@ -147,6 +147,23 @@ def generate_invoice_file_content(invoice_id: int) -> tuple:
     
     return file_content, file_name
 
+def generate_patient_forwarding_file_content(patient_id: int) -> tuple:
+    """
+    Generates an patient forwarding file and serves it
+
+    Args:
+        patient_id (int): The id of the patient
+
+    Returns:
+        str, str: The content of the invoice file to be written
+    """
+    patient = PatientProfile.objects.get(patientID=patient_id)
+
+    # create the file content
+    file_content, file_name = create_patient_forwarding_file(patient)
+    
+    return file_content, file_name
+
 
 def create_invoice_file(invoice_id: int) -> tuple:
     """
@@ -186,7 +203,6 @@ def create_invoice_file(invoice_id: int) -> tuple:
     pre_tax_amount = "{:.2f}".format(pre_tax_amount)
 
     
-    
     # patient info
     patient = invoice.patient
     patient_user_profile = UserProfile.objects.get(user_id=patient.user_id)
@@ -215,29 +231,76 @@ def create_invoice_file(invoice_id: int) -> tuple:
         'pre_tax_amount': pre_tax_amount,
     }
 
-    filled_template = populate_invoice(template, invoice_data)
+    filled_template = populate_template(template, invoice_data)
 
     return filled_template, file_name
 
 
-def populate_invoice(template, invoice_data) -> str:
+def populate_template(template, data) -> str:
     """
-    Populates the invoice template with the invoice data
+    Populates the template with the provided data
 
     Args:
         template (str): The template to populate
-        invoice_data (dict): The data to populate the template with
+        data (dict): The data to populate the template with
 
     Returns:
         str: The filled template
     """
 
     filled_template = template
-    for key, value in invoice_data.items():
+    for key, value in data.items():
         filled_template = filled_template.replace('{{' + key + '}}', str(value))
 
     return filled_template
- 
+
+def create_patient_forwarding_file(patient: PatientProfile) -> tuple:
+    """
+    Creates a patient forwarding file
+
+    Args:
+        patient_id (int): The id of the patient
+
+    Returns:
+        tuple: The content of the patient forwarding file and the file name
+    """
+    
+
+    #! appointment history
+    # get the full appointment history for the patient
+
+    #! Prescription history
+
+    #! Patient info
+    patient_user_profile = UserProfile.objects.get(user_id=patient.user_id)
+    patient_address = Address.objects.get(user_id=patient_user_profile.user_id)
+    address_string = str(patient_address)
+    user = User.objects.get(id=patient.user_id)
+
+    creation_date = datetime.now()
+    creation_date = creation_date.strftime("%d/%m/%Y")
+
+    # getting files ready
+    invoice_template_path = settings.PATIENT_FORWARDING_TEMPLATE_PATH
+    file_name = f"{user.first_name}_{user.last_name}_medical_information.txt"
+
+    with open(invoice_template_path, 'r') as file:
+        template = file.read()
+
+    patient_forwarding_data = {
+        'appointments': [],
+        'prescriptions': [],
+        'patient_name': f"{user.first_name} {user.last_name}",
+        'patient_address': address_string,
+        "creation_date": creation_date
+    }
+
+    filled_template = populate_template(template, patient_forwarding_data)
+
+    raise NotImplementedError("'create_patient_forwarding_file' not implemented yet")
+
+    return filled_template, file_name
+
 def get_prescriptions_for_practitioner(user):
     if user.groups.filter(name='Doctor').exists():
         print("Prescriptions found for Doctor" + User.username)

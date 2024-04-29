@@ -386,7 +386,7 @@ def populate_prescription(csvFileName, modelClass):
         except Exception as e:
             print(f"Error creating {modelClass.__name__}:", e)
 
-def populate_invoice(csvFileName, modelClass):
+def populate_template(csvFileName, modelClass):
     reader = open_csv(csvFileName)
     if not reader:
         return
@@ -509,7 +509,7 @@ if __name__ == '__main__':
     populate_medication('data/medication.csv', Medication, 'name')
     populate_appointment('data/appointment.csv', Appointment)
     populate_prescription('data/prescription.csv', Prescription)
-    populate_invoice('data/invoice.csv', Invoice)
+    populate_template('data/invoice.csv', Invoice)
     populate_timetables('timetable.csv')
     create_groups()
     print("Populating complete!")
