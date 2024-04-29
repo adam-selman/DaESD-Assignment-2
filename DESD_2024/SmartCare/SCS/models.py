@@ -145,8 +145,8 @@ class Prescription(models.Model):
     quantity = models.IntegerField()
     instructions = models.TextField()
     issueDate = models.DateTimeField()
-    reissueDate = models.DateTimeField()
-    appointment = models.OneToOneField(Appointment, on_delete = models.CASCADE, 
+    reissueDate = models.DateTimeField(null = True)
+    appointment = models.ForeignKey(Appointment, on_delete = models.CASCADE, 
                                       related_name = 'prescriptions')
     patient = models.ForeignKey(UserProfile, on_delete = models.CASCADE, 
                                    related_name = 'patient_prescription')

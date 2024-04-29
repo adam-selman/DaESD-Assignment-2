@@ -1,5 +1,5 @@
 from django import forms
-from .models import Appointment, UserProfile, PatientProfile
+from .models import Appointment, UserProfile, PatientProfile, Prescription
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
@@ -23,4 +23,24 @@ class DoctorNurseRegistrationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = User
         fields = UserCreationForm.Meta.fields + ('email', 'user_type', 'specialization', 'isPartTime')
-        
+
+
+class PrescriptionForm(forms.ModelForm):
+    """
+    Form object for creating prescriptions
+    """
+
+    class Meta:
+        model = Prescription
+        fields = ['repeatable', 'approved', 'medication', 'dosage', 'quantity', 'instructions', 'issueDate', 'reissueDate', 'appointment', 'patient', 'doctor', 'nurse']
+        widgets = {
+            'date': forms.widgets.DateInput(attrs={'type': 'date'}),
+            'time': forms.widgets.TimeInput(attrs={'type': 'time'}), 
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(PrescriptionForm, self).__init__(*args, **kwargs)
+        self.fields['issueDate'].required = False
+        self.fields['reissueDate'].required = False
+        self.fields['doctor'].required = False
+        self.fields['nurse'].required = False

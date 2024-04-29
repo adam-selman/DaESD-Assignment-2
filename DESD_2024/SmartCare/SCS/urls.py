@@ -22,4 +22,5 @@ urlpatterns = [
    path('DisplayPrescriptions',views.historic_prescriptions),
    path('approve_prescription',views.approve_prescription),
    path('mark_invoice_as_paid',views.mark_invoice_as_paid),
+   path('request_repeat_prescription', views.request_repeat_prescription, name='requestRepeatPrescription'),
 ]
