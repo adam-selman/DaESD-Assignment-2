@@ -224,6 +224,7 @@ def doc(request):
 @login_required(login_url='login')
 @custom_user_passes_test(is_patient)
 def patient(request):
+    current_date = datetime.now().date()
     services = get_medical_services()
     user_type = "patient"
     user = request.user
@@ -235,7 +236,7 @@ def patient(request):
         user_name = request.session.get('user_name')
         if user_name is None:
             user_name = ""
-    context = {"services": services, "user_type": user_type, "user_name": user_name, "historic_appointments": historic_appointments, "historic_prescriptions": historic_prescriptions}
+    context = {"services": services, "user_type": user_type, "user_name": user_name, "historic_appointments": historic_appointments, "historic_prescriptions": historic_prescriptions,"date":current_date}
     return render(request, 'patient_dashboard.html', context)
 
 @login_required(login_url='login')
