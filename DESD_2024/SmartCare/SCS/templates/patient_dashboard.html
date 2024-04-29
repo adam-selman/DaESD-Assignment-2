@@ -5,20 +5,138 @@
 
 <script src="{% static 'js/patient_dashboard.js' %}"></script>
 
+<h1>Welcome {{ user.first_name }}</h1>
+<h2>Historic Appointments</h2>
+<table class="table table-hover">
+  <thead>
+    <tr class="table-info">
+      <th>Appointemnt </th>
+      <th> Date</th>
+      <th>Service</th>
+      <th>Description </th>
+      <th>Note</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    {% for appointment in historic_appointments %}
+
+    <tr class="table-dark">
+
+      <td>{{appointment.time}}</td>
+      <td>{{ appointment.patient.user_profile }}</td>
+      <td>{{ appointment.service}}</td>
+      <td>{{ appointment.service.description }}</td>
+      <td>{{ appointment.notes }}</td>
+
+
+      {% endfor %}
+    </tr>
+  </tbody>
+</table>
+
+<h2>Historic Prescriptions</h2>
+{% if historic_prescriptions %}
+<table class="table table-hover">
+  <thead>
+    <tr class="table-info">
+      <th>Medication</th>
+      <th>Quantity</th>
+      <th>Issue Date</th>
+      <th>Practitioner</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for prescription in historic_prescriptions %}
+    {% if prescription.approved %}
+    <tr class="table-dark">
+      <td>{{ prescription.medication.name }} {{ prescription.dosage }}</td>
+      <td>{{ prescription.quantity }}</td>
+      <td>{{ prescription.issueDate }}</td>
+      <td>
+        {% if not prescription.doctor %}
+        {{ prescription.nurse }}
+        {% else %}
+        {{ prescription.doctor }}
+        {% endif %}
+      </td>
+    </tr>
+    {% endif %}
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+
+<h2>Repeatable Prescriptions</h2>
+<table class="table table-hover">
+  <thead>
+    <tr class="table-info">
+      <th>Patient name </th>
+      <th>Medication</th>
+      <th>Quantity</th>
+      <th>Issue Date</th>
+      <th>Request Before</th>
+      <th>Request Repeat</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for prescription in historic_prescriptions %}
+    {% if prescription.repeatable and prescription.approved %}
+    <tr class="table-dark">
+      <td>{{ prescription.patient }}</td>
+      <td>{{ prescription.medication.name }} {{ prescription.dosage }}</td>
+      <td>{{ prescription.quantity }}</td>
+      <td>{{ prescription.issueDate }}</td>
+      <td>{{ prescription.reissueDate }}</td>
+      <td>
+        <form action="{% url 'requestRepeatPrescription' %}" method="post">
+          {% csrf_token %}
+          <input type="hidden" name="prescription_id" value="{{ prescription.prescriptionID }}">
+          <button type="submit" class="btn btn-primary">Request Repeat</button>
+        </form>
+      </td>
+    </tr>
+    {% endif %}
+    {% endfor %}
+  </tbody>
+</table>
+
+<h2>Pending Prescription Requests</h2>
+<table class="table table-hover">
+  <thead>
+    <tr class="table-info">
+      <th>Patient name </th>
+      <th>Medication</th>
+      <th>Quantity</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for prescription in historic_prescriptions %}
+    {% if prescription.repeatable and not prescription.approved %}
+    <tr class="table-dark">
+      <td>{{ prescription.patient }}</td>
+      <td>{{ prescription.medication.name }} {{ prescription.dosage }}</td>
+      <td>{{ prescription.quantity }}</td>
+    </tr>
+    {% endif %}
+    {% endfor %}
+  </tbody>
+</table>
+
 <div class="container">
   <div class="row">
     <div class="col-md-10">
       <h2>Book Appointment</h2>
       <p>Book an appointment with a doctor or nurse</p>
-      <form id ="patient-booking-form" method="post">
+      <form id="patient-booking-form" method="post">
         {% csrf_token %}
         <label for="service">Service: </label>
         <div class="form-group">
           <select id="service" name="service" class="form-control" required>
             <option selected disabled hidden>Select a service</option>
-            {% for service_id, service_name, service_duration in services %} 
-              <option value="{{service_id}}">{{ service_name }}</li> 
-            {% endfor %} 
+            {% for service_id, service_name, service_duration in services %}
+            <option value="{{service_id}}">{{ service_name }}</li>
+              {% endfor %}
           </select>
         </div>
         <br>
@@ -28,111 +146,114 @@
         </div>
         <br>
         <div class="form_group">
-          <label for="practitioner" id="practitionerLabel"  >Doctor/Nurse: </label>
+          <label for="practitioner" id="practitionerLabel">Doctor/Nurse: </label>
           <select id="practitioner" name="practitioner" class="form-control" required disabled>
             <option selected disabled hidden>Select a Practitioner</option>
           </select>
-        </div>  
+        </div>
         <br>
         <div class="form_group">
-          <label for="timeSlot"  id="timeSlotLabel">Time Slot: </label>
+          <label for="timeSlot" id="timeSlotLabel">Time Slot: </label>
           <select id="timeSlot" name="timeSlot" class="form-control" required disabled>
             <option selected disabled hidden>Select a Time Slot</option>
           </select>
-        </div>  
+        </div>
         <br>
-        <textarea name="reason" id="reason" class="form-control" rows="3" placeholder="Reason for appointment"></textarea>
+        <textarea name="reason" id="reason" class="form-control" rows="3"
+          placeholder="Reason for appointment"></textarea>
         <br>
         <button class="btn btn-primary">Book Appointment</button>
-    </form>
+      </form>
     </div>
   </div>
 </div>
 
-  
+
 <script>
 
-document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     setDatePickerMinDateNow("bookingDate");
 
-});
+  });
 
-// Adding event listener that listens for changes in the service select element
-document.getElementById("service").addEventListener("change", function (e) {
-  e.preventDefault();
-  bookingDate = document.getElementById("bookingDate");
-  practitionerSelect = document.getElementById("practitioner");
-  timeSlotSelect = document.getElementById("timeSlot");
-  if (e.target.value == "") {
-    var bookingDate = document.getElementById('bookingDate');
-    var bookingDateLabel = document.getElementById('bookingDateLabel');
-    bookingDate.disabled = true;
-    bookingDate.innerHTML = createSelectPlaceholderElement("Select a Date");
-    bookingDate.style.backgroundColor = "red"
-    practitionerSelect.disabled = true;
-    practitionerSelect.innerHTML = createSelectPlaceholderElement("Select a Practitioner");
-    timeSlotSelect.disabled = true;
-    timeSlotSelect.innerHTML = "";
-    timeSlotSelect.add(createSelectPlaceholderElement("Select a Time Slot"));
-    document.getElementById('practitionerLabel').hidden = true;
-    
+  // Adding event listener that listens for changes in the service select element
+  document.getElementById("service").addEventListener("change", function (e) {
+    e.preventDefault();
+    bookingDate = document.getElementById("bookingDate");
+    practitionerSelect = document.getElementById("practitioner");
+    timeSlotSelect = document.getElementById("timeSlot");
+    if (e.target.value == "") {
+      var bookingDate = document.getElementById('bookingDate');
+      var bookingDateLabel = document.getElementById('bookingDateLabel');
+      bookingDate.disabled = true;
+      bookingDate.innerHTML = createSelectPlaceholderElement("Select a Date");
+      bookingDate.style.backgroundColor = "red"
+      practitionerSelect.disabled = true;
+      practitionerSelect.innerHTML = createSelectPlaceholderElement("Select a Practitioner");
+      timeSlotSelect.disabled = true;
+      timeSlotSelect.innerHTML = "";
+      timeSlotSelect.add(createSelectPlaceholderElement("Select a Time Slot"));
+      document.getElementById('practitionerLabel').hidden = true;
+
+      return;
+    }
+    else if (bookingDate.value !== "" && bookingDate.disabled === false) {
+      getPractitionersByDayAndService(e.target, bookingDate)
+      timeSlotSelect.disabled = true;
+      populateTimeSlots([]);
+    }
+    else {
+      var bookingDate = document.getElementById('bookingDate');
+      var bookingDateLabel = document.getElementById('bookingDateLabel');
+
+      bookingDate.disabled = false;
+    }
+  });
+
+  // Adding event listener that listens for changes in the bookingDate input element
+  document.getElementById("bookingDate").addEventListener("change", function (e) {
+    e.preventDefault();
+    if (e.target.value === "") {
+      var practitionerSelect = document.getElementById('practitioner');
+      practitionerSelect.disabled = true;
+      practitionerSelect.innerHTML = createSelectPlaceholderElement("Select a Date");
+      document.getElementById('practitionerLabel').hidden = true;
+      var timeSlotSelect = document.getElementById('timeSlot');
+      timeSlotSelect.disabled = true;
+      timeSlotSelect.innerHTML = "";
+      timeSlotSelect.add(createSelectPlaceholderElement("Select a Time Slot"));
+    }
+    else {
+      var timeSlotSelect = document.getElementById('timeSlot');
+      timeSlotSelect.disabled = true;
+      timeSlotSelect.innerHTML = "";
+      timeSlotSelect.add(createSelectPlaceholderElement("Select a Time Slot"));
+      var service = document.getElementById('service');
+      getPractitionersByDayAndService(service, e.target);
+    }
     return;
-  }
-  else if (bookingDate.value !== "" && bookingDate.disabled === false) {
-    getPractitionersByDayAndService(e.target, bookingDate)
-    timeSlotSelect.disabled = true;
-    populateTimeSlots([]);
-  }
-  else{
-  var bookingDate = document.getElementById('bookingDate');
-  var bookingDateLabel = document.getElementById('bookingDateLabel');
 
-  bookingDate.disabled = false;
-  }
- });
+  });
 
-// Adding event listener that listens for changes in the bookingDate input element
-document.getElementById("bookingDate").addEventListener("change", function (e) {
-  e.preventDefault();
-  if (e.target.value === "") {
-    var practitionerSelect = document.getElementById('practitioner');
-    practitionerSelect.disabled = true;
-    practitionerSelect.innerHTML = createSelectPlaceholderElement("Select a Date");
-    document.getElementById('practitionerLabel').hidden = true;
-    var timeSlotSelect = document.getElementById('timeSlot');
-    timeSlotSelect.disabled = true;
-    timeSlotSelect.innerHTML = "";
-    timeSlotSelect.add(createSelectPlaceholderElement("Select a Time Slot"));
-  }
-  else{
-    var timeSlotSelect = document.getElementById('timeSlot');
-    timeSlotSelect.disabled = true;
-    timeSlotSelect.innerHTML = "";
-    timeSlotSelect.add(createSelectPlaceholderElement("Select a Time Slot"));
-    var service = document.getElementById('service');
-    getPractitionersByDayAndService(service, e.target);
-  }
-  return;
+  // Adding event listener that listens for changes in the practitioner input element
+  document.getElementById("practitioner").addEventListener("change", function (e) {
+    e.preventDefault();
+    if (e.target.value !== "") {
+      var bookingDate = document.getElementById('bookingDate');
+      getTimeSlotsByDayAndPractitioner(bookingDate, e.target);
+    }
 
-});
-
-// Adding event listener that listens for changes in the practitioner input element
-document.getElementById("practitioner").addEventListener("change", function (e) {
-  e.preventDefault();
-  if (e.target.value !== "") {
-    var bookingDate = document.getElementById('bookingDate');
-    getTimeSlotsByDayAndPractitioner(bookingDate, e.target);
-  }
-  
-});
+  });
 
 
-// Adding event listener that submits the form when the submit button is clicked
-document.getElementById("patient-booking-form").addEventListener("submit", function (e) {
-   e.preventDefault();
-   makePatientAppointmentBooking(this);
-});
+  // Adding event listener that submits the form when the submit button is clicked
+  document.getElementById("patient-booking-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    makePatientAppointmentBooking(this);
+  });
 
 </script>
+
+
 
 {% endblock %}
