@@ -31,7 +31,8 @@ from .db_utility import get_user_profile_by_user_id, get_invoices_awaiting_payme
                     get_medical_services, get_user_profile_by_user_id, get_practitioners_by_day_and_service,  \
                     make_patient_appointment_booking, get_time_slots_by_day_and_practitioner, get_all_invoice_information, \
                     get_patient_appointments_by_user_id
-from .utility import APPOINTMENT_TIMES, parse_times_for_view, calculate_appointment_cost, generate_invoice_file_content
+from .utility import APPOINTMENT_TIMES, parse_times_for_view, calculate_appointment_cost, generate_invoice_file_content, \
+                    generate_patient_forwarding_file_content
 
 logger = logging.getLogger(__name__)
 def register_doctor_nurse(request):
@@ -621,11 +622,14 @@ def generate_patient_forwarding_file(request):
     csrf_token = get_token(request)
     if request.method == 'GET':
         user_id = request.user.id
-
+        patient_id = request.GET.get('patientID')
         
         # generate invoice file content and name
-        file_content, file_name = generate_invoice_file_content(invoice_id)
+        file_content, file_name = generate_patient_forwarding_file_content(patient_id)
         bytes_data = bytes(file_content, 'utf-8')
+
+        raise NotImplementedError("'generate_patient_forwarding_file' not fully implemented yet")
+
 
         # creating temp file to serve
         with tempfile.NamedTemporaryFile(delete=False) as temp_file:

@@ -11,6 +11,7 @@ from django.conf import settings
 from .models import Service, DoctorServiceRate, NurseServiceRate, User, \
         UserProfile, Prescription, Appointment, Service, \
         Invoice, Address, PatientProfile
+from .db_utility import get_patient_appointments_by_user_id
 
 logger = logging.getLogger(__name__)
 
@@ -266,12 +267,22 @@ def create_patient_forwarding_file(patient: PatientProfile) -> tuple:
     """
     
 
-    #! appointment history
-    # get the full appointment history for the patient
+    # appointment history
+    past_appointments = get_patient_appointments_by_user_id(patient.user.id, past=True)
 
-    #! Prescription history
+    if len(past_appointments) < 1:
+        past_appointments = None
 
-    #! Patient info
+    #! Format the appointment times for the file
+
+    # Prescription history
+    prescriptions = Prescription.objects.filter(patient=patient.user_profile)
+    if len(prescriptions) < 1:
+        prescriptions = None
+
+    #! Format the Prescription history for the file
+
+    # Patient info
     patient_user_profile = UserProfile.objects.get(user_id=patient.user_id)
     patient_address = Address.objects.get(user_id=patient_user_profile.user_id)
     address_string = str(patient_address)
@@ -280,7 +291,7 @@ def create_patient_forwarding_file(patient: PatientProfile) -> tuple:
     creation_date = datetime.now()
     creation_date = creation_date.strftime("%d/%m/%Y")
 
-    # getting files ready
+    # preparing the file
     invoice_template_path = settings.PATIENT_FORWARDING_TEMPLATE_PATH
     file_name = f"{user.first_name}_{user.last_name}_medical_information.txt"
 
@@ -297,7 +308,7 @@ def create_patient_forwarding_file(patient: PatientProfile) -> tuple:
 
     filled_template = populate_template(template, patient_forwarding_data)
 
-    raise NotImplementedError("'create_patient_forwarding_file' not implemented yet")
+    raise NotImplementedError("'create_patient_forwarding_file' not fully implemented yet")
 
     return filled_template, file_name
 
