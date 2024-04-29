@@ -242,6 +242,9 @@ def patient(request):
     user_name = user.get_full_name
     patient_profile = PatientProfile.objects.get(user_profile__user=request.user)
     historic_prescriptions = Prescription.objects.filter(patient=patient_profile.user_profile)
+    if len(historic_prescriptions) < 1:
+        historic_prescriptions = None
+    
     if user_name == "" or user_name is None:
         user_name = request.session.get('user_name')
         if user_name is None:
