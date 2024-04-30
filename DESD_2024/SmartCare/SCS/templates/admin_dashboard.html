@@ -15,7 +15,18 @@
             <th>Age</th>
             <th>Known allergies</th>
             <th>Private billing</th>
-            <th>Details</th>
+            <th> <form class="UpdateForm" id="UpdateForm" data-button-id="{{ patient.id}}"  method="POST">
+                {% csrf_token %}
+                <select class="form-select" name="billingType" required>
+                    <option selected disabled value="">Select Billing type</option>
+                
+                <option value="True">Private</option>
+                <option value="False">Public</option>
+
+            
+                </select>
+                </form>
+               </th>
         </tr>
     </thead>
     <tbody>
@@ -27,7 +38,8 @@
             <td>{{ patient.isPrivate }}</td>
             <td><button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal1{{patient.user_profile}}">History</button>
             <button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal2{{patient.user_profile}}">Update</button>
-            <button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal3{{patient.user_profile}}">Delete</button></td>
+            <button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal3{{patient.user_profile}}">Delete</button>
+            <button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal4{{patient.user_profile}}">Search</button></td>
         </tr>
         {% endfor %}
     </tbody>
@@ -171,17 +183,7 @@
     </div>
 </div>
 
-{% endfor %}
 
-<script>
-    // Adding event listener that submits the form when the submit button is clicked
-    document.getElementById("mark-invoice-as-paid").addEventListener("submit", function (e) {
-    e.preventDefault();
-    markInvoiceAsPaid(this);
-    });
-</script>
-
-{% endblock %}
 
 
 
@@ -238,6 +240,30 @@
              </div>
        
            
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="modal fade" id="modal4{{ patient.user_profile }}" tabindex="-1" role="dialog" aria-labelledby="modal{{ patient.user_profile }}Label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal{{ patient.user_profile }}Label">Searching for {{ patient.user_profile }}' appointments</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-------------------Add code ----------------------->
+                   
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" data-id="{{ patient.id }}"  class="delete-button btn btn-danger " >Delete</button>
+            </div>
         </div>
     </div>
 </div>
@@ -352,6 +378,14 @@
     
     </script>
 
+
+<script>
+    // Adding event listener that submits the form when the submit button is clicked
+    document.getElementById("mark-invoice-as-paid").addEventListener("submit", function (e) {
+    e.preventDefault();
+    markInvoiceAsPaid(this);
+    });
+</script>
 
 
 
