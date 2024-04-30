@@ -11,35 +11,9 @@ from django.conf import settings
 from .models import Service, DoctorServiceRate, NurseServiceRate, User, \
         UserProfile, Prescription, Appointment, Service, \
         Invoice, Address, PatientProfile
-from .db_utility import get_patient_appointments_by_user_id
+from .db_utility import get_patient_appointments_by_user_id, get_service_rate_by_appointment
 
 logger = logging.getLogger(__name__)
-
-class BILLABLE_PARTIES:
-    """
-    Enum for the billing parties
-    """
-    NHS = 'NHS',
-    INSURANCE = 'Insurance'
-    PRIVATE = 'Private'
-
-    @property
-    def valid_choices(self):
-        return [self.NHS, self.INSURANCE, self.PRIVATE]
-    
-    def validate(self, party: str) -> bool:
-        """
-        Validates the billing party
-
-        Args:
-            party (str): The given billing party string to validate
-
-        Returns:
-            bool: Whether the billing party is valid
-        """
-        if party not in self.valid_choices:
-            return False
-        return True
 
 def parse_times_for_view(times: list) -> list:
     """
@@ -55,82 +29,6 @@ def parse_times_for_view(times: list) -> list:
     for time in times:
         parsed_times.append(time.strftime("%H:%M"))
     return parsed_times
-
-def convert_to_datetimes(appointment_times) -> list:
-    """
-    Converts a list of strings to a list of datetime objects
-
-    Args:
-        appointment_times (list[str]): A list of strings representing times
-
-    Returns:
-        list: A list of datetime objects
-    """
-
-    formatted_times = []
-    for time_str in appointment_times:
-        formatted_time = datetime.strptime(time_str, "%H:%M:%S").time()
-        formatted_times.append(formatted_time)
-    return formatted_times
-
-APPOINTMENT_TIMES = convert_to_datetimes(["09:00:00", "09:15:00", "09:30:00", "09:45:00", "10:00:00", \
-                               "10:15:00", "10:30:00", "10:45:00", "11:00:00", "11:15:00", \
-                               "11:30:00", "11:45:00", "12:00:00", "12:15:00", "12:30:00", \
-                               "12:45:00", "13:00:00", "13:15:00", "13:30:00", "13:45:00", \
-                               "14:00:00", "14:15:00", "14:30:00", "14:45:00", "15:00:00", \
-                               "15:15:00", "15:30:00", "15:45:00", "16:00:00", "16:15:00", \
-                               "16:30:00", "16:45:00"])
-
-def get_service_rate_by_appointment(appointment: Appointment) -> float:
-    """
-    Gets the rate of a service
-
-    Args:
-        appointment_id (Appointment): The appointment object
-
-    Returns:
-        float: The rate of the service
-    """
-    service_id = appointment.service_id
-    service = Service.objects.get(serviceID=service_id)
-
-    doctor = False
-    nurse = False
-
-    if appointment.doctor_id is not None:
-        doctor = True
-    elif appointment.nurse_id is not None:
-        nurse = True
-    else:
-        raise ValueError("Appointment must have a doctor or a nurse")
-    if doctor:
-        doctor_service_rate_object = DoctorServiceRate.objects.get(service_id=service_id) 
-        service_rate = doctor_service_rate_object.rate
-    else:
-        nurse_service_rate_object = NurseServiceRate.objects.get(service_id=service_id)
-        service_rate = nurse_service_rate_object.rate
-        
-    return service_rate
-
-
-def calculate_appointment_cost(appointment_id: int) -> float:
-    """
-    Calculates the cost of an appointment
-
-    Args:
-        service_id (int): The id of the service
-
-    Returns:
-        float: The cost of the appointment
-    """
-    appointment = Appointment.objects.get(appointmentID=appointment_id)
-    service_id = appointment.service_id
-    service = Service.objects.get(serviceID=service_id)
-    service_rate = get_service_rate_by_appointment(appointment)
-    
-    cost = service_rate * service.duration
-    
-    return cost
 
 
 def generate_invoice_file_content(invoice_id: int) -> tuple:
@@ -292,10 +190,10 @@ def create_patient_forwarding_file(patient: PatientProfile) -> tuple:
     creation_date = creation_date.strftime("%d/%m/%Y")
 
     # preparing the file
-    invoice_template_path = settings.PATIENT_FORWARDING_TEMPLATE_PATH
+    patient_forwarding_template_path = settings.PATIENT_FORWARDING_TEMPLATE_PATH
     file_name = f"{user.first_name}_{user.last_name}_medical_information.txt"
 
-    with open(invoice_template_path, 'r') as file:
+    with open(patient_forwarding_template_path, 'r') as file:
         template = file.read()
 
     patient_forwarding_data = {

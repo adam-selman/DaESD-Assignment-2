@@ -1,7 +1,3 @@
-
-import os
-import copy
-import json
 import logging
 import tempfile
 
@@ -16,8 +12,6 @@ from django.template import RequestContext
 
 from django.utils import timezone
 
-from .utility import get_appointments_for_practitioner, get_prescriptions_for_practitioner
-
 from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponseNotFound
 from django.shortcuts import get_object_or_404, Http404
@@ -30,9 +24,9 @@ from .models import DoctorProfile, NurseProfile, PatientProfile, UserProfile, Se
 from .db_utility import get_user_profile_by_user_id, get_invoices_awaiting_payment, get_invoice_information_by_user_id, \
                     get_medical_services, get_user_profile_by_user_id, get_practitioners_by_day_and_service,  \
                     make_patient_appointment_booking, get_time_slots_by_day_and_practitioner, get_all_invoice_information, \
-                    get_patient_appointments_by_user_id
-from .utility import APPOINTMENT_TIMES, parse_times_for_view, calculate_appointment_cost, generate_invoice_file_content, \
-                    generate_patient_forwarding_file_content
+                    get_patient_appointments_by_user_id, APPOINTMENT_TIMES
+from .utility import parse_times_for_view, generate_invoice_file_content, \
+                    generate_patient_forwarding_file_content, get_prescriptions_for_practitioner
 
 logger = logging.getLogger(__name__)
 def register_doctor_nurse(request):
