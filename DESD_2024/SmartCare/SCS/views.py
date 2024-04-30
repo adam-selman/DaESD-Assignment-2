@@ -2,6 +2,7 @@ import copy
 import json
 import logging
 from datetime import datetime
+from django.forms.models import model_to_dict
 from django.shortcuts import render,redirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
@@ -15,7 +16,7 @@ from django.utils import timezone
 from .utility import get_appointments_for_practitioner, get_prescriptions_for_practitioner
 
 from django.contrib.auth.decorators import user_passes_test
-from django.http import HttpResponseNotFound
+from django.http import HttpResponseNotFound,HttpResponseNotAllowed
 from django.shortcuts import get_object_or_404
 from .models import DoctorProfile, NurseProfile, UserProfile, User, Timetable, Service, Appointment, PatientProfile
 from .forms import UserRegisterForm, DoctorNurseRegistrationForm, PrescriptionForm
@@ -223,6 +224,7 @@ def doc(request):
 @login_required(login_url='login')
 @custom_user_passes_test(is_patient)
 def patient(request):
+    current_date = datetime.now().date()
     services = get_medical_services()
     user_type = "patient"
     user = request.user
@@ -234,7 +236,7 @@ def patient(request):
         user_name = request.session.get('user_name')
         if user_name is None:
             user_name = ""
-    context = {"services": services, "user_type": user_type, "user_name": user_name, "historic_appointments": historic_appointments, "historic_prescriptions": historic_prescriptions}
+    context = {"services": services, "user_type": user_type, "user_name": user_name, "historic_appointments": historic_appointments, "historic_prescriptions": historic_prescriptions,"date":current_date}
     return render(request, 'patient_dashboard.html', context)
 
 @login_required(login_url='login')
@@ -560,8 +562,110 @@ def historic_appointments(request):
     elif is_nurse(request.user):
         nurse = request.user.id
         historic_appointments = Appointment.objects.filter(nurse=nurse)
-
         return render(request, 'nurse_dashboard.html', {'historic_appointments': historic_appointments, 'clicked3':True})
+
+def delete_patient(request,id):
+     
+     if request.method == 'DELETE':
+        try:
+            # Filter the rows per patient_id
+            p_details = PatientProfile.objects.get(id=id)
+          
+            if (p_details):
+                user_profile = p_details.user_profile
+                user = user_profile.user
+                p_details.delete()
+                user_profile.delete()
+                user.delete()
+                
+            else:
+                return HttpResponse("Could not delete the row , please try agin", status=400)
+            # Return a success response
+            return HttpResponse(status=204) 
+        except PatientProfile.DoesNotExist:
+            # If the row doesn't exist, return a not found response
+            return HttpResponse(status=404)  # 404 Not Found
+     else:
+       return HttpResponseNotAllowed(['DELETE'])
+     
+def delete_appointment(request,id):
+     
+     if request.method == 'DELETE':
+        try:
+            # Filter the rows per patient_id
+            a_details = Appointment.objects.get(appointmentID=id)
+          
+            if (a_details):
+               
+                a_details.delete()
+              
+                
+            else:
+                return HttpResponse("Could not delete the row , please try agin", status=400)
+            # Return a success response
+            return HttpResponse(status=204) 
+        except Appointment.DoesNotExist:
+            # If the row doesn't exist, return a not found response
+            return HttpResponse(status=404)  # 404 Not Found
+     else:
+       return HttpResponseNotAllowed(['DELETE'])
+        
+
+
+def update_patient(request):
+    if request.method == 'POST':
+        # Get the rowId from the POST data
+        id = request.POST.get('id')
+        name = request.POST.get('Name')
+        age = request.POST.get('Age')
+        allergies = request.POST.get('Allergies')
+        isPrivate = request.POST.get('Status')
+
+        #if not re.match(r"^[A-Za-z]+$", last_name) or not re.match(r"^[A-Za-z]+$", first_name):
+            #return JsonResponse({'success': False, 'message': 'Invalid name format'})
+
+
+        # Age Validation
+        #elif  not (0 <= int(age) <= 110):
+           # return JsonResponse({'success': False, 'message': 'Invalid age range'})
+        try:
+            
+            model_instance = PatientProfile.objects.get(id=id)
+          
+            user_instance = UserProfile.objects.get(user__username=model_instance.user_profile.user.username)
+          
+            user_instance.user.username = name 
+            user_instance.user.save()
+          
+            model_instance.user_profile = user_instance
+          
+          
+    
+            model_instance.age = age
+            model_instance.allergies = allergies
+            model_instance.isPrivate = isPrivate
+        
+            
+            # Save the changes to the model instance
+            model_instance.save()
+            
+            # Return a JSON response indicating success
+            return JsonResponse({'success': True ,'data':{
+                'name': model_instance.user_profile.user.username,
+                 'age': model_instance.age,
+                 'allergies': model_instance.allergies,
+                 'status': model_instance.isPrivate }
+                 }
+            )
+        
+        except PatientProfile.DoesNotExist:
+            # Return a JSON response indicating failure if the model instance does not exist
+            return JsonResponse({'success': False, 'message': 'Model instance does not exist'})
+        except UserProfile.DoesNotExist:
+            # Return a JSON response indicating failure if the model instance does not exist
+            return JsonResponse({'success': False, 'message': 'Model instance does not exist'})
+    else:
+        return JsonResponse({'success': False, 'message': 'Invalid request method'})
 
 @login_required(login_url='login')
 @custom_user_passes_test(is_doctor_or_nurse)
@@ -577,6 +681,7 @@ def prescription_approval(request):
         pending_prescriptions = Prescription.objects.filter(nurse=nurse, approved=False)
 
         return render(request, 'nurse_dashboard.html', {'pending_prescriptions': pending_prescriptions, 'clicked4':True})
+
 
 @login_required(login_url='login')
 @custom_user_passes_test(is_doctor_or_nurse)

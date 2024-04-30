@@ -12,28 +12,106 @@
     <tr class="table-info">
       <th>Appointemnt </th>
       <th> Date</th>
+      <th> Time</th>
       <th>Service</th>
-      <th>Description </th>
-      <th>Note</th>
+      <th>Details</th>
     </tr>
   </thead>
   <tbody>
 
     {% for appointment in historic_appointments %}
 
-    <tr class="table-dark">
+    <tr class="table-dark" data-row-id="{{appointment.appointmentID}}">
 
-      <td>{{appointment.time}}</td>
-      <td>{{ appointment.patient.user_profile }}</td>
+      <td>{{appointment.appointmentID}}</td>
+      <td>{{ appointment.date }}</td>
+      <td>{{ appointment.time }}</td>
       <td>{{ appointment.service}}</td>
-      <td>{{ appointment.service.description }}</td>
-      <td>{{ appointment.notes }}</td>
-
+   
+      <td><button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal1{{appointment.appointmentID}}">Details</button>
+        {% if appointment.date > date %}
+     <button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal3{{appointment.appointmentID}}">Cancel </button> </td>
+     {% endif %}
 
       {% endfor %}
     </tr>
   </tbody>
 </table>
+
+{% for appointment in historic_appointments %}
+
+<div class="modal fade" id="modal1{{ appointment.appointmentID }}" tabindex="-1" role="dialog" aria-labelledby="modal1{{ appointment.appointmentID}}Label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal1{{appointment.appointmentID}}Label">Details for Appointment {{ appointment.appointmentID }}</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-hover">
+                    <thead>
+                        <tr class="table-info">
+                           
+                            <th>Description </th>
+                            <th>Note</th>
+                            <th>Practitioner</th>
+
+                          
+                        </tr>
+                    </thead>
+                    <tbody>
+               
+                       
+                    <tr class="table-dark" data1-row-id="{{appointment.appointmentID}}">
+                      
+                       
+                        <td>{{ appointment.description }}</td>
+                        <td>{{ appointment.notes }}</td>
+                        <td>
+                          {% if not appointment.doctor %}
+                          {{ appointment.nurse }}
+                          {% else %}
+                          {{ appointment.doctor }}
+                          {% endif %}
+                        </td>
+    
+                    
+            
+                   
+                </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modal3{{ appointment.appointmentID }}" tabindex="-1" role="dialog" aria-labelledby="modal{{ appointment.appointmentID }}Label" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="modal{{ appointment.appointmentID }}Label">Details of appointment {{ appointment.appointmentID}}</h5>
+              <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+           <p>Are you sure you would like to delete this appointment </p>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" data-id="{{ appointment.appointmentID }}" data-user-profile-id="{{ appointment.appointmentID }}" class="delete-button btn btn-danger " >Delete</button>
+          </div>
+      </div>
+  </div>
+</div>
+{% endfor %}
 
 <h2>Historic Prescriptions</h2>
 {% if historic_prescriptions %}
@@ -254,6 +332,54 @@
 
 </script>
 
+<script>
+   
+    
+  const deleteButtons = document.querySelectorAll('.delete-button');
+  deleteButtons.forEach(button => {
+    button.addEventListener('click', () => {
+    
+      const id = button.dataset.id;
+    
+      var token = "{{ csrf_token }}";
+      console.error(token);
 
+      const rowElement = document.querySelector(`tr[data-row-id="${id}"]`);
+      
+      
+      
+      
+      
+      fetch(`/Delete/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'X-CSRFToken': token},
+          
+      })
+      .then(response => {
+        if (response.ok) {
+          // Row deleted successfully, updating the UI
+          rowElement.remove();
+          const modal = button.closest('.modal');
+          const modalInstance = bootstrap.Modal.getInstance(modal);
+          modalInstance.hide();
+          alert('Row has been deleted');
+        } else {
+          
+          response.text().then(errorMessage => {
+          alert('Error: ' + errorMessage);
+          });
+          
+          console.error('Failed to delete row');
+        }
+      })
+      .catch(error => {
+        
+        console.error('Failed to delete row', error);
+        alert('Failed to delete row: ' + error.message);
+      });
+    });
+  });
+  </script>
 
 {% endblock %}
