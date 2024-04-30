@@ -1,33 +1,22 @@
-
-import os
-import copy
-import json
+from datetime import date
 import logging
 import tempfile
 
 from datetime import datetime
 from django.forms.models import model_to_dict
-from django.shortcuts import render,redirect, HttpResponse
+from django.shortcuts import render,redirect, HttpResponse, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse, FileResponse, Http404
+from django.http import JsonResponse, FileResponse, Http404, HttpResponseNotFound, HttpResponseNotAllowed
 from django.contrib import messages
 from django.contrib.auth import authenticate, login , logout
 from django.middleware.csrf import get_token
 from django.template import RequestContext
-
 from django.utils import timezone
 
 from .utility import get_appointments_for_practitioner, get_prescriptions_for_practitioner
 
-from django.contrib.auth.decorators import user_passes_test
-from django.http import HttpResponseNotFound,HttpResponseNotAllowed
-from django.shortcuts import get_object_or_404
-from .models import DoctorProfile, NurseProfile, UserProfile, User, Timetable, Service, Appointment, PatientProfile
+from .models import DoctorProfile, NurseProfile, UserProfile, Service, Appointment, PatientProfile, Prescription, Invoice
 from .forms import UserRegisterForm, DoctorNurseRegistrationForm, PrescriptionForm
-from datetime import date
-
-from .models import DoctorProfile, NurseProfile, PatientProfile, UserProfile, Service, Appointment, Prescription, Invoice
-
 
 from .db_utility import get_user_profile_by_user_id, get_invoices_awaiting_payment, get_invoice_information_by_user_id, \
                     get_medical_services, get_user_profile_by_user_id, get_practitioners_by_day_and_service,  \
