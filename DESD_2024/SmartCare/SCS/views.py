@@ -2,7 +2,7 @@
 import json
 import logging
 from datetime import datetime
-from django.shortcuts import render,redirect, HttpResponse
+from django.shortcuts import render,redirect, HttpResponse, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.contrib import messages
@@ -12,7 +12,7 @@ from django.middleware.csrf import get_token
 from django.contrib.auth.decorators import user_passes_test , permission_required
 
 from .models import DoctorProfile, NurseProfile, UserProfile, User, Timetable, Service, Appointment, PatientProfile
-from .forms import UserRegisterForm, DoctorNurseRegistrationForm
+from .forms import UserRegisterForm, DoctorNurseRegistrationForm, AppointmentBookingForm
 
 from .utility import get_medical_services, check_practitioner_service , APPOINTMENT_TIMES, get_user_profile_by_user_id, parse_times_for_view
 
@@ -107,6 +107,18 @@ def register(request):
     else:
         form = UserRegisterForm()
     return render(request, 'register.html', {'form': form})
+
+def complete_appointment(request, appointment_id):
+    appointment = get_object_or_404(Appointment, pk=appointment_id)
+    if request.method == 'POST':
+        form = AppointmentBookingForm(request.POST, instance=appointment)
+        if form.is_valid():
+            form.save()
+            return redirect('some-view-name')  # Redirect to a confirmation page or elsewhere
+    else:
+        form = AppointmentBookingForm(instance=appointment)
+
+    return render(request, 'complete_appointment.html', {'form': form, 'appointment': appointment})  
     
 def is_doctor(user):
     return user.groups.filter(name='doctor_group').exists()
