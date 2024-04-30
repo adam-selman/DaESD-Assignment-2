@@ -18,16 +18,16 @@ urlpatterns = [
    path('generate_invoice',views.generate_invoice),
    path('register/', views.register, name='register'),
    path('staff_register/', views.register_doctor_nurse, name='staff_register'),
-   path('Auth/', views.Auth, name='Auth')
+   path('Auth/', views.Auth, name='Auth'),
    path('DisplayPatients',views.display_patients),
    path('DisplayAppt',views.currentAppt),
    path('delete/<int:id>/',views.delete_patient),
-    path('Delete/<int:id>/',views.delete_appointment),
+   path('Delete/<int:id>/',views.delete_appointment),
    path('update-patient/',views.update_patient),
    path('DisplayHistoricAppointments',views.historic_appointments),
    path('DisplayPendingPrescriptions',views.prescription_approval),
    path('DisplayPrescriptions',views.historic_prescriptions),
    path('approve_prescription',views.approve_prescription),
    path('mark_invoice_as_paid',views.mark_invoice_as_paid),
-   path('request_repeat_prescription', views.request_repeat_prescription, name='requestRepeatPrescription'),
+   path('request_repeat_prescription', views.request_repeat_prescription, name='requestRepeatPrescription') 
 ]
