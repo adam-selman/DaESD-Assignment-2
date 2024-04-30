@@ -11,7 +11,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login , logout
 from django.middleware.csrf import get_token
 from django.template import RequestContext
-from django.utils import timezone , permission_required
+from django.utils import timezone
 
 from .models import DoctorProfile, NurseProfile, UserProfile, Service, Appointment, PatientProfile, Prescription, Invoice, PatientProfile, DoctorServiceRate, NurseServiceRate
 from .forms import UserRegisterForm, DoctorNurseRegistrationForm, AppointmentBookingForm, PrescriptionForm
