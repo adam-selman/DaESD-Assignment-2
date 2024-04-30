@@ -31,7 +31,7 @@ class PatientProfile(models.Model):
     user_profile = models.OneToOneField(UserProfile, on_delete = models.CASCADE, 
                                         related_name = 'patient_user')
     age = models.IntegerField()
-    allergies = models.JSONField(default = dict)
+    allergies = models.TextField()
     isPrivate = models.BooleanField(default = False)
 
     def __str__(self):
@@ -137,7 +137,7 @@ class Prescription(models.Model):
     dosage = models.CharField(max_length = 100)
     quantity = models.IntegerField()
     instructions = models.TextField()
-    issueDate = models.DateTimeField()
+    issueDate = models.DateTimeField(default=None)
     reissueDate = models.DateTimeField(null = True)
     appointment = models.ForeignKey(Appointment, on_delete = models.CASCADE, 
                                       related_name = 'prescriptions')
