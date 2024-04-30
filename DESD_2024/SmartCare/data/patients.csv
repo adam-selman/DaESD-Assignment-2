@@ -1,3 +1,11 @@
-username,password,first_name,last_name,email,age,allergies,isPrivate
-p-d5-victorsajowa,19043780,Daniel,Victor-Sajowa,danielvs@email.com,22,,TRUE
-p-t5-chapman,19027149,Tim,Chapman,timc@email.com,32,,FALSE
+username,password,first_name,last_name,email,gender,date_of_birth,allergies,isPrivate
+r.smith,SmartCarePatient,Robert,Smith,r.smith@email.com,Male,2024-01-01,peanuts,False
+r.peterson,SmartCarePatient,Remington,Peterson,r.peterson@email.com,Male,2024-01-01,Gluten,False
+m.sharpe,SmartCarePatient,Max,Sharpe,m.sharpe@email.com,Male,2024-01-01,None,False
+j.hesitant,SmartCarePatient,John,Hesitant,j.hesitant@email.com,Male,2024-01-01,Soy,False
+l.brown,SmartCarePatient,Liz,Brown,l.brown@email.com,Female,2024-01-01,Pollen,False
+k.rodriguez,SmartCarePatient,Kayla,Rodriguez,k.rodriguez@email.com,Female,2024-01-01,Shellfish,True
+j.madison,SmartCarePatient,Jesse,Madison,j.madison@email.com,Male,2024-01-01,Dairy,True
+j.bandini,SmartCarePatient,Journee,Bandini,j.bandini@email.com,Female,2024-01-01,None,False
+c.noel,SmartCarePatient,Colton,Noel,c.noel@email.com,Male,2024-01-01,Peanuts,False
+a.robinson,SmartCarePatient,Alexa,Robinson,a.robinson,Female,2024-01-01,None,True

@@ -26,4 +26,6 @@ urlpatterns = [
    path('approve_prescription',views.approve_prescription),
    path('mark_invoice_as_paid',views.mark_invoice_as_paid),
    path('request_repeat_prescription', views.request_repeat_prescription, name='requestRepeatPrescription'),
+   path('update_doctor_service_rate', views.update_doctor_service_rate, name='updateDoctorServiceRate'),
+   path('update_nurse_service_rate', views.update_nurse_service_rate, name='updateNurseServiceRate'),
 ]
