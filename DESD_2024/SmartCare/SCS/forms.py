@@ -1,11 +1,13 @@
 from django import forms
-from .models import Appointment, UserProfile, PatientProfile, DoctorProfile, NurseProfile
+from .models import Appointment, UserProfile, PatientProfile, DoctorProfile, NurseProfile, Prescription
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.db import transaction
 
 #form now takes age as required by table to not be null 
 class UserRegisterForm(UserCreationForm):
+    firstname = forms.CharField(max_length=100)
+    lastname = forms.CharField(max_length=100)
     email = forms.EmailField(required=True)
     #user_type = forms.ChoiceField(choices=UserProfile.USER_TYPE_CHOICES)
     age = forms.IntegerField(required=True)
@@ -66,21 +68,25 @@ class DoctorNurseRegistrationForm(UserCreationForm):
         fields = UserCreationForm.Meta.fields + ('email', 'user_type', 'specialization', 'isPartTime')'''
         
 class AppointmentBookingForm(forms.ModelForm):
+        fields = UserCreationForm.Meta.fields + ('email', 'user_type', 'specialization', 'isPartTime')
+
+
+class PrescriptionForm(forms.ModelForm):
     """
-    Form object for booking patient appointments
+    Form object for creating prescriptions
     """
 
     class Meta:
-        model = Appointment
-        fields = ['service', 'date', 'time', 'duration', 'description', 'notes', 'status']
+        model = Prescription
+        fields = ['repeatable', 'approved', 'medication', 'dosage', 'quantity', 'instructions', 'issueDate', 'reissueDate', 'appointment', 'patient', 'doctor', 'nurse']
         widgets = {
             'date': forms.widgets.DateInput(attrs={'type': 'date'}),
             'time': forms.widgets.TimeInput(attrs={'type': 'time'}), 
         }
 
-
-
-
-# class AppointmentBookingForm(forms.Form):
-#     your_name = forms.CharField(label="Your name")
-#     date = forms.DateField(label="Booking Date")
+    def __init__(self, *args, **kwargs):
+        super(PrescriptionForm, self).__init__(*args, **kwargs)
+        self.fields['issueDate'].required = False
+        self.fields['reissueDate'].required = False
+        self.fields['doctor'].required = False
+        self.fields['nurse'].required = False

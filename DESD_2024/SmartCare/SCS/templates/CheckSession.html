@@ -1,25 +1,47 @@
 <script>
-    function checkSessionStatus() {
-        var token = "{{ csrf_token }}" ;
-fetch('check_status', {
-    method: 'GET',
-    headers: {
-        'X-CSRFToken': token
-    }
-})
-.then(response => {
-    if (response.status === 200) {
-        //
-    } else if (response.status === 401) {
-        alert('your session expired you will be redirected to the login page')
+var inactivityTimer;
+var alertShown = false; // Flag variable to track if alert has been shown
+
+function checkSessionStatus() {
+    var token = "{{ csrf_token }}";
+    fetch('check_status', {
+        method: 'GET',
+        headers: {
+            'X-CSRFToken': token
+        }
+    })
+    .then(response => {
+        if (response.status === 200) {
+            // Reset the inactivity timer
+            clearTimeout(inactivityTimer);
+            inactivityTimer = setTimeout(logoutUser, 2 * 60 * 1000); 
+        } else if (response.status === 401) {
+            logoutUser();
+        }
+    })
+    .catch(error => {
+        console.error('Error checking session status:', error);
+    });
+}
+
+function logoutUser() {
+    if (!alertShown) { // Check if alert has already been shown
+        alertShown = true; // Set flag to true to indicate alert has been shown
+        alert('Your session has expired. You will be redirected to the login page.');
         window.location.href = '/login';
     }
-})
-.catch(error => {
-    console.error('Error checking session status:', error);
-});
 }
-setInterval(checkSessionStatus, 60000); 
+
+document.addEventListener('mousemove', function() {
+    clearTimeout(inactivityTimer);
+    inactivityTimer = setTimeout(logoutUser, 2 * 60 * 1000); 
+});
+
+setInterval(checkSessionStatus, 60000);
 
 
-    </script>
+</script>
+
+
+
+    

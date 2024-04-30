@@ -31,12 +31,12 @@ class NurseProfile(models.Model):
 
     def __str__(self):
         return self.user_profile.user.username
-    
+
 class PatientProfile(models.Model):
     user_profile = models.OneToOneField(UserProfile, on_delete = models.CASCADE, 
                                         related_name = 'patient_user')
     age = models.IntegerField()
-    allergies = models.JSONField(default = dict)
+    allergies = models.TextField()
     isPrivate = models.BooleanField(default = False)
 
     def __str__(self):
@@ -78,12 +78,23 @@ class Address(models.Model):
     description = models.CharField(max_length = 100)
     user = models.ForeignKey(UserProfile, on_delete = models.CASCADE, 
                              related_name = 'addresses')
+    
+    def __str__(self):
+        if self.buildingName:
+            if self.number:
+                return f"{self.number} {self.buildingName}, {self.streetName}, {self.city}, {self.county}, {self.postcode}, {self.country}"
+            else:
+                return f"{self.buildingName}, {self.streetName}, {self.city}, {self.county}, {self.postcode}, {self.country}"
+        else:
+            return f"{self.number} {self.streetName}, {self.city}, {self.county}, {self.postcode}, {self.country}"
 
 class Service(models.Model):
     serviceID = models.AutoField(primary_key = True)
     service = models.CharField(max_length = 100)
     description = models.TextField()
     duration = models.IntegerField()
+    def __str__(self):
+        return self.service
 
 class Appointment(models.Model):
     appointmentID = models.AutoField(primary_key = True)
@@ -91,12 +102,10 @@ class Appointment(models.Model):
                                 related_name = 'appointment_service' )
     date = models.DateField()
     time = models.TimeField()
-    duration = models.ForeignKey(Service, on_delete = models.CASCADE,
-                                 related_name = 'appointment_duration')
     description = models.CharField(max_length=256)
     notes = models.TextField()
     status = models.CharField(max_length=100)
-    patient = models.ForeignKey(UserProfile, on_delete = models.CASCADE, 
+    patient = models.ForeignKey(PatientProfile, on_delete = models.CASCADE, 
                                    related_name = 'patient_appointment')
     doctor = models.ForeignKey(UserProfile, null = True, 
                                         on_delete = models.CASCADE, 
@@ -104,16 +113,18 @@ class Appointment(models.Model):
     nurse = models.ForeignKey(UserProfile, null = True,
                                  on_delete = models.CASCADE,
                                  related_name = 'nurse_appointment')
+    def __str__(self):
+        return str(self.appointmentID)
 
 class Invoice(models.Model):
     invoiceID = models.AutoField(primary_key = True)
     amount = models.DecimalField(max_digits = 10, decimal_places = 2)
     status = models.BooleanField(max_length = 100) # either paid or unpaid
     dateIssued = models.DateTimeField()
-    appointment = models.OneToOneField(Appointment, on_delete = models.CASCADE, 
+    appointment = models.ForeignKey(Appointment, on_delete = models.CASCADE, 
                                          related_name = 'invoices')
-    patient = models.OneToOneField(UserProfile, on_delete = models.CASCADE, 
-                                   related_name = 'patient_invoice')
+    patient = models.ForeignKey(UserProfile, on_delete=models.CASCADE, 
+                                related_name='patient_invoice')
     billingParty = models.CharField(max_length = 100, 
                                    choices = [('nhs', 'NHS'),
                                               ('insurance', 'Insurance'), 
@@ -144,8 +155,9 @@ class Prescription(models.Model):
     dosage = models.CharField(max_length = 100)
     quantity = models.IntegerField()
     instructions = models.TextField()
-    issueDate = models.DateTimeField()
-    appointment = models.OneToOneField(Appointment, on_delete = models.CASCADE, 
+    issueDate = models.DateTimeField(default=None)
+    reissueDate = models.DateTimeField(null = True)
+    appointment = models.ForeignKey(Appointment, on_delete = models.CASCADE, 
                                       related_name = 'prescriptions')
     patient = models.ForeignKey(UserProfile, on_delete = models.CASCADE, 
                                    related_name = 'patient_prescription')

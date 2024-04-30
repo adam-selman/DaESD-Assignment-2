@@ -61,8 +61,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'SCS',
-    'django.contrib.staticfiles',
-    
+    'django.contrib.staticfiles'
 ]
 
 
@@ -152,12 +151,33 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+# Define the directory where collected static files will be stored
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Define additional directories to find static files
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'SCS', 'static'),
+]
+
+# Define the list of finders that know how to discover static files in various locations
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+]
+
+INVOICE_TEMPLATE_FILENAME = "invoice_template.txt"
+
+INVOICE_TEMPLATE_PATH = os.path.join(BASE_DIR, 'static', INVOICE_TEMPLATE_FILENAME)
+
+TEMP_FILE_DIRECTORY = os.path.join(STATIC_ROOT, 'temp')
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-SESSION_EXPIRE_SECONDS = 200
+SESSION_EXPIRE_SECONDS = 400
 
 SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
 

@@ -1,3 +1,6 @@
-service,date,time,duration,description,notes,status,patient,doctor,nurse
-7,2024-03-09,10:30:00,2,Mental health check up,depression prescribed sertraline,complete,6,1,NULL
-15,2024-03-09,14:45:00,1,minor scratch,patient prescribed mild painkiller,complete,7,NULL,4
+service,date,time,description,notes,status,patient,doctor,nurse
+6,2024-01-09,10:30:00,Mental health check up,depression prescribed sertraline,complete,1,1,NULL
+6,2024-02-09,10:30:00,Mental health check up,depression,complete,1,1,NULL
+6,2024-03-09,10:30:00,Mental health check up,depression,complete,1,1,NULL
+15,2024-03-09,14:45:00,minor scratch,patient prescribed mild painkiller,complete,2,NULL,4
+3,2024-03-26,12:33:00,Mental health check,depression prescribed sertraline,complete,1,1,4
