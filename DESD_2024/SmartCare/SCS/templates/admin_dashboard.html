@@ -12,28 +12,112 @@
     <thead>
         <tr class="table-info">
             <th>Patient name</th>
-            <th> Age</th>
+            <th>Age</th>
             <th>Known allergies</th>
             <th>Private billing</th>
             <th>Details</th>
-
         </tr>
     </thead>
     <tbody>
-{% for patient in patients %}
-<tr class="table-dark" data-row-id="{{patient.id}}">
-<td>{{ patient.user_profile }}</td>
-<td>{{ patient.age }}</td>
-<td>{{ patient.allergies }}</td>
-<td>{{ patient.isPrivate }}</td>
-<td><button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal1{{patient.user_profile}}">History</button>
-<button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal2{{patient.user_profile}}">Update</button>
-<button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal3{{patient.user_profile}}">Delete</button></td>
-</tr>
-   
-{% endfor %}
-</tbody>
+        {% for patient in patients %}
+        <tr class="table-dark">
+            <td>{{ patient.user_profile }}</td>
+            <td>{{ patient.age }}</td>
+            <td>{{ patient.allergies }}</td>
+            <td>{{ patient.isPrivate }}</td>
+            <td><button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal1{{patient.user_profile}}">History</button>
+            <button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal2{{patient.user_profile}}">Update</button>
+            <button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal3{{patient.user_profile}}">Delete</button></td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Invoices to be Paid</h2>
+            {% if invoices_to_be_paid %}
+
+            <table class="table">
+                <thead class="table-info">
+                    <tr class="table-info">
+                        <th>Service</th>
+                        <th>Amount</th>
+                        <th>Date Issued</th>
+                        <th>Invoice</th>
+                        <th>Payment Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for service_name, amount, issue_date, invoice_id, status in invoices_to_be_paid %}
+                    <tr class="table-dark">
+                        <td>{{service_name}}</td>
+                        <td>£{{amount}}</td>
+                        <td>{{issue_date}}</td>
+                        <td><a href="generate_invoice?invoiceID={{invoice_id}}">Download Invoice</a></td>
+                        <td>{% if status == 1 %}
+                                Paid
+                            {% elif status == 0 %}
+                                <form id ="mark-invoice-as-paid" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="invoice_id" value="{{invoice_id}}">
+                                    <button type="submit" class="btn btn-primary">Mark as Paid</button>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>No outstanding invoices to approve payment for.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>All Invoices</h2>
+            <table class="table">
+                <thead class="table-info">
+                    <tr class="table-info">
+                        <th>Service</th>
+                        <th>Amount</th>
+                        <th>Date Issued</th>
+                        <th>Invoice</th>
+                        <th>Payment Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for service_name, amount, issue_date, invoice_id, status in all_invoices %}
+                    <tr class="table-dark">
+                        <td>{{service_name}}</td>
+                        <td>£{{amount}}</td>
+                        <td>{{issue_date}}</td>
+                        <td><a href="generate_invoice?invoiceID={{invoice_id}}">Download Invoice</a></td>
+                        <td>{% if status == 1 %}
+                                Paid
+                            {% elif status == 0 %}
+                                <form id ="mark-invoice-as-paid" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="invoice_id" value="{{invoice_id}}">
+                                    <button type="submit" class="btn btn-primary">Mark as Paid</button>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
 {% for patient in patients %}
 
 <div class="modal fade" id="modal1{{ patient.user_profile }}" tabindex="-1" role="dialog" aria-labelledby="modal{{ patient.user_profile}}Label" aria-hidden="true">
@@ -49,7 +133,7 @@
                 <table class="table table-hover">
                     <thead>
                         <tr class="table-info">
-                            <th>Appointemnt </th>
+                            <th>Appointment </th>
                             <th> Date</th>
                             <th>Service</th>
                             <th>Description </th>
@@ -86,6 +170,18 @@
         </div>
     </div>
 </div>
+
+{% endfor %}
+
+<script>
+    // Adding event listener that submits the form when the submit button is clicked
+    document.getElementById("mark-invoice-as-paid").addEventListener("submit", function (e) {
+    e.preventDefault();
+    markInvoiceAsPaid(this);
+    });
+</script>
+
+{% endblock %}
 
 
 

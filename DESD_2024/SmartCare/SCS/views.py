@@ -1,30 +1,26 @@
-import copy
-import json
+from datetime import date
 import logging
+import tempfile
+
 from datetime import datetime
 from django.forms.models import model_to_dict
-from django.shortcuts import render,redirect, HttpResponse
+from django.shortcuts import render,redirect, HttpResponse, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
+from django.http import JsonResponse, FileResponse, Http404, HttpResponseNotFound, HttpResponseNotAllowed
 from django.contrib import messages
 from django.contrib.auth import authenticate, login , logout
 from django.middleware.csrf import get_token
 from django.template import RequestContext
-
 from django.utils import timezone
 
-from .utility import get_appointments_for_practitioner, get_prescriptions_for_practitioner
-
-from django.contrib.auth.decorators import user_passes_test
-from django.http import HttpResponseNotFound,HttpResponseNotAllowed
-from django.shortcuts import get_object_or_404
-from .models import DoctorProfile, NurseProfile, UserProfile, User, Timetable, Service, Appointment, PatientProfile
+from .models import DoctorProfile, NurseProfile, UserProfile, Service, Appointment, PatientProfile, Prescription, Invoice
 from .forms import UserRegisterForm, DoctorNurseRegistrationForm, PrescriptionForm
-from datetime import date
 
-from .models import DoctorProfile, NurseProfile, PatientProfile, UserProfile, User, Timetable, Service, Appointment, Prescription
-
-from .utility import get_medical_services, check_practitioner_service , APPOINTMENT_TIMES, get_user_profile_by_user_id, parse_times_for_view
+from .db_utility import get_user_profile_by_user_id, get_invoices_awaiting_payment, get_invoice_information_by_user_id, \
+                    get_medical_services, get_user_profile_by_user_id, get_practitioners_by_day_and_service,  \
+                    make_patient_appointment_booking, get_time_slots_by_day_and_practitioner, get_all_invoice_information, \
+                    get_patient_appointments_by_user_id
+from .utility import parse_times_for_view, get_prescriptions_for_practitioner, generate_invoice_file_content
 
 logger = logging.getLogger(__name__)
 def register_doctor_nurse(request):
@@ -186,14 +182,7 @@ def Login(request):
             
             login(request, user)
             
-            if user_type == 'doctor':
-                return redirect('docDash')
-            elif user_type == 'patient':
-                return redirect('patDash')
-            elif user_type == 'nurse':
-                return redirect('nursDash')
-            elif user_type == 'admin':
-                return redirect('admDash')
+            return redirect('dashboard')
             
             
         else:
@@ -224,23 +213,38 @@ def doc(request):
 @login_required(login_url='login')
 @custom_user_passes_test(is_patient)
 def patient(request):
+    invoices = get_invoice_information_by_user_id(request.user.id)
+    patient_profile = PatientProfile.objects.get(user_profile__user=request.user)
+    
+    historic_appointments = Appointment.objects.filter(patient=patient_profile)
+    
     current_date = datetime.now().date()
     services = get_medical_services()
     user_type = "patient"
     user = request.user
     user_name = user.get_full_name
-    patient_profile = PatientProfile.objects.get(user_profile__user=request.user)
-    historic_appointments = Appointment.objects.filter(patient=patient_profile)
     historic_prescriptions = Prescription.objects.filter(patient=patient_profile.user_profile)
+    if len(historic_prescriptions) < 1:
+        historic_prescriptions = None
+    
     if user_name == "" or user_name is None:
         user_name = request.session.get('user_name')
         if user_name is None:
             user_name = ""
-    context = {"services": services, "user_type": user_type, "user_name": user_name, "historic_appointments": historic_appointments, "historic_prescriptions": historic_prescriptions,"date":current_date}
+    logger.info(historic_appointments)
+
+    context = {"services": services,
+                "user_type": user_type,
+                "user_name": user_name, 
+                "historic_appointments": historic_appointments, 
+                "historic_prescriptions": historic_prescriptions,
+                "date":current_date,
+                "invoices": invoices}
+    
     return render(request, 'patient_dashboard.html', context)
 
 @login_required(login_url='login')
-def get_practitioners_by_day_and_service(request) -> JsonResponse:
+def retrieve_practitioners_by_day_and_service(request) -> JsonResponse:
     """
     Returns a list of practitioners available on a given day
 
@@ -259,75 +263,14 @@ def get_practitioners_by_day_and_service(request) -> JsonResponse:
         parsed_date = datetime.strptime(booking_date, "%Y-%m-%d")
 
         day_of_week = parsed_date.strftime("%A").lower()
-        
 
-        doctors = []
-        nurses = []
-
-        doctor_can_perform = check_practitioner_service(service, doctor=True)
-        nurse_can_perform = check_practitioner_service(service, nurse=True)
-
-        if doctor_can_perform:
-            all_doctors = DoctorProfile.objects.all()
-
-            for doctor in all_doctors:
-                doctor_user_profile = UserProfile.objects.filter(id=doctor.user_profile_id).first()
-                doctor_user_info = User.objects.filter(id=doctor_user_profile.user_id).first()
-                doctor_timetable = Timetable.objects.filter(practitioner_id=doctor.user_profile_id).first()
-                doctor_available = False
-                if day_of_week == "monday":
-                    doctor_available = doctor_timetable.monday
-                elif day_of_week == "tuesday":
-                    doctor_available = doctor_timetable.tuesday
-                elif day_of_week == "wednesday":
-                    doctor_available = doctor_timetable.wednesday
-                elif day_of_week == "thursday":
-                    doctor_available = doctor_timetable.thursday
-                elif day_of_week == "friday":
-                    doctor_available = doctor_timetable.friday
-                elif day_of_week == "saturday":
-                    doctor_available = doctor_timetable.saturday
-                elif day_of_week == "sunday":
-                    doctor_available = doctor_timetable.sunday
-                
-                if doctor_available:
-                    doctors.append((doctor_user_info.first_name + " " + doctor_user_info.last_name, doctor_user_info.id))
-    
-        if nurse_can_perform:
-            all_nurses = NurseProfile.objects.all()
-
-            for nurse in all_nurses:
-                nurse_user_profile = UserProfile.objects.filter(id=nurse.user_profile_id).first()
-                nurse_user_info = User.objects.filter(id=nurse_user_profile.user_id).first()
-
-                nurse_timetable = Timetable.objects.filter(practitioner_id=nurse.user_profile_id).first()
-                
-                nurse_available = False
-                if day_of_week == "monday":
-                    nurse_available = nurse_timetable.monday
-                elif day_of_week == "tuesday":
-                    nurse_available = nurse_timetable.tuesday
-                elif day_of_week == "wednesday":
-                    nurse_available = nurse_timetable.wednesday
-                elif day_of_week == "thursday":
-                    nurse_available = nurse_timetable.thursday
-                elif day_of_week == "friday":
-                    nurse_available = nurse_timetable.friday
-                elif day_of_week == "saturday":
-                    nurse_available = nurse_timetable.saturday
-                elif day_of_week == "sunday":
-                    nurse_available = nurse_timetable.sunday
-                
-                if nurse_available:
-                    nurses.append((nurse_user_info.first_name + " " + nurse_user_info.last_name, nurse_user_info.id))
-        practitioners = {"doctors": doctors,
-                        "nurses": nurses}
+        practitioners = get_practitioners_by_day_and_service(service, day_of_week)
 
         data = {'success': 'true', 'practitioners': practitioners}
     return JsonResponse(data) 
 
-
-def get_time_slots_by_day_and_practitioner(request) -> JsonResponse:
+@login_required(login_url='login')
+def retrieve_time_slots_by_day_and_practitioner(request) -> JsonResponse:
     """
     Returns a list of time slots available for a given practitioner on a given day
 
@@ -338,54 +281,23 @@ def get_time_slots_by_day_and_practitioner(request) -> JsonResponse:
         JsonResponse: A JSON response containing the list of time slots and if the request was successful.
     """
 
+    csrf_token = get_token(request)
+
     if request.method == 'POST':
         booking_date = request.POST.get('bookingDate')
         current_date = datetime.now().strftime("%Y-%m-%d")
         current_time = datetime.now().time()
         if booking_date < current_date:
             return JsonResponse({'success': 'false', 'error': 'Invalid date'})
-        
 
         practitioner = request.POST.get('practitioner')
 
         parsed_date = datetime.strptime(booking_date, "%Y-%m-%d")
 
-        practitioner_user_profile = get_user_profile_by_user_id(practitioner)
-
-        # Get the appointments for the practitioner on the given day
-        if practitioner_user_profile.user_type == "doctor":
-            booked_appointments = Appointment.objects.filter(doctor_id=practitioner_user_profile, date=parsed_date).all()
-
-        elif practitioner_user_profile.user_type == "nurse":
-            booked_appointments = Appointment.objects.filter(nurse_id=practitioner_user_profile, date=parsed_date).all()
-
-        booked_times = []
-        # Get the booked times
-        for appointment in booked_appointments:
-            booked_times.append([appointment.time, appointment.duration_id])
-        
-        
-        available_times = copy.deepcopy(APPOINTMENT_TIMES)
-
-        # Remove booked times from available times
-        for time, duration in booked_times:
-            if time in available_times:
-                # Remove the time and the following n times based on the duration
-                index = available_times.index(time)
-                for i in range(duration):
-                    available_times.pop(index + i)
-        if booking_date == current_date:
-            # removing invalid times
-            times_to_remove = []
-            for time in available_times:
-                # removing times before now
-                if time < current_time:
-                    times_to_remove.append(time)
-
-            for time in times_to_remove:
-                available_times.remove(time)
-
+        available_times = get_time_slots_by_day_and_practitioner(practitioner, parsed_date)
         available_times = parse_times_for_view(available_times)
+        logger.info(f"Available times: {available_times}")
+
     return JsonResponse({'success': 'true', 'timeSlots': available_times})
 
 def patient_appointment_booking(request) -> JsonResponse:
@@ -398,7 +310,6 @@ def patient_appointment_booking(request) -> JsonResponse:
     Returns:
         JsonResponse: JsonResponse containing the result of the request
     """
-    print("Reached patient_appointment_booking")
     csrf_token = get_token(request)
     check = False
     print(request.method)
@@ -412,40 +323,33 @@ def patient_appointment_booking(request) -> JsonResponse:
         time = request.POST.get('timeSlot')
         reason = request.POST.get('reason')
 
-        if booking_date is None or service_id is None or practitioner is None or time is None or reason is None:
-            data = {'success': 'false', 'error': 'Invalid form data'}
-        else:
-            practitioner_user_profile = get_user_profile_by_user_id(practitioner)
-
-            existing_appointment = len(Appointment.objects.filter(patient_id=patient.id, date=booking_date, time=time).all()) != 0
-            if not existing_appointment:
-                if practitioner_user_profile.user_type == "doctor":
-                    new_appointment = Appointment.objects.create(date=booking_date,
-                                                                time=time,
-                                                                description=reason,
-                                                                doctor_id=practitioner,
-                                                                patient_id=patient.id,
-                                                                service_id=service_id,
-                                                                duration_id=service_id)
-                else:
-                    new_appointment = Appointment.objects.create(date=booking_date,
-                                                                time=time,
-                                                                description=reason,
-                                                                doctor_id=practitioner,
-                                                                patient_id=patient.id,
-                                                                service_id=service_id,
-                                                                duration=service_id)
-
-                new_appointment.save()
-                logger.info("New appointment created successfully for patient: " + str(patient.id) + \
-                            " with doctor: " + str(practitioner) + " on date: "  + str(booking_date) + \
-                            " at time: " + str(time) + " for service: " + str(service_id) + " with reason: " + str(reason))
-                data = {'success': 'true'}
-            else:
-                data = {'success': 'false', 'error': 'Appointment already exists'}
+        data = make_patient_appointment_booking(patient, booking_date, service_id, practitioner, time, reason)
     else:
         check = False
     return JsonResponse(data) 
+
+def dashboard_resolver(request):
+    """
+    Function to resolve the dashboard based on the user type
+
+    Args:
+        request (HttpRequest): Django view request object
+
+    Returns:
+        HttpResponse: Page response containing the dashboard
+    """
+    user_id = request.user.id
+    user_type = get_user_type(user_id)
+    if user_type == 'doctor':
+        return doc(request)
+    elif user_type == 'patient':
+        return patient(request)
+    elif user_type == 'nurse':
+        return nurse(request)
+    elif user_type == 'admin':
+        return admin(request)
+    else:
+        return redirect('login')
 
 @login_required(login_url='login')
 @custom_user_passes_test(is_admin)
@@ -462,7 +366,10 @@ def admin(request):
     user_type = "admin"
     user = request.user
     user_name = user.get_full_name
-    return render(request, 'admin_dashboard.html', {'user_type': user_type, "user_name": user_name})
+    all_invoices = get_all_invoice_information()
+    invoices_to_be_paid = get_invoices_awaiting_payment()
+    return render(request, 'admin_dashboard.html', {'user_type': user_type, "user_name": user_name,
+                                                     "all_invoices": all_invoices, "invoices_to_be_paid": invoices_to_be_paid})
 
 @login_required(login_url='login')
 @custom_user_passes_test(is_nurse)
@@ -520,7 +427,7 @@ def display_patients(request):
     
 
     elif is_admin(request.user):
-        # get all patients details and appointments rregardless of the staff memeber allocated to them 
+        # get all patients details and appointments regardless of the staff member allocated to them 
         patient_details = PatientProfile.objects.all()
         appointment_details = Appointment.objects.all()
         user = request.user
@@ -752,6 +659,45 @@ def check_session(request):
         return JsonResponse({'status': 'active'}, status=200)
     else:
         return JsonResponse({'status': 'expired'}, status=401)
+
+#! ADD SECURITY TO THIS
+@login_required(login_url='login')
+def generate_invoice(request):
+    """
+    Function to generate an invoice
+
+    Args:
+        request (HttpRequest): Django view request object
+
+    Returns:
+        HttpResponse: Page response containing the invoice
+    """
+    csrf_token = get_token(request)
+    if request.method == 'GET':
+        user_id = request.user.id
+        invoice_id = request.GET.get('invoiceID')
+
+        # Check if the invoice belongs to the user
+        invoice = Invoice.objects.filter(invoiceID=invoice_id).first()
+        if invoice.patient_id != user_id:
+            raise Http404("Resource not found")
+        
+        # generate invoice file content and name
+        file_content, file_name = generate_invoice_file_content(invoice_id)
+        bytes_data = bytes(file_content, 'utf-8')
+
+        # creating temp file to serve
+        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+            temp_file.write(bytes_data)
+            temp_file.flush()
+
+            # Get the file path
+            file_path = temp_file.name
+
+            # Serve the temporary file
+            response = FileResponse(open(file_path, 'rb'))
+            response['Content-Disposition'] = f'attachment; filename="{file_name}"'
+            return response
     
 @login_required(login_url='login')
 def prescription_pending_approval(request):
@@ -791,9 +737,37 @@ def prescription_pending_approval(request):
         data = {'success': 'false', 'error': 'User is not a doctor or Nurse'}
     return JsonResponse(data)
 
-from django.http import JsonResponse
 
-from django.http import JsonResponse
+def mark_invoice_as_paid(request):
+    """
+    Function to mark an invoice as paid
+
+    Args:
+        request (HttpRequest): Django view request object
+
+    Returns:
+        JsonResponse: JSON response containing the result of the request
+    """
+
+    csrf_token = get_token(request)
+    if request.method == 'POST':
+        admin_user = request.user
+
+        if is_admin(admin_user):
+            invoice_id = request.POST.get('invoice_id')
+            invoice = Invoice.objects.get(invoiceID=invoice_id)
+            invoice.status = 1
+            invoice.save()
+
+            data = {'success': 'true'}
+        # redirect to 404 if the user is not an admin
+        else:
+            return redirect(Http404)
+    else:
+        data = {'success': 'false'}
+    return JsonResponse(data) 
+
+
 
 @login_required(login_url='login')
 @custom_user_passes_test(is_patient)

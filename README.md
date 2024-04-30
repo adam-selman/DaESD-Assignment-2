@@ -1,10 +1,10 @@
-# 1. Distributed and Enterpise Systems Development - Assignment 2 - SmartCare
+# 1. Distributed and Enterprise Systems Development - Assignment 2 - SmartCare
 
 
 ---
 **Contents**
 
-- [1. Distributed and Enterpise Systems Development - Assignment 2 - SmartCare](#1-distributed-and-enterpise-systems-development---assignment-2---smartcare)
+- [1. Distributed and Enterprise Systems Development - Assignment 2 - SmartCare](#1-distributed-and-enterprise-systems-development---assignment-2---smartcare)
 - [2. Introduction](#2-introduction)
 - [3. Project Setup](#3-project-setup)
   - [3.1. Dependencies](#31-dependencies)

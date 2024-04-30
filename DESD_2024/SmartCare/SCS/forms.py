@@ -23,26 +23,7 @@ class DoctorNurseRegistrationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = User
         fields = UserCreationForm.Meta.fields + ('email', 'user_type', 'specialization', 'isPartTime')
-        
-class AppointmentBookingForm(forms.ModelForm):
-    """
-    Form object for booking patient appointments
-    """
 
-    class Meta:
-        model = Appointment
-        fields = ['service', 'date', 'time', 'duration', 'description', 'notes', 'status']
-        widgets = {
-            'date': forms.widgets.DateInput(attrs={'type': 'date'}),
-            'time': forms.widgets.TimeInput(attrs={'type': 'time'}), 
-        }
-
-
-
-
-# class AppointmentBookingForm(forms.Form):
-#     your_name = forms.CharField(label="Your name")
-#     date = forms.DateField(label="Booking Date")
 
 class PrescriptionForm(forms.ModelForm):
     """

@@ -58,7 +58,7 @@ function getPractitionersByDayAndService(service, bookingDate) {
   formData.append("bookingDate", bookingDate.value);
   formData.append("service", service.value);
   var token = getCsrfToken();
-  fetch('get_practitioners_by_day_and_service', {
+  fetch('retrieve_practitioners_by_day_and_service', {
     method: 'POST',
     headers: {
             'X-CSRFToken': token
@@ -88,7 +88,7 @@ function getTimeSlotsByDayAndPractitioner(bookingDate, practitioner) {
   formData.append("bookingDate", bookingDate.value);
   formData.append("practitioner", practitioner.value);
   var token = getCsrfToken();
-  fetch('get_time_slots_by_day_and_practitioner', {
+  fetch('retrieve_time_slots_by_day_and_practitioner', {
     method: 'POST',
     headers: {
             'X-CSRFToken': token
@@ -155,25 +155,7 @@ if (data.success) {
   // show success message
   // refresh page
   alert('Appointment booked successfully');
-
-  // resetting form fields
-  service = document.getElementById('service')
-  service.value = createSelectPlaceholderElement("Select a Service");
-
-  bookingDate = document.getElementById('bookingDate')
-  bookingDate.value = createSelectPlaceholderElement("Select a Date");
-  bookingDate.disabled = true;
-
-  practitionerSelect = document.getElementById('practitioner')
-  practitionerSelect.value = createSelectPlaceholderElement("Select a Practitioner");
-  practitionerSelect.disabled = true;
-
-  timeSlotSelect = document.getElementById('timeSlot')
-  timeSlotSelect.value = createSelectPlaceholderElement("Select a Time Slot");
-  timeSlotSelect.disabled = true;
-
-  reason = document.getElementById('reason').value = "";    
-
+  window.location.reload();
 } else {
   
   alert(data.error);
