@@ -26,5 +26,9 @@ urlpatterns = [
    path('DisplayPendingPrescriptions',views.prescription_approval),
    path('DisplayPrescriptions',views.historic_prescriptions),
    path('approve_prescription',views.approve_prescription),
-   path('request_repeat_prescription', views.request_repeat_prescription, name='requestRepeatPrescription'),
+   path('request_repeat_prescription', views.request_repeat_prescription, name='requestRepeatPrescription'), 
+   path('password_reset', views.password_reset, name='password_reset'),
+   path('password_reset_change/', views.password_reset_change, name='password_reset_change'),
+   path('password_reset_done', views.password_reset_done, name='password_reset_done')
+
 ]

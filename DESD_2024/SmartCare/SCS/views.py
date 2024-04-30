@@ -10,7 +10,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login , logout
 from django.middleware.csrf import get_token
 from django.template import RequestContext
-
+from django.urls import reverse
 from django.utils import timezone
 
 from .utility import get_appointments_for_practitioner, get_prescriptions_for_practitioner
@@ -794,6 +794,46 @@ def prescription_pending_approval(request):
 from django.http import JsonResponse
 
 from django.http import JsonResponse
+
+
+def password_reset(request):
+    csrf_token = get_token(request)
+    if request.method == 'POST':
+        eml = request.POST.get('email')
+        usernm = request.POST.get('username')
+        user = User.objects.get(username=usernm)
+        em = User.objects.get(email=eml)
+        if user != None or user != "":
+            if user == em:
+                return redirect(reverse('password_reset_change') + f'?key={usernm}')
+                #return redirect(reverse('password_reset_change', kwargs={'username': usernm}))
+            else:
+                return HttpResponseNotFound("User doesn't exist in records")
+        else:
+            return HttpResponseNotFound("User doesn't exist in records")
+    return render(request, 'password_reset.html', {'csrf_token': csrf_token})
+
+def password_reset_change(request):
+    username = request.GET.get('key')
+    csrf_token = get_token(request)
+    if request.method == 'POST':
+        user = User.objects.get(username=username)
+        if user != None:
+            password = request.POST.get('password')
+            confirm_password = request.POST.get('password2')
+            if password == confirm_password:
+                user.set_password(password)
+                user.save()
+                return redirect('password_reset_done')
+        else:
+            message = "Error could retrieve user info"
+            return render(request, 'password_reset_change.html', {'message':message})
+    return render(request, 'password_reset_change.html', {'username':username})
+
+def password_reset_done(request):
+    
+    return render(request, 'password_reset_done.html')
+
 
 @login_required(login_url='login')
 @custom_user_passes_test(is_patient)
