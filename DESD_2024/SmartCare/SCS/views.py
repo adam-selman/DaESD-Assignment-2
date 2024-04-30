@@ -51,7 +51,6 @@ def admin_dash(request):
 
 
 
-
 def register_doctor_nurse(request):
     if request.method == 'POST':
         form = DoctorNurseRegistrationForm(request.POST)
@@ -61,6 +60,13 @@ def register_doctor_nurse(request):
 
             # Create UserProfile
             user_profile = UserProfile.objects.create(user=user, user_type=user_type)
+            user_profile.save()
+
+            Doctor_profile = DoctorProfile(user_profile=user_profile, user_type = user_type)
+            Doctor_profile.save()
+
+            Nurse_profile = NurseProfile(user_profile=user_profile, user_type = user_type)
+            Nurse_profile.save()
 
             # Depending on the user_type, create the corresponding profile
             if user_type == 'doctor':
@@ -82,22 +88,6 @@ def register_doctor_nurse(request):
 
     return render(request, 'staff_register.html', {'form': form})
             
-
-'''def register(request):
-    if request.method == 'POST':
-        form = UserRegisterForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            # Create a profile for the new user
-            profile = PatientProfile()
-            profile.user = user
-            profile.user_type = form.cleaned_data.get('user_type_key')
-            profile.save()
-            login(request, user)
-            return redirect('Auth.html')
-    else:
-        form = UserRegisterForm()
-    return render(request, 'register.html', {'form': form})'''
 
 #fixs for the register view which takes age and first creates a user profile 
 def register(request):
