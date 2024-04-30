@@ -18,7 +18,6 @@ from .utility import get_medical_services, check_practitioner_service , APPOINTM
 
 logger = logging.getLogger(__name__)
 
-#@permission_required('SCS.can_access_my_model_admin_dash', raise_exception=True)
 def admin_dash(request):
     registration_form = DoctorNurseRegistrationForm()
     appointments = Appointment.objects.all()
