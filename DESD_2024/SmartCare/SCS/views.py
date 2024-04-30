@@ -624,26 +624,23 @@ def update_patient(request):
         #if not re.match(r"^[A-Za-z]+$", last_name) or not re.match(r"^[A-Za-z]+$", first_name):
             #return JsonResponse({'success': False, 'message': 'Invalid name format'})
 
-        #elif not re.match(r"[^@]+@[^@]+\.[^@]+", email):
-            #return JsonResponse({'success': False, 'message': 'Invalid email'})
-       
-        #elif not re.match(r"^(?:[0-9] ?){6,14}[0-9]$", telephone_number):
-            #return JsonResponse({'success': False, 'message': 'Invalid telephone number'})
 
         # Age Validation
         #elif  not (0 <= int(age) <= 110):
            # return JsonResponse({'success': False, 'message': 'Invalid age range'})
         try:
-            user_profile = UserProfile.objects.get(user__username=name)
-            # Retrieve the model instance based on the rowId
+            
             model_instance = PatientProfile.objects.get(id=id)
           
-            
-            # Update the model fields with the form data
-            model_instance.user_profile = user_profile
-            new = model_to_dict(user_profile) 
-            t=UserProfile.objects.get(id=new['user'])
-            tt=json.dumps(t)
+            user_instance = UserProfile.objects.get(user__username=model_instance.user_profile.user.username)
+          
+            user_instance.user.username = name 
+            user_instance.user.save()
+          
+            model_instance.user_profile = user_instance
+          
+          
+    
             model_instance.age = age
             model_instance.allergies = allergies
             model_instance.isPrivate = isPrivate
@@ -654,7 +651,7 @@ def update_patient(request):
             
             # Return a JSON response indicating success
             return JsonResponse({'success': True ,'data':{
-                'name': tt,
+                'name': model_instance.user_profile.user.username,
                  'age': model_instance.age,
                  'allergies': model_instance.allergies,
                  'status': model_instance.isPrivate }
