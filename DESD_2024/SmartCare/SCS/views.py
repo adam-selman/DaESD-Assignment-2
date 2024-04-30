@@ -13,7 +13,7 @@ from django.middleware.csrf import get_token
 from django.template import RequestContext
 from django.utils import timezone
 
-from .models import DoctorProfile, NurseProfile, UserProfile, Service, Appointment, PatientProfile, Prescription, Invoice
+from .models import DoctorProfile, NurseProfile, UserProfile, Service, Appointment, PatientProfile, Prescription, Invoice, DoctorServiceRate, NurseServiceRate
 from .forms import UserRegisterForm, DoctorNurseRegistrationForm, PrescriptionForm
 
 from .db_utility import get_user_profile_by_user_id, get_invoices_awaiting_payment, get_invoice_information_by_user_id, \
@@ -368,8 +368,11 @@ def admin(request):
     user_name = user.get_full_name
     all_invoices = get_all_invoice_information()
     invoices_to_be_paid = get_invoices_awaiting_payment()
+    doctor_service_rate = DoctorServiceRate.objects.all()
+    nurse_service_rate = NurseServiceRate.objects.all()
     return render(request, 'admin_dashboard.html', {'user_type': user_type, "user_name": user_name,
-                                                     "all_invoices": all_invoices, "invoices_to_be_paid": invoices_to_be_paid})
+                                                     "all_invoices": all_invoices, "invoices_to_be_paid": invoices_to_be_paid,
+                                                     "doctor_service_rate": doctor_service_rate, "nurse_service_rate": nurse_service_rate})
 
 @login_required(login_url='login')
 @custom_user_passes_test(is_nurse)
@@ -804,3 +807,30 @@ def request_repeat_prescription(request):
         # Handle GET request if needed
         pass
 
+@login_required(login_url='login')
+@custom_user_passes_test(is_admin)
+def update_doctor_service_rate(request):
+    if request.method == 'POST':
+        doctorServiceRateID = request.POST.get('doctorServiceRateID')
+        new_rate = request.POST.get('rate')
+
+        doctor_service_rate = get_object_or_404(DoctorServiceRate, doctorServiceRateID=doctorServiceRateID)
+        doctor_service_rate.rate = new_rate
+        doctor_service_rate.save()
+        return redirect('admDash')
+    else:
+        pass
+
+@login_required(login_url='login')
+@custom_user_passes_test(is_admin)
+def update_nurse_service_rate(request):
+    if request.method == 'POST':
+        nurseServiceRateID = request.POST.get('nurseServiceRateID')
+        new_rate = request.POST.get('rate')
+
+        nurse_service_rate = get_object_or_404(NurseServiceRate, nurseServiceRateID=nurseServiceRateID)
+        nurse_service_rate.rate = new_rate
+        nurse_service_rate.save()
+        return redirect('admDash')
+    else:
+        pass
