@@ -83,8 +83,9 @@ def populate_users(csvFileName, userType, profileClass, additionalFields):
                 'first_name': row.get('first_name'),
                 'last_name': row.get('last_name'),
                 'email': row.get('email'),
-                'date_joined': timezone.now()
+                'date_joined': timezone.now(),
             }
+
 
             specificFields = {field: row.get(field) for field in additionalFields}
             if additionalFields:
@@ -96,8 +97,11 @@ def populate_users(csvFileName, userType, profileClass, additionalFields):
                         specificFields[field] = value
 
             user = User.objects.create_user(**commonFields)
+
+            date_of_birth = row.get('date_of_birth')
+            gender = row.get('gender')
             
-            userProfile = UserProfile.objects.create(user=user, user_type=userType)
+            userProfile = UserProfile.objects.create(user=user, user_type=userType, date_of_birth=date_of_birth, gender=gender)
             
             specificProfile = profileClass.objects.create(user_profile=userProfile, **specificFields)
             
@@ -505,7 +509,7 @@ if __name__ == '__main__':
     populate_users('data/doctors.csv', 'doctor', DoctorProfile, ['specialization', 'isPartTime'])
     populate_users('data/admins.csv', 'admin', AdminProfile, [])
     populate_users('data/nurses.csv', 'nurse', NurseProfile, [])
-    populate_users('data/patients.csv', 'patient', PatientProfile, ['gender','date_of_birth', 'allergies', 'isPrivate'])
+    populate_users('data/patients.csv', 'patient', PatientProfile, ['allergies', 'isPrivate'])
     populate_contact('data/address.csv', Address)
     populate_contact('data/contactnumber.csv', ContactNumber)
     populate_services('data/service.csv', Service, 'service', ignore_service= True)

@@ -12,6 +12,7 @@ from django.contrib.auth import authenticate, login , logout
 from django.middleware.csrf import get_token
 from django.template import RequestContext
 from django.utils import timezone
+from django.utils.encoding import smart_str
 
 from .models import DoctorProfile, NurseProfile, UserProfile, Service, Appointment, PatientProfile, Prescription, Invoice, DoctorServiceRate, NurseServiceRate
 from .forms import UserRegisterForm, DoctorNurseRegistrationForm, PrescriptionForm
@@ -20,7 +21,7 @@ from .db_utility import get_user_profile_by_user_id, get_invoices_awaiting_payme
                     get_medical_services, get_user_profile_by_user_id, get_practitioners_by_day_and_service,  \
                     make_patient_appointment_booking, get_time_slots_by_day_and_practitioner, get_all_invoice_information, \
                     get_patient_appointments_by_user_id
-from .utility import parse_times_for_view, get_prescriptions_for_practitioner, generate_invoice_file_content
+from .utility import parse_times_for_view, get_prescriptions_for_practitioner, generate_invoice_file_content, create_report
 
 logger = logging.getLogger(__name__)
 def register_doctor_nurse(request):
@@ -832,5 +833,23 @@ def update_nurse_service_rate(request):
         nurse_service_rate.rate = new_rate
         nurse_service_rate.save()
         return redirect('admDash')
+    else:
+        pass
+
+@login_required(login_url='login')
+@custom_user_passes_test(is_admin)
+def generate_report(request):
+    file_name = None
+    if request.method == 'POST':
+        start_date_input = request.POST.get('start_date')
+        end_date_input = request.POST.get('end_date')
+
+        start_date = datetime.strptime(start_date_input, '%Y-%m-%d').date()
+        end_date = datetime.strptime(end_date_input, '%Y-%m-%d').date()
+
+        file_name = create_report(start_date, end_date)
+
+        file_path = f"/code/SmartCare/Reports/{file_name}"
+        return FileResponse(open(file_path, 'rb'))
     else:
         pass

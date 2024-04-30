@@ -7,6 +7,8 @@ class UserProfile(models.Model):
     user_type = models.CharField(max_length = 10, choices = [('doctor', 'Doctor'),
                                     ('patient', 'Patient'), ('nurse', 'Nurse'),
                                     ('admin', 'Admin')])
+    date_of_birth = models.DateField()
+    gender = models.CharField(max_length = 10)
     
     def __str__(self):
         return self.user.username
@@ -30,8 +32,6 @@ class NurseProfile(models.Model):
 class PatientProfile(models.Model):
     user_profile = models.OneToOneField(UserProfile, on_delete = models.CASCADE, 
                                         related_name = 'patient_user')
-    date_of_birth = models.DateField()
-    gender = models.CharField(max_length = 10)
     allergies = models.TextField()
     isPrivate = models.BooleanField(default = False)
 
