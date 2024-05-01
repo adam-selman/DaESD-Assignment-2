@@ -509,8 +509,8 @@ def create_groups():
     print("Admins added to group")
 if __name__ == '__main__':
     print("Starting to populate the database... ")
-    populate_users('data/doctors.csv', 'doctor', DoctorProfile, ['specialization', 'isPartTime'])
     populate_users('data/admins.csv', 'admin', AdminProfile, [])
+    populate_users('data/doctors.csv', 'doctor', DoctorProfile, ['specialization', 'isPartTime'])
     populate_users('data/nurses.csv', 'nurse', NurseProfile, [])
     populate_users('data/patients.csv', 'patient', PatientProfile, ['allergies', 'isPrivate'])
     populate_contact('data/address.csv', Address)
