@@ -544,12 +544,12 @@ def update_patient(request):
         allergies = request.POST.get('Allergies')
         isPrivate = request.POST.get('Status')
 
-        if not re.match(r"^[A-Za-z]+$", name) :
+        if not re.match(r"^[A-Za-z.]+$", name) :
             return JsonResponse({'success': False, 'message': 'Invalid name format'})
 
 
         # Allergies validation 
-        elif not re.match(r"^[A-Za-z]+$", allergies) :
+        elif not re.match(r"^[A-Za-z.]+$", allergies) :
             return JsonResponse({'success': False, 'message': 'Invalid format for the allergie field'})
         try:
             
