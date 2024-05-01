@@ -139,7 +139,7 @@ def complete_appointment(request, appointment_id):
         form = AppointmentBookingForm(request.POST, instance=appointment)
         if form.is_valid():
             form.save()
-            return redirect('some-view-name')  # Redirect to a confirmation page or elsewhere
+            return redirect('auth')  # Redirect to homepage
     else:
         form = AppointmentBookingForm(instance=appointment)
 
