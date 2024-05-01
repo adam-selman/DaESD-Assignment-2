@@ -2,6 +2,7 @@ from datetime import date
 import logging
 import tempfile
 import json
+import re 
 from datetime import datetime
 from django.forms.models import model_to_dict
 from django.shortcuts import render,redirect, HttpResponse, get_object_or_404
@@ -543,13 +544,13 @@ def update_patient(request):
         allergies = request.POST.get('Allergies')
         isPrivate = request.POST.get('Status')
 
-        #if not re.match(r"^[A-Za-z]+$", last_name) or not re.match(r"^[A-Za-z]+$", first_name):
-            #return JsonResponse({'success': False, 'message': 'Invalid name format'})
+        if not re.match(r"^[A-Za-z]+$", name) :
+            return JsonResponse({'success': False, 'message': 'Invalid name format'})
 
 
-        # Age Validation
-        #elif  not (0 <= int(age) <= 110):
-           # return JsonResponse({'success': False, 'message': 'Invalid age range'})
+        # Allergies validation 
+        elif not re.match(r"^[A-Za-z]+$", allergies) :
+            return JsonResponse({'success': False, 'message': 'Invalid format for the allergie field'})
         try:
             
             model_instance = PatientProfile.objects.get(id=id)
@@ -645,8 +646,7 @@ def filter_patient(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         isPrivate = data.get('Bill')
-        #isPrivate = request.POST.get('Bill')
-        #isPrivate = bool(isPrivate)
+       
         print(isPrivate)
 
         if isPrivate == False:
@@ -668,7 +668,7 @@ def filter_appointments(request):
         selectedEmployee = data['employee']  
         selectedDate = datetime.strptime(selectedDate, '%B %d, %Y').strftime('%Y-%m-%d')  
         try:
-            # Get the actual employee object
+            
             user = User.objects.get(username=selectedEmployee)
             user_profile = UserProfile.objects.get(user=user)
             
