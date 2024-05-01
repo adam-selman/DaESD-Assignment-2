@@ -42,6 +42,7 @@ class DoctorNurseRegistrationForm(UserCreationForm):
     user_type = forms.ChoiceField(choices=[('doctor', 'Doctor'), ('nurse', 'Nurse')])
     specialization = forms.CharField(required=False)  # Optional, shown only if Doctor is selected
     isPartTime = forms.BooleanField(required=False, initial=False)
+    date_of_birth = CustomDateField(required=True)
 
     def save(self, commit=True):
         user = super().save(commit=False)
