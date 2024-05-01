@@ -509,7 +509,7 @@ if __name__ == '__main__':
     populate_users('data/doctors.csv', 'doctor', DoctorProfile, ['specialization', 'isPartTime'])
     populate_users('data/admins.csv', 'admin', AdminProfile, [])
     populate_users('data/nurses.csv', 'nurse', NurseProfile, [])
-    populate_users('data/patients.csv', 'patient', PatientProfile, ['gender','allergies', 'isPrivate'])
+    populate_users('data/patients.csv', 'patient', PatientProfile, ['allergies', 'isPrivate'])
     populate_contact('data/address.csv', Address)
     populate_contact('data/contactnumber.csv', ContactNumber)
     populate_services('data/service.csv', Service, 'service', ignore_service= True)
