@@ -3,10 +3,15 @@ from django.contrib.auth.models import User
 
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete = models.CASCADE)
-    user_type = models.CharField(max_length = 10, choices = [('doctor', 'Doctor'),
-                                    ('patient', 'Patient'), ('nurse', 'Nurse'),
-                                    ('admin', 'Admin')])
+    USER_TYPE_CHOICES = [
+        ('doctor', 'Doctor'),
+        ('patient', 'Patient'),
+        ('nurse', 'Nurse'),
+        ('admin', 'Admin'),
+    ]
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES)
     
     def __str__(self):
         return self.user.username
@@ -41,6 +46,12 @@ class PatientProfile(models.Model):
 class AdminProfile(models.Model):
     user_profile = models.OneToOneField(UserProfile, on_delete = models.CASCADE, 
                                         related_name = 'admin_user')
+     
+    class Meta:
+        permissions = [
+            ("SCS.can_access_my_model_admin_dash", "Can access admin dash" ),
+        ]
+
 
     def __str__(self):
         return self.user_profile.user.username
