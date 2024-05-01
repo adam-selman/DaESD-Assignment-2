@@ -41,7 +41,6 @@ def generate_invoice_file_content(invoice_id: int) -> tuple:
     Returns:
         str, str: The content of the invoice file to be written
     """
-    invoice = Invoice.objects.get(invoiceID=invoice_id)
     file_content, file_name = create_invoice_file(invoice_id)
     
     return file_content, file_name
@@ -102,11 +101,12 @@ def create_invoice_file(invoice_id: int) -> tuple:
 
     
     # patient info
-    patient = invoice.patient
-    patient_user_profile = UserProfile.objects.get(user_id=patient.user_id)
-    patient_address = Address.objects.get(user_id=patient_user_profile.user_id)
-    address_string = str(patient_address)
-    user = User.objects.get(id=patient.user_id)
+    user_profile = invoice.patient
+    patient_user_profile = PatientProfile.objects.get(id=user_profile.id)
+    # patient_address = Address.objects.get(user_id=patient_user_profile.user_id) #! FIX FOR ADDRESS
+    # address_string = str(patient_address)
+    address_string = "123 Fake Street, Fake Town, Fake City, Fake Country, F4K3 123" #! REPLACE WITH ACTUAL ADDRESS
+    user = User.objects.get(id=patient_user_profile.user_profile_id)
 
     # getting files ready
     invoice_template_path = settings.INVOICE_TEMPLATE_PATH

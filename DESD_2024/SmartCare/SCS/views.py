@@ -338,6 +338,7 @@ def Login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
+        
 
         user = authenticate(username=username, password=password)
         if user is not None:
@@ -345,15 +346,17 @@ def Login(request):
             user_type = user_profile.user_type
             
             login(request, user)
-
+            
             return redirect('dashboard')
+            
+            
         else:
             check = True
             messages.error(request, 'Invalid username or password')
             
     else:
         check = False
-    return render(request, 'login.html',{'csrf_token':csrf_token,'check':check}) 
+    return render(request, 'login.html',{'csrf_token':csrf_token,'check':check})
 
 @login_required(login_url='login')
 @custom_user_passes_test(is_doctor)
@@ -825,20 +828,24 @@ def generate_invoice(request):
     Returns:
         HttpResponse: Page response containing the invoice
     """
+    logger.info("Generating invoice")
     csrf_token = get_token(request)
     if request.method == 'GET':
+        logger.info("GET request")
         user_id = request.user.id
+        patient = PatientProfile.objects.filter(user_profile_id=user_id).first()
         invoice_id = request.GET.get('invoiceID')
 
         # Check if the invoice belongs to the user
         invoice = Invoice.objects.filter(invoiceID=invoice_id).first()
-        if invoice.patient_id != user_id:
+        if invoice.patient_id != patient.id:
             raise Http404("Resource not found")
         
         # generate invoice file content and name
         file_content, file_name = generate_invoice_file_content(invoice_id)
         bytes_data = bytes(file_content, 'utf-8')
 
+        logger.info(f"Creating file")  
         # creating temp file to serve
         with tempfile.NamedTemporaryFile(delete=False) as temp_file:
             temp_file.write(bytes_data)
@@ -850,6 +857,7 @@ def generate_invoice(request):
             # Serve the temporary file
             response = FileResponse(open(file_path, 'rb'))
             response['Content-Disposition'] = f'attachment; filename="{file_name}"'
+            logger.info(f"Returning response")
             return response
 
 #? More protection?
