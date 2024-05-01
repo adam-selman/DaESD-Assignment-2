@@ -2,21 +2,21 @@
 <div>
     {% if user.is_authenticated %}
     <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-html="true" title="Already signed in!!" >
-        <a class = "link_style" href="DisplayPatients">Display patients</a>
+        <a class = "link_style" href={% url "DisplayPatients"%}>Display patients</a>
     </button>
    
     <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-html="true" title="Already signed in!!" >
-        <a class = "link_style" href="DisplayAppt">Display today's appointments</a>
+        <a class = "link_style" href={% url "DisplayAppt"%}>Display today's appointments</a>
     </button>
       
     <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-html="true" title="Already signed in!!" >
-        <a href="DisplayHistoricAppointments" class = "link_style">Display all appointments</a>
+        <a href={% url "DisplayHistoricAppointments"%} class = "link_style">Display all appointments</a>
     </button>
     <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-html="true" title="Already signed in!!" >
-        <a href="DisplayPendingPrescriptions" class = "link_style">Display pending prescriptions</a>
+        <a href={% url "DisplayPendingPrescriptions"%} class = "link_style">Display pending prescriptions</a>
     </button>
     <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-html="true" title="Already signed in!!" >
-        <a href="DisplayPrescriptions" class = "link_style">Display all prescriptions</a>
+        <a href={% url "DisplayPrescriptions"%} class = "link_style">Display all prescriptions</a>
     </button>
     
     <br>

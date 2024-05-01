@@ -24,7 +24,8 @@ from datetime import date
 
 from .models import DoctorProfile, NurseProfile, PatientProfile, UserProfile, User, Timetable, Service, Appointment, Prescription
 
-from .utility import get_medical_services, check_practitioner_service , APPOINTMENT_TIMES, get_user_profile_by_user_id, parse_times_for_view
+from .utility import parse_times_for_view
+from .db_utility import get_medical_services, check_practitioner_service , APPOINTMENT_TIMES, get_user_profile_by_user_id
 
 logger = logging.getLogger(__name__)
 def register_doctor_nurse(request):

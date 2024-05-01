@@ -53,7 +53,7 @@
 
 <div>
     {% if user.is_authenticated %}
-    <a href="DisplayPatients">Display patients</a>
+    <a href={% url = 'DisplayPatients' %}>Display patients</a>
     {% endif %}
 </div>
 

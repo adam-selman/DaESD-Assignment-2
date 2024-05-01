@@ -12,7 +12,8 @@
   </div>
   <button type="submit" class="btn btn-primary" onclick="return Click();">Login</button>
 </form>
-<h5><a href="password_reset">Reset Password</a></h5>
+<h5><a href={% url 'password_reset'%}>Reset Password</a></h5>
+
 {% if check %}
 {% if messages %}
 {% for message in messages %}
