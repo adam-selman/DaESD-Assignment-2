@@ -35,8 +35,6 @@ class NurseProfile(models.Model):
 class PatientProfile(models.Model):
     user_profile = models.OneToOneField(UserProfile, on_delete = models.CASCADE, 
                                         related_name = 'patient_user')
-    date_of_birth = models.DateField()
-    gender = models.CharField(max_length = 10)
     allergies = models.TextField()
     isPrivate = models.BooleanField(default = False)
 
@@ -120,7 +118,8 @@ class Appointment(models.Model):
 class Invoice(models.Model):
     invoiceID = models.AutoField(primary_key = True)
     amount = models.DecimalField(max_digits = 10, decimal_places = 2)
-    status = models.BooleanField(max_length = 100) # either paid or unpaid
+    status = models.BooleanField(default=0) # if user has tried to pay
+    approved = models.BooleanField(default=0) # approved by admin as paid
     dateIssued = models.DateTimeField()
     appointment = models.ForeignKey(Appointment, on_delete = models.CASCADE, 
                                          related_name = 'invoices')
