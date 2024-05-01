@@ -1,545 +1,545 @@
 service,date,time,description,notes,status,patient,doctor,nurse
-6,2024-04-29,09:00:00,Mental health check up,depression prescribed sertraline,complete,4,2,NULL
-6,2024-04-29,09:15:00,Mental health check up,depression,complete,4,2,NULL
-6,2024-04-29,09:30:00,Mental health check up,depression,complete,4,2,NULL
-1,2024-04-29,09:45:00,minor scratch,patient prescribed mild painkiller,complete,5,2,NULL
-3,2024-04-29,10:00:00,Mental health check,depression prescribed sertraline,complete,4,2,NULL
-6,2024-04-29,10:15:00,Mental health check up,depression,complete,4,2,NULL
-6,2024-04-29,10:30:00,Mental health check up,depression,complete,4,2,NULL
-1,2024-04-29,10:45:00,minor scratch,patient prescribed mild painkiller,complete,5,2,NULL
-3,2024-04-29,11:00:00,Mental health check,depression prescribed sertraline,complete,4,2,NULL
-6,2024-04-29,11:15:00,Mental health check up,depression,complete,4,2,NULL
-6,2024-04-29,11:30:00,Mental health check up,depression,complete,4,2,NULL
-1,2024-04-29,11:45:00,minor scratch,patient prescribed mild painkiller,complete,5,2,NULL
-3,2024-04-29,12:00:00,Mental health check,depression prescribed sertraline,complete,4,2,NULL
-6,2024-04-29,12:15:00,Mental health check up,depression,complete,4,2,NULL
-6,2024-04-29,12:30:00,Mental health check up,depression,complete,4,2,NULL
-1,2024-04-29,12:45:00,minor scratch,patient prescribed mild painkiller,complete,5,2,NULL
-3,2024-04-29,13:00:00,Mental health check,depression prescribed sertraline,complete,4,2,NULL
-6,2024-04-29,13:15:00,Mental health check up,depression,complete,4,2,NULL
-6,2024-04-29,13:30:00,Mental health check up,depression,complete,4,2,NULL
-1,2024-04-29,13:45:00,minor scratch,patient prescribed mild painkiller,complete,5,2,NULL
-3,2024-04-29,14:00:00,Mental health check,depression prescribed sertraline,complete,4,2,NULL
-6,2024-04-29,14:15:00,Mental health check up,depression,complete,4,2,NULL
-6,2024-04-29,14:30:00,Mental health check up,depression,complete,4,2,NULL
-1,2024-04-29,14:45:00,minor scratch,patient prescribed mild painkiller,complete,5,2,NULL
-3,2024-04-29,15:00:00,Mental health check,depression prescribed sertraline,complete,4,2,NULL
-6,2024-04-29,15:15:00,Mental health check up,depression,complete,4,2,NULL
-6,2024-04-29,15:30:00,Mental health check up,depression,complete,4,2,NULL
-1,2024-04-29,15:45:00,minor scratch,patient prescribed mild painkiller,complete,5,2,NULL
-3,2024-04-29,16:00:00,Mental health check,depression prescribed sertraline,complete,4,2,NULL
-6,2024-04-29,16:15:00,Mental health check up,depression,complete,4,2,NULL
-6,2024-04-29,16:30:00,Mental health check up,depression,complete,4,2,NULL
-1,2024-04-29,16:45:00,minor scratch,patient prescribed mild painkiller,complete,5,2,NULL
-6,2024-04-30,09:00:00,Mental health check up,depression prescribed sertraline,complete,4,2,NULL
-6,2024-04-30,09:15:00,Mental health check up,depression,complete,4,2,NULL
-6,2024-04-30,09:30:00,Mental health check up,depression,complete,4,2,NULL
-1,2024-04-30,09:45:00,minor scratch,patient prescribed mild painkiller,complete,5,2,NULL
-3,2024-04-30,10:00:00,Mental health check,depression prescribed sertraline,complete,4,2,NULL
-6,2024-04-30,10:15:00,Mental health check up,depression,complete,4,2,NULL
-6,2024-04-30,10:30:00,Mental health check up,depression,complete,4,2,NULL
-1,2024-04-30,10:45:00,minor scratch,patient prescribed mild painkiller,complete,5,2,NULL
-3,2024-04-30,11:00:00,Mental health check,depression prescribed sertraline,complete,4,2,NULL
-6,2024-04-30,11:15:00,Mental health check up,depression,complete,4,2,NULL
-6,2024-04-30,11:30:00,Mental health check up,depression,complete,4,2,NULL
-1,2024-04-30,11:45:00,minor scratch,patient prescribed mild painkiller,complete,5,2,NULL
-3,2024-04-30,12:00:00,Mental health check,depression prescribed sertraline,complete,4,2,NULL
-6,2024-04-30,12:15:00,Mental health check up,depression,complete,4,2,NULL
-6,2024-04-30,12:30:00,Mental health check up,depression,complete,4,2,NULL
-1,2024-04-30,12:45:00,minor scratch,patient prescribed mild painkiller,complete,5,2,NULL
-3,2024-04-30,13:00:00,Mental health check,depression prescribed sertraline,complete,4,2,NULL
-6,2024-04-30,13:15:00,Mental health check up,depression,complete,4,2,NULL
-6,2024-04-30,13:30:00,Mental health check up,depression,complete,4,2,NULL
-1,2024-04-30,13:45:00,minor scratch,patient prescribed mild painkiller,complete,5,2,NULL
-3,2024-04-30,14:00:00,Mental health check,depression prescribed sertraline,complete,4,2,NULL
-6,2024-04-30,14:15:00,Mental health check up,depression,complete,4,2,NULL
-6,2024-04-30,14:30:00,Mental health check up,depression,complete,4,2,NULL
-1,2024-04-30,14:45:00,minor scratch,patient prescribed mild painkiller,complete,5,2,NULL
-3,2024-04-30,15:00:00,Mental health check,depression prescribed sertraline,complete,4,2,NULL
-6,2024-04-30,15:15:00,Mental health check up,depression,complete,4,2,NULL
-6,2024-04-30,15:30:00,Mental health check up,depression,complete,4,2,NULL
-1,2024-04-30,15:45:00,minor scratch,patient prescribed mild painkiller,complete,5,2,NULL
-3,2024-04-30,16:00:00,Mental health check,depression prescribed sertraline,complete,4,2,NULL
-6,2024-04-30,16:15:00,Mental health check up,depression,complete,4,2,NULL
-6,2024-04-30,16:30:00,Mental health check up,depression,complete,4,2,NULL
-1,2024-04-30,16:45:00,minor scratch,patient prescribed mild painkiller,complete,5,2,NULL
-6,2024-05-01,09:00:00,Mental health check up,depression prescribed sertraline,complete,4,2,NULL
-6,2024-05-01,09:15:00,Mental health check up,depression,complete,4,2,NULL
-6,2024-05-01,09:30:00,Mental health check up,depression,complete,4,2,NULL
-1,2024-05-01,09:45:00,minor scratch,patient prescribed mild painkiller,complete,5,2,NULL
-3,2024-05-01,10:00:00,Mental health check,depression prescribed sertraline,complete,4,2,NULL
-6,2024-05-01,10:15:00,Mental health check up,depression,complete,4,2,NULL
-6,2024-05-01,10:30:00,Mental health check up,depression,complete,4,2,NULL
-1,2024-05-01,10:45:00,minor scratch,patient prescribed mild painkiller,complete,5,2,NULL
-3,2024-05-01,11:00:00,Mental health check,depression prescribed sertraline,complete,4,2,NULL
-6,2024-05-01,11:15:00,Mental health check up,depression,complete,4,2,NULL
-6,2024-05-01,11:30:00,Mental health check up,depression,complete,4,2,NULL
-1,2024-05-01,11:45:00,minor scratch,patient prescribed mild painkiller,complete,5,2,NULL
-3,2024-05-01,12:00:00,Mental health check,depression prescribed sertraline,complete,4,2,NULL
-6,2024-05-01,12:15:00,Mental health check up,depression,complete,4,2,NULL
-6,2024-05-01,12:30:00,Mental health check up,depression,complete,4,2,NULL
-1,2024-05-01,12:45:00,minor scratch,patient prescribed mild painkiller,complete,5,2,NULL
-3,2024-05-01,13:00:00,Mental health check,depression prescribed sertraline,complete,4,2,NULL
-6,2024-05-01,13:15:00,Mental health check up,depression,complete,4,2,NULL
-6,2024-05-01,13:30:00,Mental health check up,depression,complete,4,2,NULL
-1,2024-05-01,13:45:00,minor scratch,patient prescribed mild painkiller,complete,5,2,NULL
-3,2024-05-01,14:00:00,Mental health check,depression prescribed sertraline,complete,4,2,NULL
-6,2024-05-01,14:15:00,Mental health check up,depression,complete,4,2,NULL
-6,2024-05-01,14:30:00,Mental health check up,depression,complete,4,2,NULL
-1,2024-05-01,14:45:00,minor scratch,patient prescribed mild painkiller,complete,5,2,NULL
-3,2024-05-01,15:00:00,Mental health check,depression prescribed sertraline,complete,4,2,NULL
-6,2024-05-01,15:15:00,Mental health check up,depression,complete,4,2,NULL
-6,2024-05-01,15:30:00,Mental health check up,depression,complete,4,2,NULL
-1,2024-05-01,15:45:00,minor scratch,patient prescribed mild painkiller,complete,5,2,NULL
-3,2024-05-01,16:00:00,Mental health check,depression prescribed sertraline,complete,4,2,NULL
-6,2024-05-01,16:15:00,Mental health check up,depression,complete,4,2,NULL
-6,2024-05-01,16:30:00,Mental health check up,depression,complete,4,2,NULL
-1,2024-05-01,16:45:00,minor scratch,patient prescribed mild painkiller,complete,5,2,NULL
-6,2024-05-02,09:00:00,Mental health check up,depression prescribed sertraline,complete,4,2,NULL
-6,2024-05-02,09:15:00,Mental health check up,depression,complete,4,2,NULL
-6,2024-05-02,09:30:00,Mental health check up,depression,complete,4,2,NULL
-1,2024-05-02,09:45:00,minor scratch,patient prescribed mild painkiller,complete,5,2,NULL
-3,2024-05-02,10:00:00,Mental health check,depression prescribed sertraline,complete,4,2,NULL
-6,2024-05-02,10:15:00,Mental health check up,depression,complete,4,2,NULL
-6,2024-05-02,10:30:00,Mental health check up,depression,complete,4,2,NULL
-1,2024-05-02,10:45:00,minor scratch,patient prescribed mild painkiller,complete,5,2,NULL
-3,2024-05-02,11:00:00,Mental health check,depression prescribed sertraline,complete,4,2,NULL
-6,2024-05-02,11:15:00,Mental health check up,depression,complete,4,2,NULL
-6,2024-05-02,11:30:00,Mental health check up,depression,complete,4,2,NULL
-1,2024-05-02,11:45:00,minor scratch,patient prescribed mild painkiller,complete,5,2,NULL
-3,2024-05-02,12:00:00,Mental health check,depression prescribed sertraline,complete,4,2,NULL
-6,2024-05-02,12:15:00,Mental health check up,depression,complete,4,2,NULL
-6,2024-05-02,12:30:00,Mental health check up,depression,complete,4,2,NULL
-1,2024-05-02,12:45:00,minor scratch,patient prescribed mild painkiller,complete,5,2,NULL
-3,2024-05-02,13:00:00,Mental health check,depression prescribed sertraline,complete,4,2,NULL
-6,2024-05-02,13:15:00,Mental health check up,depression,complete,4,2,NULL
-6,2024-05-02,13:30:00,Mental health check up,depression,complete,4,2,NULL
-1,2024-05-02,13:45:00,minor scratch,patient prescribed mild painkiller,complete,5,2,NULL
-3,2024-05-02,14:00:00,Mental health check,depression prescribed sertraline,complete,4,2,NULL
-6,2024-05-02,14:15:00,Mental health check up,depression,complete,4,2,NULL
-6,2024-05-02,14:30:00,Mental health check up,depression,complete,4,2,NULL
-1,2024-05-02,14:45:00,minor scratch,patient prescribed mild painkiller,complete,5,2,NULL
-3,2024-05-02,15:00:00,Mental health check,depression prescribed sertraline,complete,4,2,NULL
-6,2024-05-02,15:15:00,Mental health check up,depression,complete,4,2,NULL
-6,2024-05-02,15:30:00,Mental health check up,depression,complete,4,2,NULL
-1,2024-05-02,15:45:00,minor scratch,patient prescribed mild painkiller,complete,5,2,NULL
-3,2024-05-02,16:00:00,Mental health check,depression prescribed sertraline,complete,4,2,NULL
-6,2024-05-02,16:15:00,Mental health check up,depression,complete,4,2,NULL
-6,2024-05-02,16:30:00,Mental health check up,depression,complete,4,2,NULL
-1,2024-05-02,16:45:00,minor scratch,patient prescribed mild painkiller,complete,5,2,NULL
-6,2024-05-03,09:00:00,Mental health check up,depression prescribed sertraline,complete,4,2,NULL
-6,2024-05-03,09:15:00,Mental health check up,depression,complete,4,2,NULL
-6,2024-05-03,09:30:00,Mental health check up,depression,complete,4,2,NULL
-1,2024-05-03,09:45:00,minor scratch,patient prescribed mild painkiller,complete,5,2,NULL
-3,2024-05-03,10:00:00,Mental health check,depression prescribed sertraline,complete,4,2,NULL
-6,2024-05-03,10:15:00,Mental health check up,depression,complete,4,2,NULL
-6,2024-05-03,10:30:00,Mental health check up,depression,complete,4,2,NULL
-1,2024-05-03,10:45:00,minor scratch,patient prescribed mild painkiller,complete,5,2,NULL
-3,2024-05-03,11:00:00,Mental health check,depression prescribed sertraline,complete,4,2,NULL
-6,2024-05-03,11:15:00,Mental health check up,depression,complete,4,2,NULL
-6,2024-05-03,11:30:00,Mental health check up,depression,complete,4,2,NULL
-1,2024-05-03,11:45:00,minor scratch,patient prescribed mild painkiller,complete,5,2,NULL
-3,2024-05-03,12:00:00,Mental health check,depression prescribed sertraline,complete,4,2,NULL
-6,2024-05-03,12:15:00,Mental health check up,depression,complete,4,2,NULL
-6,2024-05-03,12:30:00,Mental health check up,depression,complete,4,2,NULL
-1,2024-05-03,12:45:00,minor scratch,patient prescribed mild painkiller,complete,5,2,NULL
-3,2024-05-03,13:00:00,Mental health check,depression prescribed sertraline,complete,4,2,NULL
-6,2024-05-03,13:15:00,Mental health check up,depression,complete,4,2,NULL
-6,2024-05-03,13:30:00,Mental health check up,depression,complete,4,2,NULL
-1,2024-05-03,13:45:00,minor scratch,patient prescribed mild painkiller,complete,5,2,NULL
-3,2024-05-03,14:00:00,Mental health check,depression prescribed sertraline,complete,4,2,NULL
-6,2024-05-03,14:15:00,Mental health check up,depression,complete,4,2,NULL
-6,2024-05-03,14:30:00,Mental health check up,depression,complete,4,2,NULL
-1,2024-05-03,14:45:00,minor scratch,patient prescribed mild painkiller,complete,5,2,NULL
-3,2024-05-03,15:00:00,Mental health check,depression prescribed sertraline,complete,4,2,NULL
-6,2024-05-03,15:15:00,Mental health check up,depression,complete,4,2,NULL
-6,2024-05-03,15:30:00,Mental health check up,depression,complete,4,2,NULL
-1,2024-05-03,15:45:00,minor scratch,patient prescribed mild painkiller,complete,5,2,NULL
-3,2024-05-03,16:00:00,Mental health check,depression prescribed sertraline,complete,4,2,NULL
-6,2024-05-03,16:15:00,Mental health check up,depression,complete,4,2,NULL
-6,2024-05-03,16:30:00,Mental health check up,depression,complete,4,2,NULL
-1,2024-05-03,16:45:00,minor scratch,patient prescribed mild painkiller,complete,5,2,NULL
-6,2024-04-29,09:00:00,Mental health check up,depression prescribed sertraline,complete,6,NULL,3
-6,2024-04-29,09:15:00,Mental health check up,depression,complete,6,NULL,3
-6,2024-04-29,09:30:00,Mental health check up,depression,complete,6,NULL,3
-1,2024-04-29,09:45:00,minor scratch,patient prescribed mild painkiller,complete,7,NULL,3
-3,2024-04-29,10:00:00,Mental health check,depression prescribed sertraline,complete,6,NULL,3
-6,2024-04-29,10:15:00,Mental health check up,depression,complete,6,NULL,3
-6,2024-04-29,10:30:00,Mental health check up,depression,complete,6,NULL,3
-1,2024-04-29,10:45:00,minor scratch,patient prescribed mild painkiller,complete,7,NULL,3
-3,2024-04-29,11:00:00,Mental health check,depression prescribed sertraline,complete,6,NULL,3
-6,2024-04-29,11:15:00,Mental health check up,depression,complete,6,NULL,3
-6,2024-04-29,11:30:00,Mental health check up,depression,complete,6,NULL,3
-1,2024-04-29,11:45:00,minor scratch,patient prescribed mild painkiller,complete,7,NULL,3
-3,2024-04-29,12:00:00,Mental health check,depression prescribed sertraline,complete,6,NULL,3
-6,2024-04-29,12:15:00,Mental health check up,depression,complete,6,NULL,3
-6,2024-04-29,12:30:00,Mental health check up,depression,complete,6,NULL,3
-1,2024-04-29,12:45:00,minor scratch,patient prescribed mild painkiller,complete,7,NULL,3
-3,2024-04-29,13:00:00,Mental health check,depression prescribed sertraline,complete,6,NULL,3
-6,2024-04-29,13:15:00,Mental health check up,depression,complete,6,NULL,3
-6,2024-04-29,13:30:00,Mental health check up,depression,complete,6,NULL,3
-1,2024-04-29,13:45:00,minor scratch,patient prescribed mild painkiller,complete,7,NULL,3
-3,2024-04-29,14:00:00,Mental health check,depression prescribed sertraline,complete,6,NULL,3
-6,2024-04-29,14:15:00,Mental health check up,depression,complete,6,NULL,3
-6,2024-04-29,14:30:00,Mental health check up,depression,complete,6,NULL,3
-1,2024-04-29,14:45:00,minor scratch,patient prescribed mild painkiller,complete,7,NULL,3
-3,2024-04-29,15:00:00,Mental health check,depression prescribed sertraline,complete,6,NULL,3
-6,2024-04-29,15:15:00,Mental health check up,depression,complete,6,NULL,3
-6,2024-04-29,15:30:00,Mental health check up,depression,complete,6,NULL,3
-1,2024-04-29,15:45:00,minor scratch,patient prescribed mild painkiller,complete,7,NULL,3
-3,2024-04-29,16:00:00,Mental health check,depression prescribed sertraline,complete,6,NULL,3
-6,2024-04-29,16:15:00,Mental health check up,depression,complete,6,NULL,3
-6,2024-04-29,16:30:00,Mental health check up,depression,complete,6,NULL,3
-1,2024-04-29,16:45:00,minor scratch,patient prescribed mild painkiller,complete,7,NULL,3
-6,2024-04-30,09:00:00,Mental health check up,depression prescribed sertraline,complete,6,NULL,3
-6,2024-04-30,09:15:00,Mental health check up,depression,complete,6,NULL,3
-6,2024-04-30,09:30:00,Mental health check up,depression,complete,6,NULL,3
-1,2024-04-30,09:45:00,minor scratch,patient prescribed mild painkiller,complete,7,NULL,3
-3,2024-04-30,10:00:00,Mental health check,depression prescribed sertraline,complete,6,NULL,3
-6,2024-04-30,10:15:00,Mental health check up,depression,complete,6,NULL,3
-6,2024-04-30,10:30:00,Mental health check up,depression,complete,6,NULL,3
-1,2024-04-30,10:45:00,minor scratch,patient prescribed mild painkiller,complete,7,NULL,3
-3,2024-04-30,11:00:00,Mental health check,depression prescribed sertraline,complete,6,NULL,3
-6,2024-04-30,11:15:00,Mental health check up,depression,complete,6,NULL,3
-6,2024-04-30,11:30:00,Mental health check up,depression,complete,6,NULL,3
-1,2024-04-30,11:45:00,minor scratch,patient prescribed mild painkiller,complete,7,NULL,3
-3,2024-04-30,12:00:00,Mental health check,depression prescribed sertraline,complete,6,NULL,3
-6,2024-04-30,12:15:00,Mental health check up,depression,complete,6,NULL,3
-6,2024-04-30,12:30:00,Mental health check up,depression,complete,6,NULL,3
-1,2024-04-30,12:45:00,minor scratch,patient prescribed mild painkiller,complete,7,NULL,3
-3,2024-04-30,13:00:00,Mental health check,depression prescribed sertraline,complete,6,NULL,3
-6,2024-04-30,13:15:00,Mental health check up,depression,complete,6,NULL,3
-6,2024-04-30,13:30:00,Mental health check up,depression,complete,6,NULL,3
-1,2024-04-30,13:45:00,minor scratch,patient prescribed mild painkiller,complete,7,NULL,3
-3,2024-04-30,14:00:00,Mental health check,depression prescribed sertraline,complete,6,NULL,3
-6,2024-04-30,14:15:00,Mental health check up,depression,complete,6,NULL,3
-6,2024-04-30,14:30:00,Mental health check up,depression,complete,6,NULL,3
-1,2024-04-30,14:45:00,minor scratch,patient prescribed mild painkiller,complete,7,NULL,3
-3,2024-04-30,15:00:00,Mental health check,depression prescribed sertraline,complete,6,NULL,3
-6,2024-04-30,15:15:00,Mental health check up,depression,complete,6,NULL,3
-6,2024-04-30,15:30:00,Mental health check up,depression,complete,6,NULL,3
-1,2024-04-30,15:45:00,minor scratch,patient prescribed mild painkiller,complete,7,NULL,3
-3,2024-04-30,16:00:00,Mental health check,depression prescribed sertraline,complete,6,NULL,3
-6,2024-04-30,16:15:00,Mental health check up,depression,complete,6,NULL,3
-6,2024-04-30,16:30:00,Mental health check up,depression,complete,6,NULL,3
-1,2024-04-30,16:45:00,minor scratch,patient prescribed mild painkiller,complete,7,NULL,3
-6,2024-05-01,09:00:00,Mental health check up,depression prescribed sertraline,complete,6,NULL,3
-6,2024-05-01,09:15:00,Mental health check up,depression,complete,6,NULL,3
-6,2024-05-01,09:30:00,Mental health check up,depression,complete,6,NULL,3
-1,2024-05-01,09:45:00,minor scratch,patient prescribed mild painkiller,complete,7,NULL,3
-3,2024-05-01,10:00:00,Mental health check,depression prescribed sertraline,complete,6,NULL,3
-6,2024-05-01,10:15:00,Mental health check up,depression,complete,6,NULL,3
-6,2024-05-01,10:30:00,Mental health check up,depression,complete,6,NULL,3
-1,2024-05-01,10:45:00,minor scratch,patient prescribed mild painkiller,complete,7,NULL,3
-3,2024-05-01,11:00:00,Mental health check,depression prescribed sertraline,complete,6,NULL,3
-6,2024-05-01,11:15:00,Mental health check up,depression,complete,6,NULL,3
-6,2024-05-01,11:30:00,Mental health check up,depression,complete,6,NULL,3
-1,2024-05-01,11:45:00,minor scratch,patient prescribed mild painkiller,complete,7,NULL,3
-3,2024-05-01,12:00:00,Mental health check,depression prescribed sertraline,complete,6,NULL,3
-6,2024-05-01,12:15:00,Mental health check up,depression,complete,6,NULL,3
-6,2024-05-01,12:30:00,Mental health check up,depression,complete,6,NULL,3
-1,2024-05-01,12:45:00,minor scratch,patient prescribed mild painkiller,complete,7,NULL,3
-3,2024-05-01,13:00:00,Mental health check,depression prescribed sertraline,complete,6,NULL,3
-6,2024-05-01,13:15:00,Mental health check up,depression,complete,6,NULL,3
-6,2024-05-01,13:30:00,Mental health check up,depression,complete,6,NULL,3
-1,2024-05-01,13:45:00,minor scratch,patient prescribed mild painkiller,complete,7,NULL,3
-3,2024-05-01,14:00:00,Mental health check,depression prescribed sertraline,complete,6,NULL,3
-6,2024-05-01,14:15:00,Mental health check up,depression,complete,6,NULL,3
-6,2024-05-01,14:30:00,Mental health check up,depression,complete,6,NULL,3
-1,2024-05-01,14:45:00,minor scratch,patient prescribed mild painkiller,complete,7,NULL,3
-3,2024-05-01,15:00:00,Mental health check,depression prescribed sertraline,complete,6,NULL,3
-6,2024-05-01,15:15:00,Mental health check up,depression,complete,6,NULL,3
-6,2024-05-01,15:30:00,Mental health check up,depression,complete,6,NULL,3
-1,2024-05-01,15:45:00,minor scratch,patient prescribed mild painkiller,complete,7,NULL,3
-3,2024-05-01,16:00:00,Mental health check,depression prescribed sertraline,complete,6,NULL,3
-6,2024-05-01,16:15:00,Mental health check up,depression,complete,6,NULL,3
-6,2024-05-01,16:30:00,Mental health check up,depression,complete,6,NULL,3
-1,2024-05-01,16:45:00,minor scratch,patient prescribed mild painkiller,complete,7,NULL,3
-6,2024-05-02,09:00:00,Mental health check up,depression prescribed sertraline,complete,6,NULL,3
-6,2024-05-02,09:15:00,Mental health check up,depression,complete,6,NULL,3
-6,2024-05-02,09:30:00,Mental health check up,depression,complete,6,NULL,3
-1,2024-05-02,09:45:00,minor scratch,patient prescribed mild painkiller,complete,7,NULL,3
-3,2024-05-02,10:00:00,Mental health check,depression prescribed sertraline,complete,6,NULL,3
-6,2024-05-02,10:15:00,Mental health check up,depression,complete,6,NULL,3
-6,2024-05-02,10:30:00,Mental health check up,depression,complete,6,NULL,3
-1,2024-05-02,10:45:00,minor scratch,patient prescribed mild painkiller,complete,7,NULL,3
-3,2024-05-02,11:00:00,Mental health check,depression prescribed sertraline,complete,6,NULL,3
-6,2024-05-02,11:15:00,Mental health check up,depression,complete,6,NULL,3
-6,2024-05-02,11:30:00,Mental health check up,depression,complete,6,NULL,3
-1,2024-05-02,11:45:00,minor scratch,patient prescribed mild painkiller,complete,7,NULL,3
-3,2024-05-02,12:00:00,Mental health check,depression prescribed sertraline,complete,6,NULL,3
-6,2024-05-02,12:15:00,Mental health check up,depression,complete,6,NULL,3
-6,2024-05-02,12:30:00,Mental health check up,depression,complete,6,NULL,3
-1,2024-05-02,12:45:00,minor scratch,patient prescribed mild painkiller,complete,7,NULL,3
-3,2024-05-02,13:00:00,Mental health check,depression prescribed sertraline,complete,6,NULL,3
-6,2024-05-02,13:15:00,Mental health check up,depression,complete,6,NULL,3
-6,2024-05-02,13:30:00,Mental health check up,depression,complete,6,NULL,3
-1,2024-05-02,13:45:00,minor scratch,patient prescribed mild painkiller,complete,7,NULL,3
-3,2024-05-02,14:00:00,Mental health check,depression prescribed sertraline,complete,6,NULL,3
-6,2024-05-02,14:15:00,Mental health check up,depression,complete,6,NULL,3
-6,2024-05-02,14:30:00,Mental health check up,depression,complete,6,NULL,3
-1,2024-05-02,14:45:00,minor scratch,patient prescribed mild painkiller,complete,7,NULL,3
-3,2024-05-02,15:00:00,Mental health check,depression prescribed sertraline,complete,6,NULL,3
-6,2024-05-02,15:15:00,Mental health check up,depression,complete,6,NULL,3
-6,2024-05-02,15:30:00,Mental health check up,depression,complete,6,NULL,3
-1,2024-05-02,15:45:00,minor scratch,patient prescribed mild painkiller,complete,7,NULL,3
-3,2024-05-02,16:00:00,Mental health check,depression prescribed sertraline,complete,6,NULL,3
-6,2024-05-02,16:15:00,Mental health check up,depression,complete,6,NULL,3
-6,2024-05-02,16:30:00,Mental health check up,depression,complete,6,NULL,3
-1,2024-05-02,16:45:00,minor scratch,patient prescribed mild painkiller,complete,7,NULL,3
-6,2024-05-03,09:00:00,Mental health check up,depression prescribed sertraline,complete,6,NULL,3
-6,2024-05-03,09:15:00,Mental health check up,depression,complete,6,NULL,3
-6,2024-05-03,09:30:00,Mental health check up,depression,complete,6,NULL,3
-1,2024-05-03,09:45:00,minor scratch,patient prescribed mild painkiller,complete,7,NULL,3
-3,2024-05-03,10:00:00,Mental health check,depression prescribed sertraline,complete,6,NULL,3
-6,2024-05-03,10:15:00,Mental health check up,depression,complete,6,NULL,3
-6,2024-05-03,10:30:00,Mental health check up,depression,complete,6,NULL,3
-1,2024-05-03,10:45:00,minor scratch,patient prescribed mild painkiller,complete,7,NULL,3
-3,2024-05-03,11:00:00,Mental health check,depression prescribed sertraline,complete,6,NULL,3
-6,2024-05-03,11:15:00,Mental health check up,depression,complete,6,NULL,3
-6,2024-05-03,11:30:00,Mental health check up,depression,complete,6,NULL,3
-1,2024-05-03,11:45:00,minor scratch,patient prescribed mild painkiller,complete,7,NULL,3
-3,2024-05-03,12:00:00,Mental health check,depression prescribed sertraline,complete,6,NULL,3
-6,2024-05-03,12:15:00,Mental health check up,depression,complete,6,NULL,3
-6,2024-05-03,12:30:00,Mental health check up,depression,complete,6,NULL,3
-1,2024-05-03,12:45:00,minor scratch,patient prescribed mild painkiller,complete,7,NULL,3
-3,2024-05-03,13:00:00,Mental health check,depression prescribed sertraline,complete,6,NULL,3
-6,2024-05-03,13:15:00,Mental health check up,depression,complete,6,NULL,3
-6,2024-05-03,13:30:00,Mental health check up,depression,complete,6,NULL,3
-1,2024-05-03,13:45:00,minor scratch,patient prescribed mild painkiller,complete,7,NULL,3
-3,2024-05-03,14:00:00,Mental health check,depression prescribed sertraline,complete,6,NULL,3
-6,2024-05-03,14:15:00,Mental health check up,depression,complete,6,NULL,3
-6,2024-05-03,14:30:00,Mental health check up,depression,complete,6,NULL,3
-1,2024-05-03,14:45:00,minor scratch,patient prescribed mild painkiller,complete,7,NULL,3
-3,2024-05-03,15:00:00,Mental health check,depression prescribed sertraline,complete,6,NULL,3
-6,2024-05-03,15:15:00,Mental health check up,depression,complete,6,NULL,3
-6,2024-05-03,15:30:00,Mental health check up,depression,complete,6,NULL,3
-1,2024-05-03,15:45:00,minor scratch,patient prescribed mild painkiller,complete,7,NULL,3
-3,2024-05-03,16:00:00,Mental health check,depression prescribed sertraline,complete,6,NULL,3
-6,2024-05-03,16:15:00,Mental health check up,depression,complete,6,NULL,3
-6,2024-05-03,16:30:00,Mental health check up,depression,complete,6,NULL,3
-1,2024-05-03,16:45:00,minor scratch,patient prescribed mild painkiller,complete,7,NULL,3
-6,2024-05-06,09:00:00,Mental health check up,depression prescribed sertraline,complete,8,2,NULL
-6,2024-05-06,09:30:00,Mental health check up,depression,complete,8,2,NULL
-3,2024-05-06,10:00:00,Mental health check,depression prescribed sertraline,complete,8,2,NULL
-6,2024-05-06,10:30:00,Mental health check up,depression,complete,8,2,NULL
-3,2024-05-06,11:00:00,Mental health check,depression prescribed sertraline,complete,8,2,NULL
-6,2024-05-06,11:30:00,Mental health check up,depression,complete,8,2,NULL
-3,2024-05-06,12:00:00,Mental health check,depression prescribed sertraline,complete,8,2,NULL
-6,2024-05-06,12:30:00,Mental health check up,depression,complete,8,2,NULL
-3,2024-05-06,13:00:00,Mental health check,depression prescribed sertraline,complete,8,2,NULL
-6,2024-05-06,13:30:00,Mental health check up,depression,complete,8,2,NULL
-3,2024-05-06,14:00:00,Mental health check,depression prescribed sertraline,complete,8,2,NULL
-6,2024-05-06,14:30:00,Mental health check up,depression,complete,8,2,NULL
-3,2024-05-06,15:00:00,Mental health check,depression prescribed sertraline,complete,8,2,NULL
-6,2024-05-06,15:30:00,Mental health check up,depression,complete,8,2,NULL
-3,2024-05-06,16:00:00,Mental health check,depression prescribed sertraline,complete,8,2,NULL
-6,2024-05-06,16:30:00,Mental health check up,depression,complete,8,2,NULL
-6,2024-05-07,09:00:00,Mental health check up,depression prescribed sertraline,complete,8,2,NULL
-6,2024-05-07,09:30:00,Mental health check up,depression,complete,8,2,NULL
-3,2024-05-07,10:00:00,Mental health check,depression prescribed sertraline,complete,8,2,NULL
-6,2024-05-07,10:30:00,Mental health check up,depression,complete,8,2,NULL
-3,2024-05-07,11:00:00,Mental health check,depression prescribed sertraline,complete,8,2,NULL
-6,2024-05-07,11:30:00,Mental health check up,depression,complete,8,2,NULL
-3,2024-05-07,12:00:00,Mental health check,depression prescribed sertraline,complete,8,2,NULL
-6,2024-05-07,12:30:00,Mental health check up,depression,complete,8,2,NULL
-3,2024-05-07,13:00:00,Mental health check,depression prescribed sertraline,complete,8,2,NULL
-6,2024-05-07,13:30:00,Mental health check up,depression,complete,8,2,NULL
-3,2024-05-07,14:00:00,Mental health check,depression prescribed sertraline,complete,8,2,NULL
-6,2024-05-07,14:30:00,Mental health check up,depression,complete,8,2,NULL
-3,2024-05-07,15:00:00,Mental health check,depression prescribed sertraline,complete,8,2,NULL
-6,2024-05-07,15:30:00,Mental health check up,depression,complete,8,2,NULL
-3,2024-05-07,16:00:00,Mental health check,depression prescribed sertraline,complete,8,2,NULL
-6,2024-05-07,16:30:00,Mental health check up,depression,complete,8,2,NULL
-6,2024-05-08,09:00:00,Mental health check up,depression prescribed sertraline,complete,8,2,NULL
-6,2024-05-08,09:30:00,Mental health check up,depression,complete,8,2,NULL
-3,2024-05-08,10:00:00,Mental health check,depression prescribed sertraline,complete,8,2,NULL
-6,2024-05-08,10:30:00,Mental health check up,depression,complete,8,2,NULL
-3,2024-05-08,11:00:00,Mental health check,depression prescribed sertraline,complete,8,2,NULL
-6,2024-05-08,11:30:00,Mental health check up,depression,complete,8,2,NULL
-3,2024-05-08,12:00:00,Mental health check,depression prescribed sertraline,complete,8,2,NULL
-6,2024-05-08,12:30:00,Mental health check up,depression,complete,8,2,NULL
-3,2024-05-08,13:00:00,Mental health check,depression prescribed sertraline,complete,8,2,NULL
-6,2024-05-08,13:30:00,Mental health check up,depression,complete,8,2,NULL
-3,2024-05-08,14:00:00,Mental health check,depression prescribed sertraline,complete,8,2,NULL
-6,2024-05-08,14:30:00,Mental health check up,depression,complete,8,2,NULL
-3,2024-05-08,15:00:00,Mental health check,depression prescribed sertraline,complete,8,2,NULL
-6,2024-05-08,15:30:00,Mental health check up,depression,complete,8,2,NULL
-3,2024-05-08,16:00:00,Mental health check,depression prescribed sertraline,complete,8,2,NULL
-6,2024-05-08,16:30:00,Mental health check up,depression,complete,8,2,NULL
-6,2024-05-09,09:00:00,Mental health check up,depression prescribed sertraline,complete,8,2,NULL
-6,2024-05-09,09:30:00,Mental health check up,depression,complete,8,2,NULL
-3,2024-05-09,10:00:00,Mental health check,depression prescribed sertraline,complete,8,2,NULL
-6,2024-05-09,10:30:00,Mental health check up,depression,complete,8,2,NULL
-3,2024-05-09,11:00:00,Mental health check,depression prescribed sertraline,complete,8,2,NULL
-6,2024-05-09,11:30:00,Mental health check up,depression,complete,8,2,NULL
-3,2024-05-09,12:00:00,Mental health check,depression prescribed sertraline,complete,8,2,NULL
-6,2024-05-09,12:30:00,Mental health check up,depression,complete,8,2,NULL
-3,2024-05-09,13:00:00,Mental health check,depression prescribed sertraline,complete,8,2,NULL
-6,2024-05-09,13:30:00,Mental health check up,depression,complete,8,2,NULL
-3,2024-05-09,14:00:00,Mental health check,depression prescribed sertraline,complete,8,2,NULL
-6,2024-05-09,14:30:00,Mental health check up,depression,complete,8,2,NULL
-3,2024-05-09,15:00:00,Mental health check,depression prescribed sertraline,complete,8,2,NULL
-6,2024-05-09,15:30:00,Mental health check up,depression,complete,8,2,NULL
-3,2024-05-09,16:00:00,Mental health check,depression prescribed sertraline,complete,8,2,NULL
-6,2024-05-09,16:30:00,Mental health check up,depression,complete,8,2,NULL
-6,2024-05-10,09:00:00,Mental health check up,depression prescribed sertraline,complete,8,2,NULL
-6,2024-05-10,09:30:00,Mental health check up,depression,complete,8,2,NULL
-3,2024-05-10,10:00:00,Mental health check,depression prescribed sertraline,complete,8,2,NULL
-6,2024-05-10,10:30:00,Mental health check up,depression,complete,8,2,NULL
-3,2024-05-10,11:00:00,Mental health check,depression prescribed sertraline,complete,8,2,NULL
-6,2024-05-10,11:30:00,Mental health check up,depression,complete,8,2,NULL
-3,2024-05-10,12:00:00,Mental health check,depression prescribed sertraline,complete,8,2,NULL
-6,2024-05-10,12:30:00,Mental health check up,depression,complete,8,2,NULL
-3,2024-05-10,13:00:00,Mental health check,depression prescribed sertraline,complete,8,2,NULL
-6,2024-05-10,13:30:00,Mental health check up,depression,complete,8,2,NULL
-3,2024-05-10,14:00:00,Mental health check,depression prescribed sertraline,complete,8,2,NULL
-6,2024-05-10,14:30:00,Mental health check up,depression,complete,8,2,NULL
-3,2024-05-10,15:00:00,Mental health check,depression prescribed sertraline,complete,8,2,NULL
-6,2024-05-10,15:30:00,Mental health check up,depression,complete,8,2,NULL
-3,2024-05-10,16:00:00,Mental health check,depression prescribed sertraline,complete,8,2,NULL
-6,2024-05-10,16:30:00,Mental health check up,depression,complete,8,2,NULL
-6,2024-05-06,09:00:00,Mental health check up,depression prescribed sertraline,complete,9,NULL,3
-6,2024-05-06,09:30:00,Mental health check up,depression,complete,9,NULL,3
-3,2024-05-06,10:00:00,Mental health check,depression prescribed sertraline,complete,9,NULL,3
-6,2024-05-06,10:30:00,Mental health check up,depression,complete,9,NULL,3
-3,2024-05-06,11:00:00,Mental health check,depression prescribed sertraline,complete,9,NULL,3
-6,2024-05-06,11:30:00,Mental health check up,depression,complete,9,NULL,3
-3,2024-05-06,12:00:00,Mental health check,depression prescribed sertraline,complete,9,NULL,3
-6,2024-05-06,12:30:00,Mental health check up,depression,complete,9,NULL,3
-3,2024-05-06,13:00:00,Mental health check,depression prescribed sertraline,complete,9,NULL,3
-6,2024-05-06,13:30:00,Mental health check up,depression,complete,9,NULL,3
-3,2024-05-06,14:00:00,Mental health check,depression prescribed sertraline,complete,9,NULL,3
-6,2024-05-06,14:30:00,Mental health check up,depression,complete,9,NULL,3
-3,2024-05-06,15:00:00,Mental health check,depression prescribed sertraline,complete,9,NULL,3
-6,2024-05-06,15:30:00,Mental health check up,depression,complete,9,NULL,3
-3,2024-05-06,16:00:00,Mental health check,depression prescribed sertraline,complete,9,NULL,3
-6,2024-05-06,16:30:00,Mental health check up,depression,complete,9,NULL,3
-6,2024-05-07,09:00:00,Mental health check up,depression prescribed sertraline,complete,9,NULL,3
-6,2024-05-07,09:30:00,Mental health check up,depression,complete,9,NULL,3
-3,2024-05-07,10:00:00,Mental health check,depression prescribed sertraline,complete,9,NULL,3
-6,2024-05-07,10:30:00,Mental health check up,depression,complete,9,NULL,3
-3,2024-05-07,11:00:00,Mental health check,depression prescribed sertraline,complete,9,NULL,3
-6,2024-05-07,11:30:00,Mental health check up,depression,complete,9,NULL,3
-3,2024-05-07,12:00:00,Mental health check,depression prescribed sertraline,complete,9,NULL,3
-6,2024-05-07,12:30:00,Mental health check up,depression,complete,9,NULL,3
-3,2024-05-07,13:00:00,Mental health check,depression prescribed sertraline,complete,9,NULL,3
-6,2024-05-07,13:30:00,Mental health check up,depression,complete,9,NULL,3
-3,2024-05-07,14:00:00,Mental health check,depression prescribed sertraline,complete,9,NULL,3
-6,2024-05-07,14:30:00,Mental health check up,depression,complete,9,NULL,3
-3,2024-05-07,15:00:00,Mental health check,depression prescribed sertraline,complete,9,NULL,3
-6,2024-05-07,15:30:00,Mental health check up,depression,complete,9,NULL,3
-3,2024-05-07,16:00:00,Mental health check,depression prescribed sertraline,complete,9,NULL,3
-6,2024-05-07,16:30:00,Mental health check up,depression,complete,9,NULL,3
-6,2024-05-08,09:00:00,Mental health check up,depression prescribed sertraline,complete,9,NULL,3
-6,2024-05-08,09:30:00,Mental health check up,depression,complete,9,NULL,3
-3,2024-05-08,10:00:00,Mental health check,depression prescribed sertraline,complete,9,NULL,3
-6,2024-05-08,10:30:00,Mental health check up,depression,complete,9,NULL,3
-3,2024-05-08,11:00:00,Mental health check,depression prescribed sertraline,complete,9,NULL,3
-6,2024-05-08,11:30:00,Mental health check up,depression,complete,9,NULL,3
-3,2024-05-08,12:00:00,Mental health check,depression prescribed sertraline,complete,9,NULL,3
-6,2024-05-08,12:30:00,Mental health check up,depression,complete,9,NULL,3
-3,2024-05-08,13:00:00,Mental health check,depression prescribed sertraline,complete,9,NULL,3
-6,2024-05-08,13:30:00,Mental health check up,depression,complete,9,NULL,3
-3,2024-05-08,14:00:00,Mental health check,depression prescribed sertraline,complete,9,NULL,3
-6,2024-05-08,14:30:00,Mental health check up,depression,complete,9,NULL,3
-3,2024-05-08,15:00:00,Mental health check,depression prescribed sertraline,complete,9,NULL,3
-6,2024-05-08,15:30:00,Mental health check up,depression,complete,9,NULL,3
-3,2024-05-08,16:00:00,Mental health check,depression prescribed sertraline,complete,9,NULL,3
-6,2024-05-08,16:30:00,Mental health check up,depression,complete,9,NULL,3
-6,2024-05-09,09:00:00,Mental health check up,depression prescribed sertraline,complete,9,NULL,3
-6,2024-05-09,09:30:00,Mental health check up,depression,complete,9,NULL,3
-3,2024-05-09,10:00:00,Mental health check,depression prescribed sertraline,complete,9,NULL,3
-6,2024-05-09,10:30:00,Mental health check up,depression,complete,9,NULL,3
-3,2024-05-09,11:00:00,Mental health check,depression prescribed sertraline,complete,9,NULL,3
-6,2024-05-09,11:30:00,Mental health check up,depression,complete,9,NULL,3
-3,2024-05-09,12:00:00,Mental health check,depression prescribed sertraline,complete,9,NULL,3
-6,2024-05-09,12:30:00,Mental health check up,depression,complete,9,NULL,3
-3,2024-05-09,13:00:00,Mental health check,depression prescribed sertraline,complete,9,NULL,3
-6,2024-05-09,13:30:00,Mental health check up,depression,complete,9,NULL,3
-3,2024-05-09,14:00:00,Mental health check,depression prescribed sertraline,complete,9,NULL,3
-6,2024-05-09,14:30:00,Mental health check up,depression,complete,9,NULL,3
-3,2024-05-09,15:00:00,Mental health check,depression prescribed sertraline,complete,9,NULL,3
-6,2024-05-09,15:30:00,Mental health check up,depression,complete,9,NULL,3
-3,2024-05-09,16:00:00,Mental health check,depression prescribed sertraline,complete,9,NULL,3
-6,2024-05-09,16:30:00,Mental health check up,depression,complete,9,NULL,3
-6,2024-05-10,09:00:00,Mental health check up,depression prescribed sertraline,complete,9,NULL,3
-6,2024-05-10,09:30:00,Mental health check up,depression,complete,9,NULL,3
-3,2024-05-10,10:00:00,Mental health check,depression prescribed sertraline,complete,9,NULL,3
-6,2024-05-10,10:30:00,Mental health check up,depression,complete,9,NULL,3
-3,2024-05-10,11:00:00,Mental health check,depression prescribed sertraline,complete,9,NULL,3
-6,2024-05-10,11:30:00,Mental health check up,depression,complete,9,NULL,3
-3,2024-05-10,12:00:00,Mental health check,depression prescribed sertraline,complete,9,NULL,3
-6,2024-05-10,12:30:00,Mental health check up,depression,complete,9,NULL,3
-3,2024-05-10,13:00:00,Mental health check,depression prescribed sertraline,complete,9,NULL,3
-6,2024-05-10,13:30:00,Mental health check up,depression,complete,9,NULL,3
-3,2024-05-10,14:00:00,Mental health check,depression prescribed sertraline,complete,9,NULL,3
-6,2024-05-10,14:30:00,Mental health check up,depression,complete,9,NULL,3
-3,2024-05-10,15:00:00,Mental health check,depression prescribed sertraline,complete,9,NULL,3
-6,2024-05-10,15:30:00,Mental health check up,depression,complete,9,NULL,3
-3,2024-05-10,16:00:00,Mental health check,depression prescribed sertraline,complete,9,NULL,3
-6,2024-05-10,16:30:00,Mental health check up,depression,complete,9,NULL,3
-6,2024-05-13,09:00:00,Mental health check up,depression prescribed sertraline,complete,10,2,NULL
-3,2024-05-13,10:00:00,Mental health check,depression prescribed sertraline,complete,10,2,NULL
-3,2024-05-13,11:00:00,Mental health check,depression prescribed sertraline,complete,10,2,NULL
-3,2024-05-13,12:00:00,Mental health check,depression prescribed sertraline,complete,10,2,NULL
-3,2024-05-13,13:00:00,Mental health check,depression prescribed sertraline,complete,10,2,NULL
-3,2024-05-13,14:00:00,Mental health check,depression prescribed sertraline,complete,10,2,NULL
-3,2024-05-13,15:00:00,Mental health check,depression prescribed sertraline,complete,10,2,NULL
-3,2024-05-13,16:00:00,Mental health check,depression prescribed sertraline,complete,10,2,NULL
-6,2024-05-14,09:00:00,Mental health check up,depression prescribed sertraline,complete,10,2,NULL
-3,2024-05-14,10:00:00,Mental health check,depression prescribed sertraline,complete,10,2,NULL
-3,2024-05-14,11:00:00,Mental health check,depression prescribed sertraline,complete,10,2,NULL
-3,2024-05-14,12:00:00,Mental health check,depression prescribed sertraline,complete,10,2,NULL
-3,2024-05-14,13:00:00,Mental health check,depression prescribed sertraline,complete,10,2,NULL
-3,2024-05-14,14:00:00,Mental health check,depression prescribed sertraline,complete,10,2,NULL
-6,2024-05-15,09:00:00,Mental health check up,depression prescribed sertraline,complete,10,2,NULL
-3,2024-05-15,10:00:00,Mental health check,depression prescribed sertraline,complete,10,2,NULL
-3,2024-05-15,11:00:00,Mental health check,depression prescribed sertraline,complete,10,2,NULL
-3,2024-05-15,12:00:00,Mental health check,depression prescribed sertraline,complete,10,2,NULL
-3,2024-05-15,13:00:00,Mental health check,depression prescribed sertraline,complete,10,2,NULL
-3,2024-05-15,14:00:00,Mental health check,depression prescribed sertraline,complete,10,2,NULL
-6,2024-05-16,09:00:00,Mental health check up,depression prescribed sertraline,complete,10,2,NULL
-3,2024-05-16,10:00:00,Mental health check,depression prescribed sertraline,complete,10,2,NULL
-3,2024-05-16,11:00:00,Mental health check,depression prescribed sertraline,complete,10,2,NULL
-3,2024-05-16,12:00:00,Mental health check,depression prescribed sertraline,complete,10,2,NULL
-3,2024-05-16,13:00:00,Mental health check,depression prescribed sertraline,complete,10,2,NULL
-3,2024-05-16,14:00:00,Mental health check,depression prescribed sertraline,complete,10,2,NULL
-6,2024-05-17,09:00:00,Mental health check up,depression prescribed sertraline,complete,10,2,NULL
-3,2024-05-17,10:00:00,Mental health check,depression prescribed sertraline,complete,10,2,NULL
-3,2024-05-17,11:00:00,Mental health check,depression prescribed sertraline,complete,10,2,NULL
-3,2024-05-17,12:00:00,Mental health check,depression prescribed sertraline,complete,10,2,NULL
-3,2024-05-17,13:00:00,Mental health check,depression prescribed sertraline,complete,10,2,NULL
-3,2024-05-17,14:00:00,Mental health check,depression prescribed sertraline,complete,10,2,NULL
-6,2024-05-13,09:00:00,Mental health check up,depression prescribed sertraline,complete,1,NULL,3
-3,2024-05-13,10:00:00,Mental health check,depression prescribed sertraline,complete,1,NULL,3
-3,2024-05-13,11:00:00,Mental health check,depression prescribed sertraline,complete,1,NULL,3
-3,2024-05-13,12:00:00,Mental health check,depression prescribed sertraline,complete,1,NULL,3
-3,2024-05-13,13:00:00,Mental health check,depression prescribed sertraline,complete,1,NULL,3
-3,2024-05-13,14:00:00,Mental health check,depression prescribed sertraline,complete,1,NULL,3
-3,2024-05-13,15:00:00,Mental health check,depression prescribed sertraline,complete,1,NULL,3
-3,2024-05-13,16:00:00,Mental health check,depression prescribed sertraline,complete,1,NULL,3
-6,2024-05-14,09:00:00,Mental health check up,depression prescribed sertraline,complete,1,NULL,3
-3,2024-05-14,10:00:00,Mental health check,depression prescribed sertraline,complete,1,NULL,3
-3,2024-05-14,11:00:00,Mental health check,depression prescribed sertraline,complete,1,NULL,3
-3,2024-05-14,12:00:00,Mental health check,depression prescribed sertraline,complete,1,NULL,3
-3,2024-05-14,13:00:00,Mental health check,depression prescribed sertraline,complete,1,NULL,3
-3,2024-05-14,14:00:00,Mental health check,depression prescribed sertraline,complete,1,NULL,3
-6,2024-05-15,09:00:00,Mental health check up,depression prescribed sertraline,complete,1,NULL,3
-3,2024-05-15,10:00:00,Mental health check,depression prescribed sertraline,complete,1,NULL,3
-3,2024-05-15,11:00:00,Mental health check,depression prescribed sertraline,complete,1,NULL,3
-3,2024-05-15,12:00:00,Mental health check,depression prescribed sertraline,complete,1,NULL,3
-3,2024-05-15,13:00:00,Mental health check,depression prescribed sertraline,complete,1,NULL,3
-3,2024-05-15,14:00:00,Mental health check,depression prescribed sertraline,complete,1,NULL,3
-6,2024-05-16,09:00:00,Mental health check up,depression prescribed sertraline,complete,1,NULL,3
-3,2024-05-16,10:00:00,Mental health check,depression prescribed sertraline,complete,1,NULL,3
-3,2024-05-16,11:00:00,Mental health check,depression prescribed sertraline,complete,1,NULL,3
-3,2024-05-16,12:00:00,Mental health check,depression prescribed sertraline,complete,1,NULL,3
-3,2024-05-16,13:00:00,Mental health check,depression prescribed sertraline,complete,1,NULL,3
-3,2024-05-16,14:00:00,Mental health check,depression prescribed sertraline,complete,1,NULL,3
-6,2024-05-17,09:00:00,Mental health check up,depression prescribed sertraline,complete,1,NULL,3
-3,2024-05-17,10:00:00,Mental health check,depression prescribed sertraline,complete,1,NULL,3
-3,2024-05-17,11:00:00,Mental health check,depression prescribed sertraline,complete,1,NULL,3
-3,2024-05-17,12:00:00,Mental health check,depression prescribed sertraline,complete,1,NULL,3
-3,2024-05-17,13:00:00,Mental health check,depression prescribed sertraline,complete,1,NULL,3
-3,2024-05-17,14:00:00,Mental health check,depression prescribed sertraline,complete,1,NULL,3
+1,2024-04-29,09:00:00,Appointment with the Doctor,None,complete,1,2,NULL
+2,2024-04-29,09:15:00,Appointment with the Doctor,None,complete,2,2,NULL
+3,2024-04-29,09:30:00,Appointment with the Doctor,None,complete,3,2,NULL
+4,2024-04-29,09:45:00,Appointment with the Doctor,None,complete,4,2,NULL
+5,2024-04-29,10:00:00,Appointment with the Doctor,None,complete,5,2,NULL
+6,2024-04-29,10:15:00,Appointment with the Doctor,None,complete,1,2,NULL
+13,2024-04-29,10:30:00,Appointment with the Doctor,None,complete,2,2,NULL
+14,2024-04-29,10:45:00,Appointment with the Doctor,None,complete,3,2,NULL
+15,2024-04-29,11:00:00,Appointment with the Doctor,None,complete,4,2,NULL
+16,2024-04-29,11:15:00,Appointment with the Doctor,None,complete,5,2,NULL
+17,2024-04-29,11:30:00,Appointment with the Doctor,None,complete,1,2,NULL
+1,2024-04-29,11:45:00,Appointment with the Doctor,None,complete,2,2,NULL
+2,2024-04-29,12:00:00,Appointment with the Doctor,None,complete,3,2,NULL
+3,2024-04-29,12:15:00,Appointment with the Doctor,None,complete,4,2,NULL
+4,2024-04-29,12:30:00,Appointment with the Doctor,None,complete,5,2,NULL
+5,2024-04-29,12:45:00,Appointment with the Doctor,None,complete,1,2,NULL
+6,2024-04-29,13:00:00,Appointment with the Doctor,None,complete,2,2,NULL
+13,2024-04-29,13:15:00,Appointment with the Doctor,None,complete,3,2,NULL
+14,2024-04-29,13:30:00,Appointment with the Doctor,None,complete,4,2,NULL
+15,2024-04-29,13:45:00,Appointment with the Doctor,None,complete,5,2,NULL
+16,2024-04-29,14:00:00,Appointment with the Doctor,None,complete,1,2,NULL
+17,2024-04-29,14:15:00,Appointment with the Doctor,None,complete,2,2,NULL
+1,2024-04-29,14:30:00,Appointment with the Doctor,None,complete,3,2,NULL
+2,2024-04-29,14:45:00,Appointment with the Doctor,None,complete,4,2,NULL
+3,2024-04-29,15:00:00,Appointment with the Doctor,None,complete,5,2,NULL
+4,2024-04-29,15:15:00,Appointment with the Doctor,None,complete,1,2,NULL
+5,2024-04-29,15:30:00,Appointment with the Doctor,None,complete,2,2,NULL
+6,2024-04-29,15:45:00,Appointment with the Doctor,None,complete,3,2,NULL
+13,2024-04-29,16:00:00,Appointment with the Doctor,None,complete,4,2,NULL
+14,2024-04-29,16:15:00,Appointment with the Doctor,None,complete,5,2,NULL
+15,2024-04-29,16:30:00,Appointment with the Doctor,None,complete,1,2,NULL
+16,2024-04-29,16:45:00,Appointment with the Doctor,None,complete,2,2,NULL
+17,2024-04-30,09:00:00,Appointment with the Doctor,None,complete,3,2,NULL
+1,2024-04-30,09:15:00,Appointment with the Doctor,None,complete,4,2,NULL
+2,2024-04-30,09:30:00,Appointment with the Doctor,None,complete,5,2,NULL
+3,2024-04-30,09:45:00,Appointment with the Doctor,None,complete,1,2,NULL
+4,2024-04-30,10:00:00,Appointment with the Doctor,None,complete,2,2,NULL
+5,2024-04-30,10:15:00,Appointment with the Doctor,None,complete,3,2,NULL
+6,2024-04-30,10:30:00,Appointment with the Doctor,None,complete,4,2,NULL
+13,2024-04-30,10:45:00,Appointment with the Doctor,None,complete,5,2,NULL
+14,2024-04-30,11:00:00,Appointment with the Doctor,None,complete,1,2,NULL
+15,2024-04-30,11:15:00,Appointment with the Doctor,None,complete,2,2,NULL
+16,2024-04-30,11:30:00,Appointment with the Doctor,None,complete,3,2,NULL
+17,2024-04-30,11:45:00,Appointment with the Doctor,None,complete,4,2,NULL
+1,2024-04-30,12:00:00,Appointment with the Doctor,None,complete,5,2,NULL
+2,2024-04-30,12:15:00,Appointment with the Doctor,None,complete,1,2,NULL
+3,2024-04-30,12:30:00,Appointment with the Doctor,None,complete,2,2,NULL
+4,2024-04-30,12:45:00,Appointment with the Doctor,None,complete,3,2,NULL
+5,2024-04-30,13:00:00,Appointment with the Doctor,None,complete,4,2,NULL
+6,2024-04-30,13:15:00,Appointment with the Doctor,None,complete,5,2,NULL
+13,2024-04-30,13:30:00,Appointment with the Doctor,None,complete,1,2,NULL
+14,2024-04-30,13:45:00,Appointment with the Doctor,None,complete,2,2,NULL
+15,2024-04-30,14:00:00,Appointment with the Doctor,None,complete,3,2,NULL
+16,2024-04-30,14:15:00,Appointment with the Doctor,None,complete,4,2,NULL
+17,2024-04-30,14:30:00,Appointment with the Doctor,None,complete,5,2,NULL
+1,2024-04-30,14:45:00,Appointment with the Doctor,None,complete,1,2,NULL
+2,2024-04-30,15:00:00,Appointment with the Doctor,None,complete,2,2,NULL
+3,2024-04-30,15:15:00,Appointment with the Doctor,None,complete,3,2,NULL
+4,2024-04-30,15:30:00,Appointment with the Doctor,None,complete,4,2,NULL
+5,2024-04-30,15:45:00,Appointment with the Doctor,None,complete,5,2,NULL
+6,2024-04-30,16:00:00,Appointment with the Doctor,None,complete,1,2,NULL
+13,2024-04-30,16:15:00,Appointment with the Doctor,None,complete,2,2,NULL
+14,2024-04-30,16:30:00,Appointment with the Doctor,None,complete,3,2,NULL
+15,2024-04-30,16:45:00,Appointment with the Doctor,None,complete,4,2,NULL
+16,2024-05-01,09:00:00,Appointment with the Doctor,None,complete,5,2,NULL
+17,2024-05-01,09:15:00,Appointment with the Doctor,None,complete,1,2,NULL
+1,2024-05-01,09:30:00,Appointment with the Doctor,None,complete,2,2,NULL
+2,2024-05-01,09:45:00,Appointment with the Doctor,None,complete,3,2,NULL
+3,2024-05-01,10:00:00,Appointment with the Doctor,None,complete,4,2,NULL
+4,2024-05-01,10:15:00,Appointment with the Doctor,None,complete,5,2,NULL
+5,2024-05-01,10:30:00,Appointment with the Doctor,None,complete,1,2,NULL
+6,2024-05-01,10:45:00,Appointment with the Doctor,None,complete,2,2,NULL
+13,2024-05-01,11:00:00,Appointment with the Doctor,None,complete,3,2,NULL
+14,2024-05-01,11:15:00,Appointment with the Doctor,None,complete,4,2,NULL
+15,2024-05-01,11:30:00,Appointment with the Doctor,None,complete,5,2,NULL
+16,2024-05-01,11:45:00,Appointment with the Doctor,None,complete,1,2,NULL
+17,2024-05-01,12:00:00,Appointment with the Doctor,None,complete,2,2,NULL
+1,2024-05-01,12:15:00,Appointment with the Doctor,None,complete,3,2,NULL
+2,2024-05-01,12:30:00,Appointment with the Doctor,None,complete,4,2,NULL
+3,2024-05-01,12:45:00,Appointment with the Doctor,None,complete,5,2,NULL
+4,2024-05-01,13:00:00,Appointment with the Doctor,None,complete,1,2,NULL
+5,2024-05-01,13:15:00,Appointment with the Doctor,None,complete,2,2,NULL
+6,2024-05-01,13:30:00,Appointment with the Doctor,None,complete,3,2,NULL
+13,2024-05-01,13:45:00,Appointment with the Doctor,None,complete,4,2,NULL
+14,2024-05-01,14:00:00,Appointment with the Doctor,None,complete,5,2,NULL
+15,2024-05-01,14:15:00,Appointment with the Doctor,None,complete,1,2,NULL
+16,2024-05-01,14:30:00,Appointment with the Doctor,None,complete,2,2,NULL
+17,2024-05-01,14:45:00,Appointment with the Doctor,None,complete,3,2,NULL
+1,2024-05-01,15:00:00,Appointment with the Doctor,None,complete,4,2,NULL
+2,2024-05-01,15:15:00,Appointment with the Doctor,None,complete,5,2,NULL
+3,2024-05-01,15:30:00,Appointment with the Doctor,None,complete,1,2,NULL
+4,2024-05-01,15:45:00,Appointment with the Doctor,None,complete,2,2,NULL
+5,2024-05-01,16:00:00,Appointment with the Doctor,None,complete,3,2,NULL
+6,2024-05-01,16:15:00,Appointment with the Doctor,None,complete,4,2,NULL
+13,2024-05-01,16:30:00,Appointment with the Doctor,None,complete,5,2,NULL
+14,2024-05-01,16:45:00,Appointment with the Doctor,None,complete,1,2,NULL
+15,2024-05-02,09:00:00,Appointment with the Doctor,None,complete,2,2,NULL
+16,2024-05-02,09:15:00,Appointment with the Doctor,None,complete,3,2,NULL
+17,2024-05-02,09:30:00,Appointment with the Doctor,None,complete,4,2,NULL
+1,2024-05-02,09:45:00,Appointment with the Doctor,None,complete,5,2,NULL
+2,2024-05-02,10:00:00,Appointment with the Doctor,None,complete,1,2,NULL
+3,2024-05-02,10:15:00,Appointment with the Doctor,None,complete,2,2,NULL
+4,2024-05-02,10:30:00,Appointment with the Doctor,None,complete,3,2,NULL
+5,2024-05-02,10:45:00,Appointment with the Doctor,None,complete,4,2,NULL
+6,2024-05-02,11:00:00,Appointment with the Doctor,None,complete,5,2,NULL
+13,2024-05-02,11:15:00,Appointment with the Doctor,None,complete,1,2,NULL
+14,2024-05-02,11:30:00,Appointment with the Doctor,None,complete,2,2,NULL
+15,2024-05-02,11:45:00,Appointment with the Doctor,None,complete,3,2,NULL
+16,2024-05-02,12:00:00,Appointment with the Doctor,None,complete,4,2,NULL
+17,2024-05-02,12:15:00,Appointment with the Doctor,None,complete,5,2,NULL
+1,2024-05-02,12:30:00,Appointment with the Doctor,None,complete,1,2,NULL
+2,2024-05-02,12:45:00,Appointment with the Doctor,None,complete,2,2,NULL
+3,2024-05-02,13:00:00,Appointment with the Doctor,None,complete,3,2,NULL
+4,2024-05-02,13:15:00,Appointment with the Doctor,None,complete,4,2,NULL
+5,2024-05-02,13:30:00,Appointment with the Doctor,None,complete,5,2,NULL
+6,2024-05-02,13:45:00,Appointment with the Doctor,None,complete,1,2,NULL
+13,2024-05-02,14:00:00,Appointment with the Doctor,None,complete,2,2,NULL
+14,2024-05-02,14:15:00,Appointment with the Doctor,None,complete,3,2,NULL
+15,2024-05-02,14:30:00,Appointment with the Doctor,None,complete,4,2,NULL
+16,2024-05-02,14:45:00,Appointment with the Doctor,None,complete,5,2,NULL
+17,2024-05-02,15:00:00,Appointment with the Doctor,None,complete,1,2,NULL
+1,2024-05-02,15:15:00,Appointment with the Doctor,None,complete,2,2,NULL
+2,2024-05-02,15:30:00,Appointment with the Doctor,None,complete,3,2,NULL
+3,2024-05-02,15:45:00,Appointment with the Doctor,None,complete,4,2,NULL
+4,2024-05-02,16:00:00,Appointment with the Doctor,None,complete,5,2,NULL
+5,2024-05-02,16:15:00,Appointment with the Doctor,None,complete,1,2,NULL
+6,2024-05-02,16:30:00,Appointment with the Doctor,None,complete,2,2,NULL
+13,2024-05-02,16:45:00,Appointment with the Doctor,None,complete,3,2,NULL
+14,2024-05-03,09:00:00,Appointment with the Doctor,None,complete,4,2,NULL
+15,2024-05-03,09:15:00,Appointment with the Doctor,None,complete,5,2,NULL
+16,2024-05-03,09:30:00,Appointment with the Doctor,None,complete,1,2,NULL
+17,2024-05-03,09:45:00,Appointment with the Doctor,None,complete,2,2,NULL
+1,2024-05-03,10:00:00,Appointment with the Doctor,None,complete,3,2,NULL
+2,2024-05-03,10:15:00,Appointment with the Doctor,None,complete,4,2,NULL
+3,2024-05-03,10:30:00,Appointment with the Doctor,None,complete,5,2,NULL
+4,2024-05-03,10:45:00,Appointment with the Doctor,None,complete,1,2,NULL
+5,2024-05-03,11:00:00,Appointment with the Doctor,None,complete,2,2,NULL
+6,2024-05-03,11:15:00,Appointment with the Doctor,None,complete,3,2,NULL
+13,2024-05-03,11:30:00,Appointment with the Doctor,None,complete,4,2,NULL
+14,2024-05-03,11:45:00,Appointment with the Doctor,None,complete,5,2,NULL
+15,2024-05-03,12:00:00,Appointment with the Doctor,None,complete,1,2,NULL
+16,2024-05-03,12:15:00,Appointment with the Doctor,None,complete,2,2,NULL
+17,2024-05-03,12:30:00,Appointment with the Doctor,None,complete,3,2,NULL
+1,2024-05-03,12:45:00,Appointment with the Doctor,None,complete,4,2,NULL
+2,2024-05-03,13:00:00,Appointment with the Doctor,None,complete,5,2,NULL
+3,2024-05-03,13:15:00,Appointment with the Doctor,None,complete,1,2,NULL
+4,2024-05-03,13:30:00,Appointment with the Doctor,None,complete,2,2,NULL
+5,2024-05-03,13:45:00,Appointment with the Doctor,None,complete,3,2,NULL
+6,2024-05-03,14:00:00,Appointment with the Doctor,None,complete,4,2,NULL
+13,2024-05-03,14:15:00,Appointment with the Doctor,None,complete,5,2,NULL
+14,2024-05-03,14:30:00,Appointment with the Doctor,None,complete,1,2,NULL
+15,2024-05-03,14:45:00,Appointment with the Doctor,None,complete,2,2,NULL
+16,2024-05-03,15:00:00,Appointment with the Doctor,None,complete,3,2,NULL
+17,2024-05-03,15:15:00,Appointment with the Doctor,None,complete,4,2,NULL
+1,2024-05-03,15:30:00,Appointment with the Doctor,None,complete,5,2,NULL
+2,2024-05-03,15:45:00,Appointment with the Doctor,None,complete,1,2,NULL
+3,2024-05-03,16:00:00,Appointment with the Doctor,None,complete,2,2,NULL
+4,2024-05-03,16:15:00,Appointment with the Doctor,None,complete,3,2,NULL
+5,2024-05-03,16:30:00,Appointment with the Doctor,None,complete,4,2,NULL
+6,2024-05-03,16:45:00,Appointment with the Doctor,None,complete,5,2,NULL
+7,2024-04-29,09:00:00,Appointment with the Nurse,None,complete,6,NULL,3
+8,2024-04-29,09:15:00,Appointment with the Nurse,None,complete,7,NULL,3
+9,2024-04-29,09:30:00,Appointment with the Nurse,None,complete,8,NULL,3
+10,2024-04-29,09:45:00,Appointment with the Nurse,None,complete,9,NULL,3
+11,2024-04-29,10:00:00,Appointment with the Nurse,None,complete,10,NULL,3
+12,2024-04-29,10:15:00,Appointment with the Nurse,None,complete,6,NULL,3
+13,2024-04-29,10:30:00,Appointment with the Nurse,None,complete,7,NULL,3
+14,2024-04-29,10:45:00,Appointment with the Nurse,None,complete,8,NULL,3
+15,2024-04-29,11:00:00,Appointment with the Nurse,None,complete,9,NULL,3
+16,2024-04-29,11:15:00,Appointment with the Nurse,None,complete,10,NULL,3
+7,2024-04-29,11:30:00,Appointment with the Nurse,None,complete,6,NULL,3
+8,2024-04-29,11:45:00,Appointment with the Nurse,None,complete,7,NULL,3
+9,2024-04-29,12:00:00,Appointment with the Nurse,None,complete,8,NULL,3
+10,2024-04-29,12:15:00,Appointment with the Nurse,None,complete,9,NULL,3
+11,2024-04-29,12:30:00,Appointment with the Nurse,None,complete,10,NULL,3
+12,2024-04-29,12:45:00,Appointment with the Nurse,None,complete,6,NULL,3
+13,2024-04-29,13:00:00,Appointment with the Nurse,None,complete,7,NULL,3
+14,2024-04-29,13:15:00,Appointment with the Nurse,None,complete,8,NULL,3
+15,2024-04-29,13:30:00,Appointment with the Nurse,None,complete,9,NULL,3
+16,2024-04-29,13:45:00,Appointment with the Nurse,None,complete,10,NULL,3
+7,2024-04-29,14:00:00,Appointment with the Nurse,None,complete,6,NULL,3
+8,2024-04-29,14:15:00,Appointment with the Nurse,None,complete,7,NULL,3
+9,2024-04-29,14:30:00,Appointment with the Nurse,None,complete,8,NULL,3
+10,2024-04-29,14:45:00,Appointment with the Nurse,None,complete,9,NULL,3
+11,2024-04-29,15:00:00,Appointment with the Nurse,None,complete,10,NULL,3
+12,2024-04-29,15:15:00,Appointment with the Nurse,None,complete,6,NULL,3
+13,2024-04-29,15:30:00,Appointment with the Nurse,None,complete,7,NULL,3
+14,2024-04-29,15:45:00,Appointment with the Nurse,None,complete,8,NULL,3
+15,2024-04-29,16:00:00,Appointment with the Nurse,None,complete,9,NULL,3
+16,2024-04-29,16:15:00,Appointment with the Nurse,None,complete,10,NULL,3
+7,2024-04-29,16:30:00,Appointment with the Nurse,None,complete,6,NULL,3
+8,2024-04-29,16:45:00,Appointment with the Nurse,None,complete,7,NULL,3
+9,2024-04-30,09:00:00,Appointment with the Nurse,None,complete,8,NULL,3
+10,2024-04-30,09:15:00,Appointment with the Nurse,None,complete,9,NULL,3
+11,2024-04-30,09:30:00,Appointment with the Nurse,None,complete,10,NULL,3
+12,2024-04-30,09:45:00,Appointment with the Nurse,None,complete,6,NULL,3
+13,2024-04-30,10:00:00,Appointment with the Nurse,None,complete,7,NULL,3
+14,2024-04-30,10:15:00,Appointment with the Nurse,None,complete,8,NULL,3
+15,2024-04-30,10:30:00,Appointment with the Nurse,None,complete,9,NULL,3
+16,2024-04-30,10:45:00,Appointment with the Nurse,None,complete,10,NULL,3
+7,2024-04-30,11:00:00,Appointment with the Nurse,None,complete,6,NULL,3
+8,2024-04-30,11:15:00,Appointment with the Nurse,None,complete,7,NULL,3
+9,2024-04-30,11:30:00,Appointment with the Nurse,None,complete,8,NULL,3
+10,2024-04-30,11:45:00,Appointment with the Nurse,None,complete,9,NULL,3
+11,2024-04-30,12:00:00,Appointment with the Nurse,None,complete,10,NULL,3
+12,2024-04-30,12:15:00,Appointment with the Nurse,None,complete,6,NULL,3
+13,2024-04-30,12:30:00,Appointment with the Nurse,None,complete,7,NULL,3
+14,2024-04-30,12:45:00,Appointment with the Nurse,None,complete,8,NULL,3
+15,2024-04-30,13:00:00,Appointment with the Nurse,None,complete,9,NULL,3
+16,2024-04-30,13:15:00,Appointment with the Nurse,None,complete,10,NULL,3
+7,2024-04-30,13:30:00,Appointment with the Nurse,None,complete,6,NULL,3
+8,2024-04-30,13:45:00,Appointment with the Nurse,None,complete,7,NULL,3
+9,2024-04-30,14:00:00,Appointment with the Nurse,None,complete,8,NULL,3
+10,2024-04-30,14:15:00,Appointment with the Nurse,None,complete,9,NULL,3
+11,2024-04-30,14:30:00,Appointment with the Nurse,None,complete,10,NULL,3
+12,2024-04-30,14:45:00,Appointment with the Nurse,None,complete,6,NULL,3
+13,2024-04-30,15:00:00,Appointment with the Nurse,None,complete,7,NULL,3
+14,2024-04-30,15:15:00,Appointment with the Nurse,None,complete,8,NULL,3
+15,2024-04-30,15:30:00,Appointment with the Nurse,None,complete,9,NULL,3
+16,2024-04-30,15:45:00,Appointment with the Nurse,None,complete,10,NULL,3
+7,2024-04-30,16:00:00,Appointment with the Nurse,None,complete,6,NULL,3
+8,2024-04-30,16:15:00,Appointment with the Nurse,None,complete,7,NULL,3
+9,2024-04-30,16:30:00,Appointment with the Nurse,None,complete,8,NULL,3
+10,2024-04-30,16:45:00,Appointment with the Nurse,None,complete,9,NULL,3
+11,2024-05-01,09:00:00,Appointment with the Nurse,None,complete,10,NULL,3
+12,2024-05-01,09:15:00,Appointment with the Nurse,None,complete,6,NULL,3
+13,2024-05-01,09:30:00,Appointment with the Nurse,None,complete,7,NULL,3
+14,2024-05-01,09:45:00,Appointment with the Nurse,None,complete,8,NULL,3
+15,2024-05-01,10:00:00,Appointment with the Nurse,None,complete,9,NULL,3
+16,2024-05-01,10:15:00,Appointment with the Nurse,None,complete,10,NULL,3
+7,2024-05-01,10:30:00,Appointment with the Nurse,None,complete,6,NULL,3
+8,2024-05-01,10:45:00,Appointment with the Nurse,None,complete,7,NULL,3
+9,2024-05-01,11:00:00,Appointment with the Nurse,None,complete,8,NULL,3
+10,2024-05-01,11:15:00,Appointment with the Nurse,None,complete,9,NULL,3
+11,2024-05-01,11:30:00,Appointment with the Nurse,None,complete,10,NULL,3
+12,2024-05-01,11:45:00,Appointment with the Nurse,None,complete,6,NULL,3
+13,2024-05-01,12:00:00,Appointment with the Nurse,None,complete,7,NULL,3
+14,2024-05-01,12:15:00,Appointment with the Nurse,None,complete,8,NULL,3
+15,2024-05-01,12:30:00,Appointment with the Nurse,None,complete,9,NULL,3
+16,2024-05-01,12:45:00,Appointment with the Nurse,None,complete,10,NULL,3
+7,2024-05-01,13:00:00,Appointment with the Nurse,None,complete,6,NULL,3
+8,2024-05-01,13:15:00,Appointment with the Nurse,None,complete,7,NULL,3
+9,2024-05-01,13:30:00,Appointment with the Nurse,None,complete,8,NULL,3
+10,2024-05-01,13:45:00,Appointment with the Nurse,None,complete,9,NULL,3
+11,2024-05-01,14:00:00,Appointment with the Nurse,None,complete,10,NULL,3
+12,2024-05-01,14:15:00,Appointment with the Nurse,None,complete,6,NULL,3
+13,2024-05-01,14:30:00,Appointment with the Nurse,None,complete,7,NULL,3
+14,2024-05-01,14:45:00,Appointment with the Nurse,None,complete,8,NULL,3
+15,2024-05-01,15:00:00,Appointment with the Nurse,None,complete,9,NULL,3
+16,2024-05-01,15:15:00,Appointment with the Nurse,None,complete,10,NULL,3
+7,2024-05-01,15:30:00,Appointment with the Nurse,None,complete,6,NULL,3
+8,2024-05-01,15:45:00,Appointment with the Nurse,None,complete,7,NULL,3
+9,2024-05-01,16:00:00,Appointment with the Nurse,None,complete,8,NULL,3
+10,2024-05-01,16:15:00,Appointment with the Nurse,None,complete,9,NULL,3
+11,2024-05-01,16:30:00,Appointment with the Nurse,None,complete,10,NULL,3
+12,2024-05-01,16:45:00,Appointment with the Nurse,None,complete,6,NULL,3
+13,2024-05-02,09:00:00,Appointment with the Nurse,None,complete,7,NULL,3
+14,2024-05-02,09:15:00,Appointment with the Nurse,None,complete,8,NULL,3
+15,2024-05-02,09:30:00,Appointment with the Nurse,None,complete,9,NULL,3
+16,2024-05-02,09:45:00,Appointment with the Nurse,None,complete,10,NULL,3
+7,2024-05-02,10:00:00,Appointment with the Nurse,None,complete,6,NULL,3
+8,2024-05-02,10:15:00,Appointment with the Nurse,None,complete,7,NULL,3
+9,2024-05-02,10:30:00,Appointment with the Nurse,None,complete,8,NULL,3
+10,2024-05-02,10:45:00,Appointment with the Nurse,None,complete,9,NULL,3
+11,2024-05-02,11:00:00,Appointment with the Nurse,None,complete,10,NULL,3
+12,2024-05-02,11:15:00,Appointment with the Nurse,None,complete,6,NULL,3
+13,2024-05-02,11:30:00,Appointment with the Nurse,None,complete,7,NULL,3
+14,2024-05-02,11:45:00,Appointment with the Nurse,None,complete,8,NULL,3
+15,2024-05-02,12:00:00,Appointment with the Nurse,None,complete,9,NULL,3
+16,2024-05-02,12:15:00,Appointment with the Nurse,None,complete,10,NULL,3
+7,2024-05-02,12:30:00,Appointment with the Nurse,None,complete,6,NULL,3
+8,2024-05-02,12:45:00,Appointment with the Nurse,None,complete,7,NULL,3
+9,2024-05-02,13:00:00,Appointment with the Nurse,None,complete,8,NULL,3
+10,2024-05-02,13:15:00,Appointment with the Nurse,None,complete,9,NULL,3
+11,2024-05-02,13:30:00,Appointment with the Nurse,None,complete,10,NULL,3
+12,2024-05-02,13:45:00,Appointment with the Nurse,None,complete,6,NULL,3
+13,2024-05-02,14:00:00,Appointment with the Nurse,None,complete,7,NULL,3
+14,2024-05-02,14:15:00,Appointment with the Nurse,None,complete,8,NULL,3
+15,2024-05-02,14:30:00,Appointment with the Nurse,None,complete,9,NULL,3
+16,2024-05-02,14:45:00,Appointment with the Nurse,None,complete,10,NULL,3
+7,2024-05-02,15:00:00,Appointment with the Nurse,None,complete,6,NULL,3
+8,2024-05-02,15:15:00,Appointment with the Nurse,None,complete,7,NULL,3
+9,2024-05-02,15:30:00,Appointment with the Nurse,None,complete,8,NULL,3
+10,2024-05-02,15:45:00,Appointment with the Nurse,None,complete,9,NULL,3
+11,2024-05-02,16:00:00,Appointment with the Nurse,None,complete,10,NULL,3
+12,2024-05-02,16:15:00,Appointment with the Nurse,None,complete,6,NULL,3
+13,2024-05-02,16:30:00,Appointment with the Nurse,None,complete,7,NULL,3
+14,2024-05-02,16:45:00,Appointment with the Nurse,None,complete,8,NULL,3
+15,2024-05-03,09:00:00,Appointment with the Nurse,None,complete,9,NULL,3
+16,2024-05-03,09:15:00,Appointment with the Nurse,None,complete,10,NULL,3
+7,2024-05-03,09:30:00,Appointment with the Nurse,None,complete,6,NULL,3
+8,2024-05-03,09:45:00,Appointment with the Nurse,None,complete,7,NULL,3
+9,2024-05-03,10:00:00,Appointment with the Nurse,None,complete,8,NULL,3
+10,2024-05-03,10:15:00,Appointment with the Nurse,None,complete,9,NULL,3
+11,2024-05-03,10:30:00,Appointment with the Nurse,None,complete,10,NULL,3
+12,2024-05-03,10:45:00,Appointment with the Nurse,None,complete,6,NULL,3
+13,2024-05-03,11:00:00,Appointment with the Nurse,None,complete,7,NULL,3
+14,2024-05-03,11:15:00,Appointment with the Nurse,None,complete,8,NULL,3
+15,2024-05-03,11:30:00,Appointment with the Nurse,None,complete,9,NULL,3
+16,2024-05-03,11:45:00,Appointment with the Nurse,None,complete,10,NULL,3
+7,2024-05-03,12:00:00,Appointment with the Nurse,None,complete,6,NULL,3
+8,2024-05-03,12:15:00,Appointment with the Nurse,None,complete,7,NULL,3
+9,2024-05-03,12:30:00,Appointment with the Nurse,None,complete,8,NULL,3
+10,2024-05-03,12:45:00,Appointment with the Nurse,None,complete,9,NULL,3
+11,2024-05-03,13:00:00,Appointment with the Nurse,None,complete,10,NULL,3
+12,2024-05-03,13:15:00,Appointment with the Nurse,None,complete,6,NULL,3
+13,2024-05-03,13:30:00,Appointment with the Nurse,None,complete,7,NULL,3
+14,2024-05-03,13:45:00,Appointment with the Nurse,None,complete,8,NULL,3
+15,2024-05-03,14:00:00,Appointment with the Nurse,None,complete,9,NULL,3
+16,2024-05-03,14:15:00,Appointment with the Nurse,None,complete,10,NULL,3
+7,2024-05-03,14:30:00,Appointment with the Nurse,None,complete,6,NULL,3
+8,2024-05-03,14:45:00,Appointment with the Nurse,None,complete,7,NULL,3
+9,2024-05-03,15:00:00,Appointment with the Nurse,None,complete,8,NULL,3
+10,2024-05-03,15:15:00,Appointment with the Nurse,None,complete,9,NULL,3
+11,2024-05-03,15:30:00,Appointment with the Nurse,None,complete,10,NULL,3
+12,2024-05-03,15:45:00,Appointment with the Nurse,None,complete,6,NULL,3
+13,2024-05-03,16:00:00,Appointment with the Nurse,None,complete,7,NULL,3
+14,2024-05-03,16:15:00,Appointment with the Nurse,None,complete,8,NULL,3
+15,2024-05-03,16:30:00,Appointment with the Nurse,None,complete,9,NULL,3
+16,2024-05-03,16:45:00,Appointment with the Nurse,None,complete,10,NULL,3
+1,2024-05-06,09:00:00,Appointment with the Doctor,None,complete,2,2,NULL
+2,2024-05-06,09:30:00,Appointment with the Doctor,None,complete,4,2,NULL
+3,2024-05-06,10:00:00,Appointment with the Doctor,None,complete,6,2,NULL
+4,2024-05-06,10:30:00,Appointment with the Doctor,None,complete,8,2,NULL
+5,2024-05-06,11:00:00,Appointment with the Doctor,None,complete,10,2,NULL
+6,2024-05-06,11:30:00,Appointment with the Doctor,None,complete,2,2,NULL
+13,2024-05-06,12:00:00,Appointment with the Doctor,None,complete,4,2,NULL
+14,2024-05-06,12:30:00,Appointment with the Doctor,None,complete,6,2,NULL
+15,2024-05-06,13:00:00,Appointment with the Doctor,None,complete,8,2,NULL
+16,2024-05-06,13:30:00,Appointment with the Doctor,None,complete,10,2,NULL
+17,2024-05-06,14:00:00,Appointment with the Doctor,None,complete,2,2,NULL
+1,2024-05-06,14:30:00,Appointment with the Doctor,None,complete,4,2,NULL
+2,2024-05-06,15:00:00,Appointment with the Doctor,None,complete,6,2,NULL
+3,2024-05-06,15:30:00,Appointment with the Doctor,None,complete,8,2,NULL
+4,2024-05-06,16:00:00,Appointment with the Doctor,None,complete,10,2,NULL
+5,2024-05-06,16:30:00,Appointment with the Doctor,None,complete,2,2,NULL
+6,2024-05-07,09:00:00,Appointment with the Doctor,None,complete,4,2,NULL
+13,2024-05-07,09:30:00,Appointment with the Doctor,None,complete,6,2,NULL
+14,2024-05-07,10:00:00,Appointment with the Doctor,None,complete,8,2,NULL
+15,2024-05-07,10:30:00,Appointment with the Doctor,None,complete,10,2,NULL
+16,2024-05-07,11:00:00,Appointment with the Doctor,None,complete,2,2,NULL
+17,2024-05-07,11:30:00,Appointment with the Doctor,None,complete,4,2,NULL
+1,2024-05-07,12:00:00,Appointment with the Doctor,None,complete,6,2,NULL
+2,2024-05-07,12:30:00,Appointment with the Doctor,None,complete,8,2,NULL
+3,2024-05-07,13:00:00,Appointment with the Doctor,None,complete,10,2,NULL
+4,2024-05-07,13:30:00,Appointment with the Doctor,None,complete,2,2,NULL
+5,2024-05-07,14:00:00,Appointment with the Doctor,None,incomplete,4,2,NULL
+6,2024-05-07,14:30:00,Appointment with the Doctor,None,incomplete,6,2,NULL
+13,2024-05-07,15:00:00,Appointment with the Doctor,None,incomplete,8,2,NULL
+14,2024-05-07,15:30:00,Appointment with the Doctor,None,incomplete,10,2,NULL
+15,2024-05-07,16:00:00,Appointment with the Doctor,None,incomplete,2,2,NULL
+16,2024-05-07,16:30:00,Appointment with the Doctor,None,incomplete,4,2,NULL
+17,2024-05-08,09:00:00,Appointment with the Doctor,None,incomplete,6,2,NULL
+1,2024-05-08,09:30:00,Appointment with the Doctor,None,incomplete,8,2,NULL
+2,2024-05-08,10:00:00,Appointment with the Doctor,None,incomplete,10,2,NULL
+3,2024-05-08,10:30:00,Appointment with the Doctor,None,incomplete,2,2,NULL
+4,2024-05-08,11:00:00,Appointment with the Doctor,None,incomplete,4,2,NULL
+5,2024-05-08,11:30:00,Appointment with the Doctor,None,incomplete,6,2,NULL
+6,2024-05-08,12:00:00,Appointment with the Doctor,None,incomplete,8,2,NULL
+13,2024-05-08,12:30:00,Appointment with the Doctor,None,incomplete,10,2,NULL
+14,2024-05-08,13:00:00,Appointment with the Doctor,None,incomplete,2,2,NULL
+15,2024-05-08,13:30:00,Appointment with the Doctor,None,incomplete,4,2,NULL
+16,2024-05-08,14:00:00,Appointment with the Doctor,None,incomplete,6,2,NULL
+17,2024-05-08,14:30:00,Appointment with the Doctor,None,incomplete,8,2,NULL
+1,2024-05-08,15:00:00,Appointment with the Doctor,None,incomplete,10,2,NULL
+2,2024-05-08,15:30:00,Appointment with the Doctor,None,incomplete,2,2,NULL
+3,2024-05-08,16:00:00,Appointment with the Doctor,None,incomplete,4,2,NULL
+4,2024-05-08,16:30:00,Appointment with the Doctor,None,incomplete,6,2,NULL
+5,2024-05-09,09:00:00,Appointment with the Doctor,None,incomplete,8,2,NULL
+6,2024-05-09,09:30:00,Appointment with the Doctor,None,incomplete,10,2,NULL
+13,2024-05-09,10:00:00,Appointment with the Doctor,None,incomplete,2,2,NULL
+14,2024-05-09,10:30:00,Appointment with the Doctor,None,incomplete,4,2,NULL
+15,2024-05-09,11:00:00,Appointment with the Doctor,None,incomplete,6,2,NULL
+16,2024-05-09,11:30:00,Appointment with the Doctor,None,incomplete,8,2,NULL
+17,2024-05-09,12:00:00,Appointment with the Doctor,None,incomplete,10,2,NULL
+1,2024-05-09,12:30:00,Appointment with the Doctor,None,incomplete,2,2,NULL
+2,2024-05-09,13:00:00,Appointment with the Doctor,None,incomplete,4,2,NULL
+3,2024-05-09,13:30:00,Appointment with the Doctor,None,incomplete,6,2,NULL
+4,2024-05-09,14:00:00,Appointment with the Doctor,None,incomplete,8,2,NULL
+5,2024-05-09,14:30:00,Appointment with the Doctor,None,incomplete,10,2,NULL
+6,2024-05-09,15:00:00,Appointment with the Doctor,None,incomplete,2,2,NULL
+13,2024-05-09,15:30:00,Appointment with the Doctor,None,incomplete,4,2,NULL
+14,2024-05-09,16:00:00,Appointment with the Doctor,None,incomplete,6,2,NULL
+15,2024-05-09,16:30:00,Appointment with the Doctor,None,incomplete,8,2,NULL
+16,2024-05-10,09:00:00,Appointment with the Doctor,None,incomplete,10,2,NULL
+17,2024-05-10,09:30:00,Appointment with the Doctor,None,incomplete,2,2,NULL
+1,2024-05-10,10:00:00,Appointment with the Doctor,None,incomplete,4,2,NULL
+2,2024-05-10,10:30:00,Appointment with the Doctor,None,incomplete,6,2,NULL
+3,2024-05-10,11:00:00,Appointment with the Doctor,None,incomplete,8,2,NULL
+4,2024-05-10,11:30:00,Appointment with the Doctor,None,incomplete,10,2,NULL
+5,2024-05-10,12:00:00,Appointment with the Doctor,None,incomplete,2,2,NULL
+6,2024-05-10,12:30:00,Appointment with the Doctor,None,incomplete,4,2,NULL
+13,2024-05-10,13:00:00,Appointment with the Doctor,None,incomplete,6,2,NULL
+14,2024-05-10,13:30:00,Appointment with the Doctor,None,incomplete,8,2,NULL
+15,2024-05-10,14:00:00,Appointment with the Doctor,None,incomplete,10,2,NULL
+16,2024-05-10,14:30:00,Appointment with the Doctor,None,incomplete,2,2,NULL
+17,2024-05-10,15:00:00,Appointment with the Doctor,None,incomplete,4,2,NULL
+1,2024-05-10,15:30:00,Appointment with the Doctor,None,incomplete,6,2,NULL
+2,2024-05-10,16:00:00,Appointment with the Doctor,None,incomplete,8,2,NULL
+3,2024-05-10,16:30:00,Appointment with the Doctor,None,incomplete,10,2,NULL
+7,2024-05-06,09:00:00,Appointment with the Nurse,None,incomplete,1,NULL,3
+8,2024-05-06,09:30:00,Appointment with the Nurse,None,incomplete,3,NULL,3
+9,2024-05-06,10:00:00,Appointment with the Nurse,None,incomplete,5,NULL,3
+10,2024-05-06,10:30:00,Appointment with the Nurse,None,incomplete,7,NULL,3
+11,2024-05-06,11:00:00,Appointment with the Nurse,None,incomplete,9,NULL,3
+12,2024-05-06,11:30:00,Appointment with the Nurse,None,incomplete,1,NULL,3
+13,2024-05-06,12:00:00,Appointment with the Nurse,None,incomplete,3,NULL,3
+14,2024-05-06,12:30:00,Appointment with the Nurse,None,incomplete,5,NULL,3
+15,2024-05-06,13:00:00,Appointment with the Nurse,None,incomplete,7,NULL,3
+16,2024-05-06,13:30:00,Appointment with the Nurse,None,incomplete,9,NULL,3
+7,2024-05-06,14:00:00,Appointment with the Nurse,None,incomplete,1,NULL,3
+8,2024-05-06,14:30:00,Appointment with the Nurse,None,incomplete,3,NULL,3
+9,2024-05-06,15:00:00,Appointment with the Nurse,None,incomplete,5,NULL,3
+10,2024-05-06,15:30:00,Appointment with the Nurse,None,incomplete,7,NULL,3
+11,2024-05-06,16:00:00,Appointment with the Nurse,None,incomplete,9,NULL,3
+12,2024-05-06,16:30:00,Appointment with the Nurse,None,incomplete,1,NULL,3
+13,2024-05-07,09:00:00,Appointment with the Nurse,None,incomplete,3,NULL,3
+14,2024-05-07,09:30:00,Appointment with the Nurse,None,incomplete,5,NULL,3
+15,2024-05-07,10:00:00,Appointment with the Nurse,None,incomplete,7,NULL,3
+16,2024-05-07,10:30:00,Appointment with the Nurse,None,incomplete,9,NULL,3
+7,2024-05-07,11:00:00,Appointment with the Nurse,None,incomplete,1,NULL,3
+8,2024-05-07,11:30:00,Appointment with the Nurse,None,incomplete,3,NULL,3
+9,2024-05-07,12:00:00,Appointment with the Nurse,None,incomplete,5,NULL,3
+10,2024-05-07,12:30:00,Appointment with the Nurse,None,incomplete,7,NULL,3
+11,2024-05-07,13:00:00,Appointment with the Nurse,None,incomplete,9,NULL,3
+12,2024-05-07,13:30:00,Appointment with the Nurse,None,incomplete,1,NULL,3
+13,2024-05-07,14:00:00,Appointment with the Nurse,None,incomplete,3,NULL,3
+14,2024-05-07,14:30:00,Appointment with the Nurse,None,incomplete,5,NULL,3
+15,2024-05-07,15:00:00,Appointment with the Nurse,None,incomplete,7,NULL,3
+16,2024-05-07,15:30:00,Appointment with the Nurse,None,incomplete,9,NULL,3
+7,2024-05-07,16:00:00,Appointment with the Nurse,None,incomplete,1,NULL,3
+8,2024-05-07,16:30:00,Appointment with the Nurse,None,incomplete,3,NULL,3
+9,2024-05-08,09:00:00,Appointment with the Nurse,None,incomplete,5,NULL,3
+10,2024-05-08,09:30:00,Appointment with the Nurse,None,incomplete,7,NULL,3
+11,2024-05-08,10:00:00,Appointment with the Nurse,None,incomplete,9,NULL,3
+12,2024-05-08,10:30:00,Appointment with the Nurse,None,incomplete,1,NULL,3
+13,2024-05-08,11:00:00,Appointment with the Nurse,None,incomplete,3,NULL,3
+14,2024-05-08,11:30:00,Appointment with the Nurse,None,incomplete,5,NULL,3
+15,2024-05-08,12:00:00,Appointment with the Nurse,None,incomplete,7,NULL,3
+16,2024-05-08,12:30:00,Appointment with the Nurse,None,incomplete,9,NULL,3
+7,2024-05-08,13:00:00,Appointment with the Nurse,None,incomplete,1,NULL,3
+8,2024-05-08,13:30:00,Appointment with the Nurse,None,incomplete,3,NULL,3
+9,2024-05-08,14:00:00,Appointment with the Nurse,None,incomplete,5,NULL,3
+10,2024-05-08,14:30:00,Appointment with the Nurse,None,incomplete,7,NULL,3
+11,2024-05-08,15:00:00,Appointment with the Nurse,None,incomplete,9,NULL,3
+12,2024-05-08,15:30:00,Appointment with the Nurse,None,incomplete,1,NULL,3
+13,2024-05-08,16:00:00,Appointment with the Nurse,None,incomplete,3,NULL,3
+14,2024-05-08,16:30:00,Appointment with the Nurse,None,incomplete,5,NULL,3
+15,2024-05-09,09:00:00,Appointment with the Nurse,None,incomplete,7,NULL,3
+16,2024-05-09,09:30:00,Appointment with the Nurse,None,incomplete,9,NULL,3
+7,2024-05-09,10:00:00,Appointment with the Nurse,None,incomplete,1,NULL,3
+8,2024-05-09,10:30:00,Appointment with the Nurse,None,incomplete,3,NULL,3
+9,2024-05-09,11:00:00,Appointment with the Nurse,None,incomplete,5,NULL,3
+10,2024-05-09,11:30:00,Appointment with the Nurse,None,incomplete,7,NULL,3
+11,2024-05-09,12:00:00,Appointment with the Nurse,None,incomplete,9,NULL,3
+12,2024-05-09,12:30:00,Appointment with the Nurse,None,incomplete,1,NULL,3
+13,2024-05-09,13:00:00,Appointment with the Nurse,None,incomplete,3,NULL,3
+14,2024-05-09,13:30:00,Appointment with the Nurse,None,incomplete,5,NULL,3
+15,2024-05-09,14:00:00,Appointment with the Nurse,None,incomplete,7,NULL,3
+16,2024-05-09,14:30:00,Appointment with the Nurse,None,incomplete,9,NULL,3
+7,2024-05-09,15:00:00,Appointment with the Nurse,None,incomplete,1,NULL,3
+8,2024-05-09,15:30:00,Appointment with the Nurse,None,incomplete,3,NULL,3
+9,2024-05-09,16:00:00,Appointment with the Nurse,None,incomplete,5,NULL,3
+10,2024-05-09,16:30:00,Appointment with the Nurse,None,incomplete,7,NULL,3
+11,2024-05-10,09:00:00,Appointment with the Nurse,None,incomplete,9,NULL,3
+12,2024-05-10,09:30:00,Appointment with the Nurse,None,incomplete,1,NULL,3
+13,2024-05-10,10:00:00,Appointment with the Nurse,None,incomplete,3,NULL,3
+14,2024-05-10,10:30:00,Appointment with the Nurse,None,incomplete,5,NULL,3
+15,2024-05-10,11:00:00,Appointment with the Nurse,None,incomplete,7,NULL,3
+16,2024-05-10,11:30:00,Appointment with the Nurse,None,incomplete,9,NULL,3
+7,2024-05-10,12:00:00,Appointment with the Nurse,None,incomplete,1,NULL,3
+8,2024-05-10,12:30:00,Appointment with the Nurse,None,incomplete,3,NULL,3
+9,2024-05-10,13:00:00,Appointment with the Nurse,None,incomplete,5,NULL,3
+10,2024-05-10,13:30:00,Appointment with the Nurse,None,incomplete,7,NULL,3
+11,2024-05-10,14:00:00,Appointment with the Nurse,None,incomplete,9,NULL,3
+12,2024-05-10,14:30:00,Appointment with the Nurse,None,incomplete,1,NULL,3
+13,2024-05-10,15:00:00,Appointment with the Nurse,None,incomplete,3,NULL,3
+14,2024-05-10,15:30:00,Appointment with the Nurse,None,incomplete,5,NULL,3
+15,2024-05-10,16:00:00,Appointment with the Nurse,None,incomplete,7,NULL,3
+16,2024-05-10,16:30:00,Appointment with the Nurse,None,incomplete,9,NULL,3
+1,2024-05-13,09:00:00,Appointment with the Doctor,None,incomplete,1,2,NULL
+2,2024-05-13,10:00:00,Appointment with the Doctor,None,incomplete,2,2,NULL
+3,2024-05-13,11:00:00,Appointment with the Doctor,None,incomplete,3,2,NULL
+4,2024-05-13,12:00:00,Appointment with the Doctor,None,incomplete,4,2,NULL
+5,2024-05-13,13:00:00,Appointment with the Doctor,None,incomplete,5,2,NULL
+6,2024-05-13,14:00:00,Appointment with the Doctor,None,incomplete,1,2,NULL
+13,2024-05-13,15:00:00,Appointment with the Doctor,None,incomplete,2,2,NULL
+14,2024-05-13,16:00:00,Appointment with the Doctor,None,incomplete,3,2,NULL
+15,2024-05-14,09:00:00,Appointment with the Doctor,None,incomplete,4,2,NULL
+16,2024-05-14,10:00:00,Appointment with the Doctor,None,incomplete,5,2,NULL
+17,2024-05-14,11:00:00,Appointment with the Doctor,None,incomplete,1,2,NULL
+1,2024-05-14,12:00:00,Appointment with the Doctor,None,incomplete,2,2,NULL
+2,2024-05-14,13:00:00,Appointment with the Doctor,None,incomplete,3,2,NULL
+3,2024-05-14,14:00:00,Appointment with the Doctor,None,incomplete,4,2,NULL
+4,2024-05-15,09:00:00,Appointment with the Doctor,None,incomplete,5,2,NULL
+5,2024-05-15,10:00:00,Appointment with the Doctor,None,incomplete,1,2,NULL
+6,2024-05-15,11:00:00,Appointment with the Doctor,None,incomplete,2,2,NULL
+13,2024-05-15,12:00:00,Appointment with the Doctor,None,incomplete,3,2,NULL
+14,2024-05-15,13:00:00,Appointment with the Doctor,None,incomplete,4,2,NULL
+15,2024-05-15,14:00:00,Appointment with the Doctor,None,incomplete,5,2,NULL
+16,2024-05-16,09:00:00,Appointment with the Doctor,None,incomplete,1,2,NULL
+17,2024-05-16,10:00:00,Appointment with the Doctor,None,incomplete,2,2,NULL
+1,2024-05-16,11:00:00,Appointment with the Doctor,None,incomplete,3,2,NULL
+2,2024-05-16,12:00:00,Appointment with the Doctor,None,incomplete,4,2,NULL
+3,2024-05-16,13:00:00,Appointment with the Doctor,None,incomplete,5,2,NULL
+4,2024-05-16,14:00:00,Appointment with the Doctor,None,incomplete,1,2,NULL
+5,2024-05-17,09:00:00,Appointment with the Doctor,None,incomplete,2,2,NULL
+6,2024-05-17,10:00:00,Appointment with the Doctor,None,incomplete,3,2,NULL
+13,2024-05-17,11:00:00,Appointment with the Doctor,None,incomplete,4,2,NULL
+14,2024-05-17,12:00:00,Appointment with the Doctor,None,incomplete,5,2,NULL
+15,2024-05-17,13:00:00,Appointment with the Doctor,None,incomplete,1,2,NULL
+16,2024-05-17,14:00:00,Appointment with the Doctor,None,incomplete,2,2,NULL
+7,2024-05-13,09:00:00,Appointment with the Nurse,None,incomplete,6,NULL,3
+8,2024-05-13,10:00:00,Appointment with the Nurse,None,incomplete,7,NULL,3
+9,2024-05-13,11:00:00,Appointment with the Nurse,None,incomplete,8,NULL,3
+10,2024-05-13,12:00:00,Appointment with the Nurse,None,incomplete,9,NULL,3
+11,2024-05-13,13:00:00,Appointment with the Nurse,None,incomplete,10,NULL,3
+12,2024-05-13,14:00:00,Appointment with the Nurse,None,incomplete,6,NULL,3
+13,2024-05-13,15:00:00,Appointment with the Nurse,None,incomplete,7,NULL,3
+14,2024-05-13,16:00:00,Appointment with the Nurse,None,incomplete,8,NULL,3
+15,2024-05-14,09:00:00,Appointment with the Nurse,None,incomplete,9,NULL,3
+16,2024-05-14,10:00:00,Appointment with the Nurse,None,incomplete,10,NULL,3
+7,2024-05-14,11:00:00,Appointment with the Nurse,None,incomplete,6,NULL,3
+8,2024-05-14,12:00:00,Appointment with the Nurse,None,incomplete,7,NULL,3
+9,2024-05-14,13:00:00,Appointment with the Nurse,None,incomplete,8,NULL,3
+10,2024-05-14,14:00:00,Appointment with the Nurse,None,incomplete,9,NULL,3
+11,2024-05-15,09:00:00,Appointment with the Nurse,None,incomplete,10,NULL,3
+12,2024-05-15,10:00:00,Appointment with the Nurse,None,incomplete,6,NULL,3
+13,2024-05-15,11:00:00,Appointment with the Nurse,None,incomplete,7,NULL,3
+14,2024-05-15,12:00:00,Appointment with the Nurse,None,incomplete,8,NULL,3
+15,2024-05-15,13:00:00,Appointment with the Nurse,None,incomplete,9,NULL,3
+16,2024-05-15,14:00:00,Appointment with the Nurse,None,incomplete,10,NULL,3
+7,2024-05-16,09:00:00,Appointment with the Nurse,None,incomplete,6,NULL,3
+8,2024-05-16,10:00:00,Appointment with the Nurse,None,incomplete,7,NULL,3
+9,2024-05-16,11:00:00,Appointment with the Nurse,None,incomplete,8,NULL,3
+10,2024-05-16,12:00:00,Appointment with the Nurse,None,incomplete,9,NULL,3
+11,2024-05-16,13:00:00,Appointment with the Nurse,None,incomplete,10,NULL,3
+12,2024-05-16,14:00:00,Appointment with the Nurse,None,incomplete,6,NULL,3
+13,2024-05-17,09:00:00,Appointment with the Nurse,None,incomplete,7,NULL,3
+14,2024-05-17,10:00:00,Appointment with the Nurse,None,incomplete,8,NULL,3
+15,2024-05-17,11:00:00,Appointment with the Nurse,None,incomplete,9,NULL,3
+16,2024-05-17,12:00:00,Appointment with the Nurse,None,incomplete,10,NULL,3
+7,2024-05-17,13:00:00,Appointment with the Nurse,None,incomplete,6,NULL,3
+8,2024-05-17,14:00:00,Appointment with the Nurse,None,incomplete,7,NULL,3
