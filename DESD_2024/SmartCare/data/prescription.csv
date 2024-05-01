@@ -1,4 +1,2 @@
 repeatable,approved,medication,dosage,quantity,instructions,issueDate,reissueDate,appointment,patient,doctor,nurse
-FALSE,TRUE,21,500mg,12,take one tablet with food every 24 hours,2021-01-01 00:00:00,2021-02-01 00:00:00,1,7,2,NULL
-TRUE,TRUE,1,750mg,24,take one tablet with food every 4 hours,2024-03-01 00:00:00,2024-04-01 00:00:00,2,6,NULL,3
-TRUE,FALSE,21,500mg,30,take one tablet with food every 24 hours,2024-03-15 00:00:00,2024-04-07 00:00:00,3,7,2,NULL
+FALSE,TRUE,21,500mg,12,take one tablet with food every 24 hours,2024-04-29 09:00:00,NULL,1,4,2,NULL

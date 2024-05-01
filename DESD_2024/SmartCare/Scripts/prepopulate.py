@@ -339,7 +339,7 @@ def populate_prescription(csvFileName, modelClass):
                 issueDate = timezone.make_aware(issueDate)
                 objData['issueDate'] = issueDate
 
-            if 'reissueDate' in objData:
+            if 'reissueDate' in objData and objData['reissueDate'] is not None:
                 reissueDateStr = objData['reissueDate']
                 reissueDate = datetime.strptime(reissueDateStr, '%Y-%m-%d %H:%M:%S')
                 reissueDate = timezone.make_aware(reissueDate)
