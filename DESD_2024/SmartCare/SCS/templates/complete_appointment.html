@@ -106,6 +106,48 @@ document.getElementById("medication").addEventListener("change", function (e) {
             instructions.disabled = false;
         }
     });
+
+// Adding event listener that submits the form when the submit button is clicked
+document.getElementById("appointment-completion-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    completeAppointmentBooking(this);
+});
+
+
+/**
+ * Method to make a complete an appointment booking
+ * @param {HTMLFormElement} form - The form element to be submitted
+ */
+function completeAppointmentBooking(form) {
+    var formData = new FormData(form);
+    var token = getCsrfToken() ;
+
+    if (formData.get('notes') === "") {
+        alert("Please write some notes for the appointment");
+        return;
+    }
+
+    fetch('complete_appointment', {
+    method: 'POST',
+    headers: {
+            'X-CSRFToken': token
+            },
+    body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+    if (data.success) {
+    // show success message
+    // refresh page
+    alert('Appointment Completed successfully');
+    window.location.href = '/dashboard';
+    } else {
+    
+    alert(data.error);
+    }
+    });
+
+    }
 </script>
 
 {% endblock %}

@@ -3,6 +3,7 @@ import logging
 import tempfile
 
 from datetime import datetime
+from django.db import transaction
 from django.forms.models import model_to_dict
 from django.shortcuts import render,redirect, HttpResponse, get_object_or_404, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -25,7 +26,7 @@ from .forms import UserRegisterForm, DoctorNurseRegistrationForm, AppointmentBoo
 from .db_utility import get_user_profile_by_user_id, get_invoices_awaiting_payment, get_invoice_information_by_user_id, \
                     get_medical_services, get_user_profile_by_user_id, get_practitioners_by_day_and_service,  \
                     make_patient_appointment_booking, get_time_slots_by_day_and_practitioner, get_all_invoice_information, \
-                    get_patient_appointments_by_user_id, APPOINTMENT_TIMES, get_all_medications
+                    get_patient_appointments_by_user_id, APPOINTMENT_TIMES, get_all_medications, create_invoice_for_appointment
 from .utility import parse_times_for_view, generate_invoice_file_content, \
                     generate_patient_forwarding_file_content, get_prescriptions_for_practitioner, \
                     get_patient_appointments_by_user_id, parse_times_for_view, get_prescriptions_for_practitioner, generate_invoice_file_content
@@ -182,71 +183,79 @@ def start_appointment(request):
 
 def complete_appointment(request):
     if request.method == 'POST':
-        appointment_id = request.POST.get('appointmentID')
-        notes = request.POST.get('notes')
 
-        appointment = Appointment.objects.get(appointmentID=appointment_id)
-        appointment.status = 'complete'
-        appointment.notes = notes
-        appointment.save()
+        with transaction.atomic():
+            appointment_id = request.POST.get('appointmentID')
+            notes = request.POST.get('notes')
 
-        patient_id = request.POST.get('patientID')
-        patient = PatientProfile.objects.get(id=patient_id)
-        patient_user_profile = patient.user_profile
-        
-        medication = request.POST.get('medication')
-        medication = Medication.objects.get(medicationID=medication)
-        dosage = request.POST.get('dosage')
-        dosage = str(dosage) + "mg"
-        
-        quantity = request.POST.get('quantity')
-        instructions = request.POST.get('instructions')
-        repeatable = request.POST.get('repeatable')
-        if repeatable == 'on':
-            repeatable = True
-        else:
-            repeatable = False
+            appointment = Appointment.objects.get(appointmentID=appointment_id)
+            appointment.status = 'complete'
+            appointment.notes = notes
+            appointment.save()
 
-        logger.info(f"Repeatable: {repeatable}")
-        practitioner = request.user.id
-
-        current_date = datetime.now().date()
-
-        practitioner_type = get_user_type(practitioner)
-
-        if medication is not None:
-            if practitioner_type == 'doctor':
-                doctor = DoctorProfile.objects.get(user_profile__user=request.user)
-                doctor_user_profile = doctor.user_profile
-                Prescription.objects.create(repeatable=repeatable,
-                                            approved=True, 
-                                            medication=medication,
-                                            dosage=dosage,
-                                            quantity=quantity,
-                                            instructions=instructions,
-                                            issueDate=current_date,
-                                            appointment=appointment,
-                                            patient=patient_user_profile,
-                                            doctor=doctor_user_profile,
-                                            nurse=None,)
-            elif practitioner_type == 'nurse':
-                nurse = NurseProfile.objects.get(user_profile__user=request.user)
-                nurse_user_profile = nurse.user_profile
-                Prescription.objects.create(repeatable=repeatable,
-                                            approved=True, 
-                                            medication=medication,
-                                            dosage=dosage,
-                                            quantity=quantity,
-                                            instructions=instructions,
-                                            issueDate=current_date,
-                                            appointment=appointment,
-                                            patient=patient_user_profile,
-                                            doctor=None,
-                                            nurse=nurse_user_profile,
-                                            )
+            patient_id = request.POST.get('patientID')
+            patient = PatientProfile.objects.get(id=patient_id)
+            patient_user_profile = patient.user_profile
             
+            medication = request.POST.get('medication')
+            medication = Medication.objects.get(medicationID=medication)
+            dosage = request.POST.get('dosage')
+            dosage = str(dosage) + "mg"
 
-    return redirect('dashboard')  
+            quantity = request.POST.get('quantity')
+            instructions = request.POST.get('instructions')
+            repeatable = request.POST.get('repeatable')
+            if repeatable == 'on':
+                repeatable = True
+            else:
+                repeatable = False
+
+            logger.info(f"Repeatable: {repeatable}")
+            practitioner = request.user.id
+
+            current_date = datetime.now().date()
+
+            if patient.isPrivate:
+                create_invoice_for_appointment(appointment.appointmentID, "private")
+            else:
+                create_invoice_for_appointment(appointment.appointmentID, "nhs")
+
+            practitioner_type = get_user_type(practitioner)
+
+            if medication is not None:
+                if practitioner_type == 'doctor':
+                    doctor = DoctorProfile.objects.get(user_profile__user=request.user)
+                    doctor_user_profile = doctor.user_profile
+                    Prescription.objects.create(repeatable=repeatable,
+                                                approved=True, 
+                                                medication=medication,
+                                                dosage=dosage,
+                                                quantity=quantity,
+                                                instructions=instructions,
+                                                issueDate=current_date,
+                                                appointment=appointment,
+                                                patient=patient_user_profile,
+                                                doctor=doctor_user_profile,
+                                                nurse=None,)
+                elif practitioner_type == 'nurse':
+                    nurse = NurseProfile.objects.get(user_profile__user=request.user)
+                    nurse_user_profile = nurse.user_profile
+                    Prescription.objects.create(repeatable=repeatable,
+                                                approved=True, 
+                                                medication=medication,
+                                                dosage=dosage,
+                                                quantity=quantity,
+                                                instructions=instructions,
+                                                issueDate=current_date,
+                                                appointment=appointment,
+                                                patient=patient_user_profile,
+                                                doctor=None,
+                                                nurse=nurse_user_profile,
+                                                )
+                    
+    data = {'success': 'true'}
+
+    return JsonResponse(data) 
 
 def index(request):
     """
@@ -382,7 +391,7 @@ def patient(request):
         user_name = request.session.get('user_name')
         if user_name is None:
             user_name = ""
-    logger.info(historic_appointments)
+    logger.info(f"invoices: {invoices}")
 
     context = {"services": services,
                 "user_type": user_type,

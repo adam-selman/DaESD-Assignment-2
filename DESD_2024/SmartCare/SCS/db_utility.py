@@ -1,3 +1,4 @@
+from enum import Enum
 from datetime import datetime
 import logging 
 import copy 
@@ -8,10 +9,11 @@ from .models import Service, Invoice, DoctorServiceRate, Timetable, NurseService
 logger = logging.getLogger(__name__)
 
 
-class BILLABLE_PARTIES:
+class BILLABLE_PARTIES(Enum):
     """
     Enum for the billing parties
     """
+
     NHS = 'NHS',
     INSURANCE = 'Insurance'
     PRIVATE = 'Private'
@@ -134,7 +136,7 @@ def create_invoice_for_appointment(appointment_id: int, billing_party: str) -> N
         None
     """
 
-    if billing_party not in BILLABLE_PARTIES.valid_choices:
+    if billing_party not in ["NHS", "Private", "nhs", "private"]:
         raise ValueError("Billing party must be NHS, Insurance or Private.")
 
     amount = calculate_appointment_cost(appointment_id)
@@ -215,7 +217,9 @@ def get_invoice_information_by_user_id(user_id: int) -> list:
     Returns:
         list: The invoices for the user
     """
-    invoices = Invoice.objects.filter(patient_id=user_id).all()
+    logger.info(f"user_id: {user_id}")
+    patient_profile = get_patient_profile_by_user_id(user_id)
+    invoices = Invoice.objects.filter(patient_id=patient_profile.id).all()
     invoice_info = []
     for invoice in invoices:
         service = get_service_by_appointment_id(invoice.appointment_id)
