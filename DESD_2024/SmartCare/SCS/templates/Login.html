@@ -1,16 +1,16 @@
 {% extends 'index.html' %}
-{% block content %}
-<form id="login-form" method="post" action="/login/">
+{% block content%}
+<form id ="login-form" method="post">
   {% csrf_token %}
   <div class="mb-3">
     <label for="exampleInputUsername1" class="form-label">Username</label>
-    <input type="text" name="username" class="form-control" id="exampleInputUsername1" placeholder="Username" required>
+    <input type="text" name="username" class="form-control" id="exampleInputUsername1">
   </div>
   <div class="mb-3">
     <label for="exampleInputPassword1" class="form-label">Password</label>
-    <input type="password" name="password" class="form-control" id="exampleInputPassword1" placeholder="Password" required>
+    <input type="password" name="password" class="form-control" id="exampleInputPassword1">
   </div>
-  <button type="submit" class="btn btn-primary" onclick="return Click();">Login</button>
+  <button type="submit" onclick="Click()" class="btn btn-primary">Login</button>
 </form>
 
 {% if check %}
@@ -20,21 +20,55 @@
 {% endfor %}
 {% endif %}
 {% endif %}
-
 <script>
 function Click() {
   var username = document.forms["login-form"]["username"].value;
   var password = document.forms["login-form"]["password"].value;
+  var empty = true;
 
-  if (username === "") {
+  if (username === "" ) {
     alert("Username field should not be left empty!");
-    return false; // Prevent form submission
+    empty = false;
+    return;
+    
   }
   if (password === "") {
-    alert("Password field should not be left empty!");
-    return false; // Prevent form submission
+    alert("password field should not be left empty!");
+    empty = false;
+    return;
+    
   }
-  return true; // Allow form submission
+ 
+
+  if (empty) {
+    
+    var formData = new FormData(document.getElementById('login-form'));
+    var token = "{{ csrf_token }}";
+
+    fetch('login', {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': token
+      },
+      body: formData
+    })
+    .then(response => {
+      if (response.redirected) {
+       
+        
+        // 
+      } else if (response.status === 403) {
+        alert('403 Forbidden: incorrect CSRF token. Page will be refreshed.');
+        
+        window.location.href = response.url;
+      } else {
+        alert('An error occurred while processing your request.');
+      }
+    });
+    
+  }
+  
 }
 </script>
+
 {% endblock %}
