@@ -357,7 +357,7 @@ def Login(request):
             user_type = user_profile.user_type
             
             login(request, user)
-            return dashboard_resolver(request)
+            return redirect('dashboard')
             
         else:
             check = True
