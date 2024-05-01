@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+#from .forms import CustomDateField
 
 
 class UserProfile(models.Model):
@@ -37,7 +38,6 @@ class NurseProfile(models.Model):
 class PatientProfile(models.Model):
     user_profile = models.OneToOneField(UserProfile, on_delete = models.CASCADE, 
                                         related_name = 'patient_user')
-    date_of_birth = models.DateField()
     allergies = models.TextField()
     isPrivate = models.BooleanField(default = False)
 
