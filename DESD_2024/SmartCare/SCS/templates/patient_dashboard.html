@@ -5,80 +5,59 @@
 
 <script src="{% static 'js/patient_dashboard.js' %}"></script>
 <br>
-<h1>Welcome {{ user.first_name }}</h1>
-<hr>
-
-<a href="generate_patient_forwarding_file?userProfileID={{user.id}}">
-  <button type="button" class="btn btn-primary">Download Medical History</button>
-</a>
 
 <div class="container">
-  {% if future_appointments %}
-    <div class="row">
-      <div class="col-md-12">
-        <h2>Upcoming Appointments</h2>
-        <table class="table">
-          <thead class="table-info">
-            <tr class="table-info">
-              <th>Date</th>
-              <th>Service</th>
-              <th>Practitioner</th>
-          </tr>
-          </thead>
-          <tbody>
-            {% for service_name, appointment_date, appointment_time, appointmentID, practitioner_name in future_appointments %}
+  <div class="row">
+    <div class="col-md-12">
+      <h1>Welcome {{ user.first_name }}</h1>
+      <hr>
 
-            <tr class="table-dark">
-            <td>{{appointment_time}} on {{appointment_date}}</td>
-            <td>{{service_name}}</td>
-            <td>{{practitioner_name}}</td>
-            {% endfor %}
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <a href="generate_patient_forwarding_file?userProfileID={{user.id}}">
+        <button type="button" class="btn btn-primary">Download Medical History</button>
+      </a>
     </div>
-    {% else %}
-    <div class="row">
-      <div class="col-md-12">
-        <h2>Upcoming Appointments</h2>
-        <p>No appointments booked.</p>
-      </div>
-    </div>
-
-  {% endif %}
+  </div>
 </div>
 
 <br>
 
 <div class="container">
-  {% if past_appointments %}
+  {% if historic_appointments %}
     <div class="row">
       <div class="col-md-12">
         <h2>Appointment History</h2>
-        <table class="table">
-          <thead class="table-info">
+        <table class="table table-hover">
+          <thead>
             <tr class="table-info">
+              <th>Appointment </th>
               <th>Date</th>
+              <th>Time</th>
               <th>Service</th>
-              <th>Practitioner</th>
+              <th>Details</th>
             </tr>
           </thead>
           <tbody>
-            {% for service_name, appointment_date, appointment_time, appointmentID, practitioner_name in past_appointments %}
 
-            <tr class="table-dark">
-            <td>{{appointment_time}} on {{appointment_date}}</td>
-            <td>{{service_name}}</td>
-            <td>{{practitioner_name}}</td>
-            {% endfor %}
+            {% for appointment in historic_appointments %}
+
+            <tr class="table-dark" data-row-id="{{appointment.appointmentID}}">
+
+              <td>{{appointment.appointmentID}}</td>
+              <td>{{ appointment.date }}</td>
+              <td>{{ appointment.time }}</td>
+              <td>{{ appointment.service}}</td>
+          
+              <td><button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal1{{appointment.appointmentID}}">Details</button>
+                {% if appointment.date > date %}
+            <button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal3{{appointment.appointmentID}}">Cancel </button> </td>
+            {% endif %}
             </tr>
+            {% endfor %}
           </tbody>
         </table>
       </div>
     </div>
-  
-  {% else %}
+    {% else %}
     <div class="row">
       <div class="col-md-12">
         <h2>Appointment History</h2>
@@ -87,7 +66,6 @@
     </div>
 
   {% endif %}
-
 
 </div>
 
@@ -190,90 +168,175 @@
 
 
 <div class="container">
-  {% if historic_prescriptions %}
-  <h2>Repeatable Prescriptions</h2>
-  <table class="table table-hover">
-    <thead>
-      <tr class="table-info">
-        <th>Patient name </th>
-        <th>Medication</th>
-        <th>Quantity</th>
-        <th>Issue Date</th>
-        <th>Request Before</th>
-        <th>Request Repeat</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for prescription in historic_prescriptions %}
-      {% if prescription.repeatable and prescription.approved %}
-      <tr class="table-dark">
-        <td>{{ prescription.patient }}</td>
-        <td>{{ prescription.medication.name }} {{ prescription.dosage }}</td>
-        <td>{{ prescription.quantity }}</td>
-        <td>{{ prescription.issueDate }}</td>
-        <td>{{ prescription.reissueDate }}</td>
-        <td>
-          <form action="{% url 'requestRepeatPrescription' %}" method="post">
-            {% csrf_token %}
-            <input type="hidden" name="prescription_id" value="{{ prescription.prescriptionID }}">
-            <button type="submit" class="btn btn-primary">Request Repeat</button>
-          </form>
-        </td>
-      </tr>
-      {% endif %}
-      {% endfor %}
-    </tbody>
-  </table>
-  {% else %}
   <div class="row">
-    <div class="col-md-12">
-      <h2>Repeatable Prescriptions</h2>
-      <p>No prescriptions to display</p>
+    {% if historic_prescriptions %}
+    <h2>Repeatable Prescriptions</h2>
+    <table class="table table-hover">
+      <thead>
+        <tr class="table-info">
+          <th>Patient name </th>
+          <th>Medication</th>
+          <th>Quantity</th>
+          <th>Issue Date</th>
+          <th>Request Before</th>
+          <th>Request Repeat</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for prescription in historic_prescriptions %}
+        {% if prescription.repeatable and prescription.approved %}
+        <tr class="table-dark">
+          <td>{{ prescription.patient }}</td>
+          <td>{{ prescription.medication.name }} {{ prescription.dosage }}</td>
+          <td>{{ prescription.quantity }}</td>
+          <td>{{ prescription.issueDate }}</td>
+          <td>{{ prescription.reissueDate }}</td>
+          <td>
+            <form action="{% url 'requestRepeatPrescription' %}" method="post">
+              {% csrf_token %}
+              <input type="hidden" name="prescription_id" value="{{ prescription.prescriptionID }}">
+              <button type="submit" class="btn btn-primary">Request Repeat</button>
+            </form>
+          </td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+      <div class="row">
+        <div class="col-md-12">
+          <h2>Repeatable Prescriptions</h2>
+          <p>No prescriptions to display</p>
+        </div>
+      {% endif %}
     </div>
-  {% endif %}
-
+  </div>
 </div>
 
 <br>
 
+{% for appointment in historic_appointments %}
+
+<div class="modal fade" id="modal1{{ appointment.appointmentID }}" tabindex="-1" role="dialog" aria-labelledby="modal1{{ appointment.appointmentID}}Label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal1{{appointment.appointmentID}}Label">Details for Appointment {{ appointment.appointmentID }}</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-hover">
+                    <thead>
+                        <tr class="table-info">
+                           
+                            <th>Description </th>
+                            <th>Note</th>
+                            <th>Practitioner</th>
+
+                          
+                        </tr>
+                    </thead>
+                    <tbody>
+               
+                       
+                    <tr class="table-dark" data1-row-id="{{appointment.appointmentID}}">
+                      
+                       
+                        <td>{{ appointment.description }}</td>
+                        <td>{{ appointment.notes }}</td>
+                        <td>
+                          {% if not appointment.doctor %}
+                          {{ appointment.nurse }}
+                          {% else %}
+                          {{ appointment.doctor }}
+                          {% endif %}
+                        </td>
+    
+                    
+            
+                   
+                </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modal3{{ appointment.appointmentID }}" tabindex="-1" role="dialog" aria-labelledby="modal{{ appointment.appointmentID }}Label" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="modal{{ appointment.appointmentID }}Label">Details of appointment {{ appointment.appointmentID}}</h5>
+              <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+            <p>Are you sure you would like to delete this appointment </p>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" data-id="{{ appointment.appointmentID }}" data-user-profile-id="{{ appointment.appointmentID }}" class="delete-button btn btn-danger " >Delete</button>
+          </div>
+      </div>
+  </div>
+</div>
+{% endfor %}
+
+
 <div class="container">
-  {% if historic_prescriptions %}
-  <h2>Pending Prescription Requests</h2>
-  <table class="table table-hover">
-    <thead>
-      <tr class="table-info">
-        <th>Patient name </th>
-        <th>Medication</th>
-        <th>Quantity</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for prescription in historic_prescriptions %}
-      {% if prescription.repeatable and not prescription.approved %}
-      <tr class="table-dark">
-        <td>{{ prescription.patient }}</td>
-        <td>{{ prescription.medication.name }} {{ prescription.dosage }}</td>
-        <td>{{ prescription.quantity }}</td>
-      </tr>
-      {% endif %}
-      {% endfor %}
-    </tbody>
-  </table>
-  {% else %}
   <div class="row">
+    {% if historic_prescriptions %}
     <div class="col-md-12">
+
       <h2>Pending Prescription Requests</h2>
-      <p>No pending prescription requests</p>
+      <table class="table table-hover">
+        <thead>
+          <tr class="table-info">
+            <th>Patient name </th>
+            <th>Medication</th>
+            <th>Quantity</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for prescription in historic_prescriptions %}
+          {% if prescription.repeatable and not prescription.approved %}
+          <tr class="table-dark">
+            <td>{{ prescription.patient }}</td>
+            <td>{{ prescription.medication.name }} {{ prescription.dosage }}</td>
+            <td>{{ prescription.quantity }}</td>
+          </tr>
+          {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
-  {% endif %}
+    {% else %}
+      <div class="row">
+        <div class="col-md-12">
+          <h2>Pending Prescription Requests</h2>
+          <p>No pending prescription requests</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+<hr>
+
 </div>
 
 <br>
 
-<hr>
 <div class="container">
   <div class="row">
-    <div class="col-md-10">
+    <div class="col-md-12">
       <h2>Book Appointment</h2>
       <p>Book an appointment with a doctor or nurse</p>
       <form id="patient-booking-form" method="post">
@@ -315,6 +378,8 @@
     </div>
   </div>
 </div>
+
+<br>
 
 
 <script>
@@ -401,6 +466,50 @@ document.getElementById("service").addEventListener("change", function (e) {
 
 </script>
 
+<script>
+   
+    
+  const deleteButtons = document.querySelectorAll('.delete-button');
+  deleteButtons.forEach(button => {
+    button.addEventListener('click', () => {
+    
+      const id = button.dataset.id;
+    
+      var token = "{{ csrf_token }}";
+      console.error(token);
 
+      const rowElement = document.querySelector(`tr[data-row-id="${id}"]`);
+      
+      fetch(`/Delete/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'X-CSRFToken': token},
+          
+      })
+      .then(response => {
+        if (response.ok) {
+          // Row deleted successfully, updating the UI
+          rowElement.remove();
+          const modal = button.closest('.modal');
+          const modalInstance = bootstrap.Modal.getInstance(modal);
+          modalInstance.hide();
+          alert('Appointment has been cancelled');
+        } else {
+          
+          response.text().then(errorMessage => {
+          alert('Error: ' + errorMessage);
+          });
+          
+          console.error('Failed to delete row');
+        }
+      })
+      .catch(error => {
+        
+        console.error('Failed to delete row', error);
+        alert('Failed to delete row: ' + error.message);
+      });
+    });
+  });
+  </script>
 
 {% endblock %}

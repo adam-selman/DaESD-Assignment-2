@@ -3,10 +3,15 @@ from django.contrib.auth.models import User
 
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete = models.CASCADE)
-    user_type = models.CharField(max_length = 10, choices = [('doctor', 'Doctor'),
-                                    ('patient', 'Patient'), ('nurse', 'Nurse'),
-                                    ('admin', 'Admin')])
+    USER_TYPE_CHOICES = [
+        ('doctor', 'Doctor'),
+        ('patient', 'Patient'),
+        ('nurse', 'Nurse'),
+        ('admin', 'Admin'),
+    ]
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES)
     
     def __str__(self):
         return self.user.username
@@ -30,8 +35,9 @@ class NurseProfile(models.Model):
 class PatientProfile(models.Model):
     user_profile = models.OneToOneField(UserProfile, on_delete = models.CASCADE, 
                                         related_name = 'patient_user')
-    age = models.IntegerField()
-    allergies = models.JSONField(default = dict)
+    date_of_birth = models.DateField()
+    gender = models.CharField(max_length = 10)
+    allergies = models.TextField()
     isPrivate = models.BooleanField(default = False)
 
     def __str__(self):
@@ -40,6 +46,12 @@ class PatientProfile(models.Model):
 class AdminProfile(models.Model):
     user_profile = models.OneToOneField(UserProfile, on_delete = models.CASCADE, 
                                         related_name = 'admin_user')
+     
+    class Meta:
+        permissions = [
+            ("SCS.can_access_my_model_admin_dash", "Can access admin dash" ),
+        ]
+
 
     def __str__(self):
         return self.user_profile.user.username
@@ -144,7 +156,7 @@ class Prescription(models.Model):
     dosage = models.CharField(max_length = 100)
     quantity = models.IntegerField()
     instructions = models.TextField()
-    issueDate = models.DateTimeField()
+    issueDate = models.DateTimeField(default=None)
     reissueDate = models.DateTimeField(null = True)
     appointment = models.ForeignKey(Appointment, on_delete = models.CASCADE, 
                                       related_name = 'prescriptions')

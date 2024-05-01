@@ -1,15 +1,16 @@
+from datetime import date
 import logging
 import tempfile
 
 from datetime import datetime
-from django.shortcuts import render,redirect, HttpResponse
+from django.forms.models import model_to_dict
+from django.shortcuts import render,redirect, HttpResponse, get_object_or_404, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse, FileResponse, Http404
+from django.http import JsonResponse, FileResponse, Http404, HttpResponseNotFound, HttpResponseNotAllowed
 from django.contrib import messages
 from django.contrib.auth import authenticate, login , logout
 from django.middleware.csrf import get_token
 from django.template import RequestContext
-
 from django.utils import timezone
 
 from django.contrib.auth.decorators import user_passes_test
@@ -20,44 +21,103 @@ from datetime import date
 
 from .models import DoctorProfile, NurseProfile, PatientProfile, UserProfile, Service, Appointment, Prescription, Invoice
 
+from .models import DoctorProfile, NurseProfile, UserProfile, Service, Appointment, PatientProfile, Prescription, Invoice, PatientProfile, DoctorServiceRate, NurseServiceRate
+from .forms import UserRegisterForm, DoctorNurseRegistrationForm, AppointmentBookingForm, PrescriptionForm
 
 from .db_utility import get_user_profile_by_user_id, get_invoices_awaiting_payment, get_invoice_information_by_user_id, \
                     get_medical_services, get_user_profile_by_user_id, get_practitioners_by_day_and_service,  \
                     make_patient_appointment_booking, get_time_slots_by_day_and_practitioner, get_all_invoice_information, \
                     get_patient_appointments_by_user_id, APPOINTMENT_TIMES
 from .utility import parse_times_for_view, generate_invoice_file_content, \
-                    generate_patient_forwarding_file_content, get_prescriptions_for_practitioner
+                    generate_patient_forwarding_file_content, get_prescriptions_for_practitioner, \
+                    get_patient_appointments_by_user_id, parse_times_for_view, get_prescriptions_for_practitioner, generate_invoice_file_content
 
 logger = logging.getLogger(__name__)
+
+def admin_dash(request):
+    registration_form = DoctorNurseRegistrationForm()
+    appointments = Appointment.objects.all()
+
+    if request.method == 'POST':
+        registration_form = DoctorNurseRegistrationForm(request.POST)
+        if registration_form.is_valid():
+            user = registration_form.save()  # Saves the User instance
+
+            # Determine the type of user and create corresponding profile
+            user_type = registration_form.cleaned_data.get('user_type')
+            if user_type == 'doctor':
+                DoctorProfile.objects.create(
+                    user_profile=user.profile,  # Assuming a related name or method to access UserProfile from User
+                    specialization=registration_form.cleaned_data.get('specialization'),
+                    isPartTime=registration_form.cleaned_data.get('isPartTime')
+                )
+            elif user_type == 'nurse':
+                NurseProfile.objects.create(
+                    user_profile=user.profile 
+                )
+            return redirect('admin_dash')
+
+    context = {
+        'registration_form': registration_form,
+        'appointments': appointments,
+    }
+
+    return render(request, 'admin_dashboard.html', context)
+
+
+
 def register_doctor_nurse(request):
     if request.method == 'POST':
         form = DoctorNurseRegistrationForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            user_type = form.cleaned.data.get('user_type')
-            UserProfile.objects.create(user=user, user_type=user_type)
+            user = form.save()  # Saves the User instance
+            user_type = form.cleaned_data.get('user_type')  # Fixed typo from cleaned.data to cleaned_data
+
+            # Create UserProfile
+            user_profile = UserProfile.objects.create(user=user, user_type=user_type)
+            user_profile.save()
+
+            Doctor_profile = DoctorProfile(user_profile=user_profile, user_type = user_type)
+            Doctor_profile.save()
+
+            Nurse_profile = NurseProfile(user_profile=user_profile, user_type = user_type)
+            Nurse_profile.save()
+
+            # Depending on the user_type, create the corresponding profile
             if user_type == 'doctor':
                 DoctorProfile.objects.create(
-                    user_profile=user.userprofile,
+                    user_profile=user_profile,  # Refer to the just created user_profile
                     specialization=form.cleaned_data['specialization'],
                     isPartTime=form.cleaned_data['isPartTime']
                 )
             elif user_type == 'nurse':
-                NurseProfile.objects.create(user_profile=user.userprofile)
-            return redirect('home')
-        else:
-            form = DoctorNurseRegistrationForm()
-        return render(request, 'staff_register.html', {'form': form})
+                NurseProfile.objects.create(
+                    user_profile=user_profile  # Refer to the just created user_profile
+                )
+
+            # Assuming you want the user to be logged in after registration
+            login(request, user)
+            return redirect('/login')  # Ensure 'home' is the name of your home page's URL pattern
+    else:
+        form = DoctorNurseRegistrationForm()
+
+    return render(request, 'staff_register.html', {'form': form})
             
 
+#fixs for the register view which takes age and first creates a user profile 
 def register(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
         if form.is_valid():
             user = form.save()
-            # Create a profile for the new user
-            profile = UserProfile(user=user, user_type='patient')
-            profile.save()
+            age = form.cleaned_data.get('age')
+
+            user_profile = UserProfile(user=user)
+            user_profile.save()
+
+            patient_profile = PatientProfile(user_profile=user_profile, age = age)
+            patient_profile.save()
+
             login(request, user)
             firstname = form.cleaned_data['firstname']
             lastname = form.cleaned_data['lastname']
@@ -69,6 +129,18 @@ def register(request):
         form = UserRegisterForm()
     return render(request, 'register.html', {'form': form})
 
+def complete_appointment(request, appointment_id):
+    appointment = get_object_or_404(Appointment, pk=appointment_id)
+    if request.method == 'POST':
+        form = AppointmentBookingForm(request.POST, instance=appointment)
+        if form.is_valid():
+            form.save()
+            return redirect('some-view-name')  # Redirect to a confirmation page or elsewhere
+    else:
+        form = AppointmentBookingForm(instance=appointment)
+
+    return render(request, 'complete_appointment.html', {'form': form, 'appointment': appointment})  
+    
 def is_doctor(user):
     return user.groups.filter(name='doctor_group').exists()
 
@@ -185,12 +257,9 @@ def Login(request):
             user_profile = UserProfile.objects.get(user=user)
             user_type = user_profile.user_type
             
-            
             login(request, user)
-            
+
             return redirect('dashboard')
-            
-            
         else:
             check = True
             messages.error(request, 'Invalid username or password')
@@ -220,19 +289,13 @@ def doc(request):
 @custom_user_passes_test(is_patient)
 def patient(request):
     invoices = get_invoice_information_by_user_id(request.user.id)
-    future_appointments = get_patient_appointments_by_user_id(request.user.id, future=True)
-    past_appointments = get_patient_appointments_by_user_id(request.user.id, past=True)
-
-    if len(future_appointments) < 1:
-        future_appointments = None
-    if len(past_appointments) < 1:
-        past_appointments = None
-    
+    patient_profile = PatientProfile.objects.get(user_profile__user=request.user)
+    historic_appointments = Appointment.objects.filter(patient=patient_profile)
+    current_date = datetime.now().date()
     services = get_medical_services()
     user_type = "patient"
     user = request.user
     user_name = user.get_full_name
-    patient_profile = PatientProfile.objects.get(user_profile__user=request.user)
     historic_prescriptions = Prescription.objects.filter(patient=patient_profile.user_profile)
     if len(historic_prescriptions) < 1:
         historic_prescriptions = None
@@ -241,10 +304,14 @@ def patient(request):
         user_name = request.session.get('user_name')
         if user_name is None:
             user_name = ""
-    context = {"services": services, "user_type": user_type,
-                "user_name": user_name, "past_appointments": past_appointments,
+    logger.info(historic_appointments)
+
+    context = {"services": services,
+                "user_type": user_type,
+                "user_name": user_name, 
+                "historic_appointments": historic_appointments, 
                 "historic_prescriptions": historic_prescriptions,
-                "future_appointments": future_appointments,
+                "date":current_date,
                 "invoices": invoices}
     
     return render(request, 'patient_dashboard.html', context)
@@ -374,8 +441,11 @@ def admin(request):
     user_name = user.get_full_name
     all_invoices = get_all_invoice_information()
     invoices_to_be_paid = get_invoices_awaiting_payment()
+    doctor_service_rate = DoctorServiceRate.objects.all()
+    nurse_service_rate = NurseServiceRate.objects.all()
     return render(request, 'admin_dashboard.html', {'user_type': user_type, "user_name": user_name,
-                                                     "all_invoices": all_invoices, "invoices_to_be_paid": invoices_to_be_paid})
+                                                     "all_invoices": all_invoices, "invoices_to_be_paid": invoices_to_be_paid,
+                                                     "doctor_service_rate": doctor_service_rate, "nurse_service_rate": nurse_service_rate})
 
 @login_required(login_url='login')
 @custom_user_passes_test(is_nurse)
@@ -475,8 +545,101 @@ def historic_appointments(request):
     elif is_nurse(request.user):
         nurse = request.user.id
         historic_appointments = Appointment.objects.filter(nurse=nurse)
-
         return render(request, 'nurse_dashboard.html', {'historic_appointments': historic_appointments, 'clicked3':True})
+
+def delete_patient(request,id):
+     
+     if request.method == 'DELETE':
+        try:
+            # Filter the rows per patient_id
+            p_details = PatientProfile.objects.get(id=id)
+          
+            if (p_details):
+                user_profile = p_details.user_profile
+                user = user_profile.user
+                p_details.delete()
+                user_profile.delete()
+                user.delete()
+                
+            else:
+                return HttpResponse("Could not delete the row , please try agin", status=400)
+            # Return a success response
+            return HttpResponse(status=204) 
+        except PatientProfile.DoesNotExist:
+            # If the row doesn't exist, return a not found response
+            return HttpResponse(status=404)  # 404 Not Found
+     else:
+       return HttpResponseNotAllowed(['DELETE'])
+     
+def delete_appointment(request,id):
+     
+     if request.method == 'DELETE':
+        try:
+            # Filter the rows per patient_id
+            a_details = Appointment.objects.get(appointmentID=id)
+          
+            if (a_details):
+               
+                a_details.delete()
+              
+                
+            else:
+                return HttpResponse("Could not delete the row , please try agin", status=400)
+            # Return a success response
+            return HttpResponse(status=204) 
+        except Appointment.DoesNotExist:
+            # If the row doesn't exist, return a not found response
+            return HttpResponse(status=404)  # 404 Not Found
+     else:
+       return HttpResponseNotAllowed(['DELETE'])
+        
+
+
+def update_patient(request):
+    if request.method == 'POST':
+        # Get the rowId from the POST data
+        id = request.POST.get('id')
+        name = request.POST.get('Name')
+        age = request.POST.get('Age')
+        allergies = request.POST.get('Allergies')
+        isPrivate = request.POST.get('Status')
+
+        try:
+            
+            model_instance = PatientProfile.objects.get(id=id)
+          
+            user_instance = UserProfile.objects.get(user__username=model_instance.user_profile.user.username)
+          
+            user_instance.user.username = name 
+            user_instance.user.save()
+          
+            model_instance.user_profile = user_instance
+    
+            model_instance.age = age
+            model_instance.allergies = allergies
+            model_instance.isPrivate = isPrivate
+        
+            
+            # Save the changes to the model instance
+            model_instance.save()
+            
+            # Return a JSON response indicating success
+            return JsonResponse({'success': True ,'data':{
+                'name': model_instance.user_profile.user.username,
+                 'age': model_instance.age,
+                 'allergies': model_instance.allergies,
+                 'status': model_instance.isPrivate }
+                 }
+            )
+        
+        except PatientProfile.DoesNotExist:
+            # Return a JSON response indicating failure if the model instance does not exist
+            return JsonResponse({'success': False, 'message': 'Model instance does not exist'})
+        except UserProfile.DoesNotExist:
+            # Return a JSON response indicating failure if the model instance does not exist
+            return JsonResponse({'success': False, 'message': 'Model instance does not exist'})
+    else:
+        return JsonResponse({'success': False, 'message': 'Invalid request method'})
 
 @login_required(login_url='login')
 @custom_user_passes_test(is_doctor_or_nurse)
@@ -492,6 +655,7 @@ def prescription_approval(request):
         pending_prescriptions = Prescription.objects.filter(nurse=nurse, approved=False)
 
         return render(request, 'nurse_dashboard.html', {'pending_prescriptions': pending_prescriptions, 'clicked4':True})
+
 
 @login_required(login_url='login')
 @custom_user_passes_test(is_doctor_or_nurse)
@@ -742,3 +906,30 @@ def request_repeat_prescription(request):
         # Handle GET request if needed
         pass
 
+@login_required(login_url='login')
+@custom_user_passes_test(is_admin)
+def update_doctor_service_rate(request):
+    if request.method == 'POST':
+        doctorServiceRateID = request.POST.get('doctorServiceRateID')
+        new_rate = request.POST.get('rate')
+
+        doctor_service_rate = get_object_or_404(DoctorServiceRate, doctorServiceRateID=doctorServiceRateID)
+        doctor_service_rate.rate = new_rate
+        doctor_service_rate.save()
+        return redirect('admDash')
+    else:
+        pass
+
+@login_required(login_url='login')
+@custom_user_passes_test(is_admin)
+def update_nurse_service_rate(request):
+    if request.method == 'POST':
+        nurseServiceRateID = request.POST.get('nurseServiceRateID')
+        new_rate = request.POST.get('rate')
+
+        nurse_service_rate = get_object_or_404(NurseServiceRate, nurseServiceRateID=nurseServiceRateID)
+        nurse_service_rate.rate = new_rate
+        nurse_service_rate.save()
+        return redirect('admDash')
+    else:
+        pass

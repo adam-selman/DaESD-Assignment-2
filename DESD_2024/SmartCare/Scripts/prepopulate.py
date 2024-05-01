@@ -20,7 +20,12 @@ from SCS.models import User, UserProfile, DoctorProfile, NurseProfile,\
       Prescription, Invoice, Timetable
 
 def parse_bool(value):
-    return value.lower() == 'true'
+    if value.lower() == 'true':
+        return True
+    elif value.lower() == 'false':
+        return False
+    else:
+        raise ValueError(f"Invalid boolean value: {value}")
 
 def parse_int(value):
     return int(value) if value.strip() else None
@@ -85,7 +90,7 @@ def populate_users(csvFileName, userType, profileClass, additionalFields):
             if additionalFields:
                 for field in additionalFields:
                     value = row.get(field)
-                    if value in {'TRUE', 'FALSE'}:
+                    if value.lower() in {'true', 'false'}:
                         specificFields[field] = parse_bool(value)
                     else:
                         specificFields[field] = value
@@ -500,7 +505,7 @@ if __name__ == '__main__':
     populate_users('data/doctors.csv', 'doctor', DoctorProfile, ['specialization', 'isPartTime'])
     populate_users('data/admins.csv', 'admin', AdminProfile, [])
     populate_users('data/nurses.csv', 'nurse', NurseProfile, [])
-    populate_users('data/patients.csv', 'patient', PatientProfile, ['age', 'allergies', 'isPrivate'])
+    populate_users('data/patients.csv', 'patient', PatientProfile, ['gender','date_of_birth', 'allergies', 'isPrivate'])
     populate_contact('data/address.csv', Address)
     populate_contact('data/contactnumber.csv', ContactNumber)
     populate_services('data/service.csv', Service, 'service', ignore_service= True)
