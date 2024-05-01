@@ -32,4 +32,7 @@ urlpatterns = [
    path('request_repeat_prescription', views.request_repeat_prescription, name='requestRepeatPrescription'), 
    path('update_doctor_service_rate', views.update_doctor_service_rate, name='updateDoctorServiceRate'),
    path('update_nurse_service_rate', views.update_nurse_service_rate, name='updateNurseServiceRate'),
+   path('password_reset', views.password_reset, name='password_reset'),
+   path('password_reset_change/', views.password_reset_change, name='password_reset_change'),
+   path('password_reset_done', views.password_reset_done, name='password_reset_done')
 ]

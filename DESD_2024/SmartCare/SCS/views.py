@@ -831,9 +831,7 @@ def password_reset_change(request):
     return render(request, 'password_reset_change.html', {'username':username})
 
 def password_reset_done(request):
-    
     return render(request, 'password_reset_done.html')
-
 
 @login_required(login_url='login')
 @custom_user_passes_test(is_patient)
