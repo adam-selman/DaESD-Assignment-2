@@ -198,19 +198,21 @@ def complete_appointment(request):
             patient_user_profile = patient.user_profile
             
             medication = request.POST.get('medication')
-            medication = Medication.objects.get(medicationID=medication)
-            dosage = request.POST.get('dosage')
-            dosage = str(dosage) + "mg"
 
-            quantity = request.POST.get('quantity')
-            instructions = request.POST.get('instructions')
-            repeatable = request.POST.get('repeatable')
-            if repeatable == 'on':
-                repeatable = True
-            else:
-                repeatable = False
+            logger.info(f"Medication: {medication}")
+            if medication is not None:
+                medication = Medication.objects.get(medicationID=medication)
+                dosage = request.POST.get('dosage')
+                dosage = str(dosage) + "mg"
 
-            logger.info(f"Repeatable: {repeatable}")
+                quantity = request.POST.get('quantity')
+                instructions = request.POST.get('instructions')
+                repeatable = request.POST.get('repeatable')
+                if repeatable == 'on':
+                    repeatable = True
+                else:
+                    repeatable = False
+
             practitioner = request.user.id
 
             current_date = datetime.now().date()
@@ -256,6 +258,15 @@ def complete_appointment(request):
     data = {'success': 'true'}
 
     return JsonResponse(data) 
+
+def make_payment(request):
+    if request.method == 'GET':
+        invoice_id = request.GET.get('invoiceID')
+        invoice = Invoice.objects.get(invoiceID=invoice_id)
+        invoice.status = 1
+        invoice.save()
+
+    return redirect('dashboard')
 
 def index(request):
     """
@@ -828,24 +839,27 @@ def generate_invoice(request):
     Returns:
         HttpResponse: Page response containing the invoice
     """
-    logger.info("Generating invoice")
     csrf_token = get_token(request)
     if request.method == 'GET':
-        logger.info("GET request")
         user_id = request.user.id
         patient = PatientProfile.objects.filter(user_profile_id=user_id).first()
         invoice_id = request.GET.get('invoiceID')
 
         # Check if the invoice belongs to the user
         invoice = Invoice.objects.filter(invoiceID=invoice_id).first()
-        if invoice.patient_id != patient.id:
+
+        if invoice is None:
             raise Http404("Resource not found")
+        if is_admin(request.user):
+            pass
+        else:
+            if invoice.patient_id != patient.id:
+                raise Http404("Resource not found")
         
         # generate invoice file content and name
         file_content, file_name = generate_invoice_file_content(invoice_id)
         bytes_data = bytes(file_content, 'utf-8')
 
-        logger.info(f"Creating file")  
         # creating temp file to serve
         with tempfile.NamedTemporaryFile(delete=False) as temp_file:
             temp_file.write(bytes_data)
@@ -857,7 +871,6 @@ def generate_invoice(request):
             # Serve the temporary file
             response = FileResponse(open(file_path, 'rb'))
             response['Content-Disposition'] = f'attachment; filename="{file_name}"'
-            logger.info(f"Returning response")
             return response
 
 #? More protection?
@@ -950,9 +963,13 @@ def mark_invoice_as_paid(request):
         admin_user = request.user
 
         if is_admin(admin_user):
+            logger.info("Marking invoice as paid")
             invoice_id = request.POST.get('invoice_id')
             invoice = Invoice.objects.get(invoiceID=invoice_id)
+            logger.info(f"Marking invoice as paid: {invoice_id}")
             invoice.status = 1
+            invoice.approved = 1
+            logger.info(f"Saving invoice")
             invoice.save()
 
             data = {'success': 'true'}

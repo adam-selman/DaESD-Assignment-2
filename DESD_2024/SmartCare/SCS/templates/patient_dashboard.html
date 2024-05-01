@@ -48,7 +48,7 @@
               <td>{{ appointment.service}}</td>
           
               <td><button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal1{{appointment.appointmentID}}">Details</button>
-                {% if appointment.date > date %}
+                {% if appointment.date > date and appointment.status != "complete" %}
             <button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal3{{appointment.appointmentID}}">Cancel </button> </td>
             {% endif %}
             </tr>
@@ -87,17 +87,21 @@
           </tr>
         </thead>
         <tbody>
-          {% for service_name, amount, issue_date, invoice_id, status in invoices %}
+          {% for service_name, amount, issue_date, invoice_id, status, approved in invoices %}
             <tr class="table-dark">
               <td>{{service_name}}</td>
               <td>£{{amount}}</td>
               <td>{{issue_date}}</td>
               <td>
                 <a href="generate_invoice?invoiceID={{invoice_id}}">Download Invoice</a></td>
-              <td>{% if status == 1 %}
+              <td>{% if approved %}
                       Paid
+                  {% elif status == 1 %}
+                      Payment Submitted. Pending Approval
                   {% elif status == 0 %}
-                      Awaiting Payment
+                  <a href="{% url 'make_payment' %}?invoiceID={{invoice_id}}">
+                    <button type="button" class="btn btn-primary">Pay Invoice</button>
+                  </a>
                   {% endif %}
               </td>
             </tr>

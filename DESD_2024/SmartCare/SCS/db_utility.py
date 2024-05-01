@@ -226,7 +226,7 @@ def get_invoice_information_by_user_id(user_id: int) -> list:
         service_name = service.service.title()
         amount = invoice.amount
         issue_date = invoice.dateIssued.strftime("%d-%m-%Y")
-        invoice_info.append([service_name, amount, issue_date, invoice.invoiceID, invoice.status])
+        invoice_info.append([service_name, amount, issue_date, invoice.invoiceID, invoice.status, invoice.approved])
     return invoice_info
 
 def get_all_invoice_information() -> list:
@@ -243,7 +243,7 @@ def get_all_invoice_information() -> list:
         service_name = service.service.title()
         amount = invoice.amount
         issue_date = invoice.dateIssued.strftime("%d-%m-%Y")
-        invoice_info.append([service_name, amount, issue_date, invoice.invoiceID, invoice.status])
+        invoice_info.append([service_name, amount, issue_date, invoice.invoiceID, invoice.status, invoice.approved])
     return invoice_info
 
 def get_invoices_awaiting_payment() -> list:
@@ -253,15 +253,17 @@ def get_invoices_awaiting_payment() -> list:
     Returns:
         list: A list of invoices awaiting payment
     """
-    invoices = Invoice.objects.filter(status=False).all()
+    invoices = Invoice.objects.filter(approved=False).all()
     invoice_info = []
     for invoice in invoices:
         service = get_service_by_appointment_id(invoice.appointment_id)
         service_name = service.service.title()
         amount = invoice.amount
         issue_date = invoice.dateIssued.strftime("%d-%m-%Y")
-        if invoice.status == 0:
-            invoice_info.append([service_name, amount, issue_date, invoice.invoiceID, invoice.status])
+        if invoice.approved == 0:
+            invoice_info.append([service_name, amount, issue_date, invoice.invoiceID, invoice.status, invoice.approved])
+    
+    logger.info(invoice_info)
     return invoice_info
 
 def get_patient_profile_by_user_profile(user_profile: int) -> PatientProfile:

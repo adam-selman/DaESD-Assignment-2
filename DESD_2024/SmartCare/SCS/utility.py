@@ -98,7 +98,13 @@ def create_invoice_file(invoice_id: int) -> tuple:
     amount = "{:.2f}".format(amount)
     tax_amount = "{:.2f}".format(tax_amount)
     pre_tax_amount = "{:.2f}".format(pre_tax_amount)
-
+    
+    if invoice.approved is True:
+        payment_status = "Paid"
+    elif invoice.status == 0:
+        payment_status = "Unpaid"
+    elif invoice.status == 1:
+        payment_status = "Payment Submitted. Pending Approval"
     
     # patient info
     user_profile = invoice.patient
@@ -127,6 +133,7 @@ def create_invoice_file(invoice_id: int) -> tuple:
         'total_amount': amount,
         'tax_amount': tax_amount,
         'pre_tax_amount': pre_tax_amount,
+        'payment_status': payment_status,
     }
 
     filled_template = populate_template(template, invoice_data)
