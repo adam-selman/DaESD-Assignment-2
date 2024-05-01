@@ -8,6 +8,10 @@
 <h1>Welcome {{ user.first_name }}</h1>
 <hr>
 
+<a href="generate_patient_forwarding_file?userProfileID={{user.id}}">
+  <button type="button" class="btn btn-primary">Download Medical History</button>
+</a>
+
 <div class="container">
   {% if future_appointments %}
     <div class="row">
@@ -18,14 +22,16 @@
             <tr class="table-info">
               <th>Date</th>
               <th>Service</th>
+              <th>Practitioner</th>
           </tr>
           </thead>
           <tbody>
-            {% for service_name, appointment_date, appointment_time, appointmentID in future_appointments %}
+            {% for service_name, appointment_date, appointment_time, appointmentID, practitioner_name in future_appointments %}
 
             <tr class="table-dark">
             <td>{{appointment_time}} on {{appointment_date}}</td>
             <td>{{service_name}}</td>
+            <td>{{practitioner_name}}</td>
             {% endfor %}
             </tr>
           </tbody>
@@ -55,14 +61,16 @@
             <tr class="table-info">
               <th>Date</th>
               <th>Service</th>
-          </tr>
+              <th>Practitioner</th>
+            </tr>
           </thead>
           <tbody>
-            {% for service_name, appointment_date, appointment_time, appointmentID in past_appointments %}
+            {% for service_name, appointment_date, appointment_time, appointmentID, practitioner_name in past_appointments %}
 
             <tr class="table-dark">
             <td>{{appointment_time}} on {{appointment_date}}</td>
             <td>{{service_name}}</td>
+            <td>{{practitioner_name}}</td>
             {% endfor %}
             </tr>
           </tbody>

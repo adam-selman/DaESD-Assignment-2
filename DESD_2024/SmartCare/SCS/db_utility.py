@@ -260,6 +260,88 @@ def get_invoices_awaiting_payment() -> list:
             invoice_info.append([service_name, amount, issue_date, invoice.invoiceID, invoice.status])
     return invoice_info
 
+def get_patient_profile_by_user_profile(user_profile: int) -> PatientProfile:
+    """
+    Returns the patient profile
+
+    Args:
+        user_profile_id (int): The user profile id
+
+    Returns:
+        PatientProfile: The patient profile of the user
+    """
+    patient_profile = PatientProfile.objects.get(user_profile_id=user_profile.id)
+    return patient_profile
+
+def get_all_appointments_by_patient_profile(patient_profile) -> list:
+    """
+    Returns all appointments for a patient
+
+    Returns:
+        list: The appointments for the patient
+    """
+    appointments = Appointment.objects.filter(patient_id=patient_profile.id).all()
+    return appointments
+
+def get_doctor_profile_by_user_profile_id(user_profile_id: int) -> DoctorProfile:
+    """
+    Returns the doctor profile
+
+    Args:
+        user_profile_id (int): The user profile id
+
+    Returns:
+        DoctorProfile: The doctor profile of the user
+    """
+    doctor_profile = DoctorProfile.objects.get(user_profile_id=user_profile_id)
+    return doctor_profile
+
+def get_nurse_profile_by_user_profile_id(user_profile_id: int) -> NurseProfile:
+    """
+    Returns the nurse profile
+
+    Args:
+        user_profile_id (int): The user profile id
+
+    Returns:
+        NurseProfile: The nurse profile of the user
+    """
+    nurse_profile = NurseProfile.objects.get(user_profile_id=user_profile_id)
+    return nurse_profile
+
+def get_user_by_user_profile(user_profile: int) -> User:
+    """
+    Returns the user
+
+    Args:
+        user_profile_id (int): The user profile id
+
+    Returns:
+        User: The user of the user profile
+    """
+    user = User.objects.get(id=user_profile.user_id)
+    return user
+
+def get_practitioner_name_by_user_profile_id(user_profile_id: int) -> str:
+    """
+    Returns the name of a practitioner
+
+    Args:
+        user_profile_id (int): The user profile id
+
+    Returns:
+        str: The name of the practitioner
+    """
+    user_profile = UserProfile.objects.get(id=user_profile_id)
+    user = User.objects.get(id=user_profile.user_id)
+    user_type = get_user_type_by_id(user.id)
+
+    if user_type == "doctor":
+        name = "Dr. " + user.first_name + " " + user.last_name
+    elif user_type == "nurse":
+        name = "Nurse " + user.first_name + " " + user.last_name
+    return name
+
 def get_patient_appointments_by_user_id(user_id: int, future=False, past=False) -> list:
     """
     Returns the appointments for a patient
@@ -270,22 +352,26 @@ def get_patient_appointments_by_user_id(user_id: int, future=False, past=False) 
     Returns:
         list: The appointments for the patient
     """
-    user_profile = UserProfile.objects.get(user_id=user_id)
-    patient_profile = PatientProfile.objects.get(user_profile_id=user_profile.id)
-    appointments = Appointment.objects.filter(patient_id=patient_profile.id).all()
+    
+    user_profile = get_user_profile_by_user_id(user_id)
+    logger.info(user_profile.id)
+    patient_profile = get_patient_profile_by_user_profile(user_profile)
+    appointments = get_all_appointments_by_patient_profile(patient_profile)
     appointment_info = []
     for appointment in appointments:
         service = get_service_by_appointment_id(appointment.appointmentID)
         service_name = service.service.title()
 
+        practitioner_name = get_practitioner_name_by_user_profile_id(appointment.doctor_id)
+
         if future:
             if appointment.date >= datetime.now().date():
-                appointment_info.append([service_name, appointment.date, appointment.time, appointment.appointmentID])
-        elif past:
+                appointment_info.append([service_name, appointment.date, appointment.time, appointment.appointmentID, practitioner_name])
+        if past:
             if appointment.date < datetime.now().date():
-                appointment_info.append([service_name, appointment.date, appointment.time, appointment.appointmentID])
+                appointment_info.append([service_name, appointment.date, appointment.time, appointment.appointmentID, practitioner_name])
         else:
-            appointment_info.append([service_name, appointment.date, appointment.time, appointment.appointmentID])
+            appointment_info.append([service_name, appointment.date, appointment.time, appointment.appointmentID, practitioner_name])
     return appointment_info
 
 def get_user_profile_by_user_id(user_id: int) -> int:

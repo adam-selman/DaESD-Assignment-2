@@ -11,7 +11,7 @@ from django.conf import settings
 from .models import Service, DoctorServiceRate, NurseServiceRate, User, \
         UserProfile, Prescription, Appointment, Service, \
         Invoice, Address, PatientProfile
-from .db_utility import get_patient_appointments_by_user_id, get_service_rate_by_appointment
+from .db_utility import get_patient_appointments_by_user_id, get_service_rate_by_appointment, get_practitioner_name_by_user_profile_id, get_user_by_user_profile
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +46,7 @@ def generate_invoice_file_content(invoice_id: int) -> tuple:
     
     return file_content, file_name
 
-def generate_patient_forwarding_file_content(patient_id: int) -> tuple:
+def generate_patient_forwarding_file_content(patient_profile: PatientProfile) -> tuple:
     """
     Generates an patient forwarding file and serves it
 
@@ -56,10 +56,9 @@ def generate_patient_forwarding_file_content(patient_id: int) -> tuple:
     Returns:
         str, str: The content of the invoice file to be written
     """
-    patient = PatientProfile.objects.get(patientID=patient_id)
 
     # create the file content
-    file_content, file_name = create_patient_forwarding_file(patient)
+    file_content, file_name = create_patient_forwarding_file(patient_profile)
     
     return file_content, file_name
 
@@ -166,25 +165,42 @@ def create_patient_forwarding_file(patient: PatientProfile) -> tuple:
     
 
     # appointment history
-    past_appointments = get_patient_appointments_by_user_id(patient.user.id, past=True)
+    appointment_string = ""
+    past_appointments = get_patient_appointments_by_user_id(patient.user_profile_id, past=True)
 
     if len(past_appointments) < 1:
         past_appointments = None
-
+    else:
+        for service_name, date, time, _, practitioner in past_appointments:
+            date = date.strftime("%d/%m/%Y")
+            time = time.strftime("%H:%M")
+            appointment_string += f"{date} at {time} - {service_name} with {practitioner}\n"
+    logger.info(appointment_string)
     #! Format the appointment times for the file
 
     # Prescription history
+    prescription_string = ""
     prescriptions = Prescription.objects.filter(patient=patient.user_profile)
     if len(prescriptions) < 1:
         prescriptions = None
-
+    else:
+        for prescription in prescriptions:
+            date_prescribed = prescription.issueDate.strftime("%d/%m/%Y")
+            if prescription.doctor_id is not None:
+                practitioner_name = get_practitioner_name_by_user_profile_id(prescription.doctor_id)
+            else:
+                practitioner_name = get_practitioner_name_by_user_profile_id(prescription.nurse_id)
+            prescription_string += f"{prescription.dosage} dose of {prescription.medication.name}. Prescribed on {date_prescribed} by {practitioner_name}\n"
+    logger.info(prescription_string)
     #! Format the Prescription history for the file
 
     # Patient info
-    patient_user_profile = UserProfile.objects.get(user_id=patient.user_id)
-    patient_address = Address.objects.get(user_id=patient_user_profile.user_id)
-    address_string = str(patient_address)
-    user = User.objects.get(id=patient.user_id)
+    #! GET ADDRESS FROM USER PROFILE
+    # patient_address = Address.objects.get(user_id=patient.user_id)
+    # address_string = str(patient_address)
+    address_string = "123 Fake Street, Fake Town, Fake City, Fake Country, F4K3 123" #! REPLACE WITH ACTUAL ADDRESS
+    user_profile = UserProfile.objects.get(id=patient.user_profile_id)
+    user = get_user_by_user_profile(user_profile)
 
     creation_date = datetime.now()
     creation_date = creation_date.strftime("%d/%m/%Y")
@@ -197,16 +213,14 @@ def create_patient_forwarding_file(patient: PatientProfile) -> tuple:
         template = file.read()
 
     patient_forwarding_data = {
-        'appointments': [],
-        'prescriptions': [],
+        'appointments': appointment_string,
+        'prescriptions': prescription_string,
         'patient_name': f"{user.first_name} {user.last_name}",
         'patient_address': address_string,
         "creation_date": creation_date
     }
 
     filled_template = populate_template(template, patient_forwarding_data)
-
-    raise NotImplementedError("'create_patient_forwarding_file' not fully implemented yet")
 
     return filled_template, file_name
 

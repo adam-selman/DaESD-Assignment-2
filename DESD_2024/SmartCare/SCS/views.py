@@ -601,8 +601,8 @@ def generate_invoice(request):
             response['Content-Disposition'] = f'attachment; filename="{file_name}"'
             return response
 
+#? More protection?
 @login_required(login_url='login')
-@custom_user_passes_test(is_doctor_or_nurse)
 def generate_patient_forwarding_file(request):
     """
     Function to generate a forwarding file for a patient
@@ -616,14 +616,12 @@ def generate_patient_forwarding_file(request):
     csrf_token = get_token(request)
     if request.method == 'GET':
         user_id = request.user.id
-        patient_id = request.GET.get('patientID')
+        user_profile_id = request.GET.get('userProfileID')
+        patient = PatientProfile.objects.filter(user_profile_id=user_profile_id).first()
         
         # generate invoice file content and name
-        file_content, file_name = generate_patient_forwarding_file_content(patient_id)
+        file_content, file_name = generate_patient_forwarding_file_content(patient)
         bytes_data = bytes(file_content, 'utf-8')
-
-        raise NotImplementedError("'generate_patient_forwarding_file' not fully implemented yet")
-
 
         # creating temp file to serve
         with tempfile.NamedTemporaryFile(delete=False) as temp_file:
