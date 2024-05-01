@@ -50,23 +50,23 @@ def register(request):
         form = UserRegisterForm(request.POST)
         if form.is_valid():
             user = form.save()
+            gender = form.cleaned_data['gender']
+            date_of_birth = form.cleaned_data['date_of_birth']
             # Create a profile for the new user
-            profile = UserProfile(user=user, user_type='patient')
+            profile = UserProfile(user=user, user_type='patient', date_of_birth=date_of_birth, gender = gender)
             profile.save()
             login(request, user)
+
             firstname = form.cleaned_data['firstname']
             lastname = form.cleaned_data['lastname']
-            gender = form.cleaned_data['gender']
-            date_string = form.cleaned_data['date_of_birth']
-            date_obj = datetime.strptime(date_string, '%d-%m-%Y').date()
-            date_of_birth = date_obj.strftime('%Y-%m-%d')
-
+            email = form.cleaned_data['email']
+            username = form.cleaned_data['username']
+                        
             number = form.cleaned_data['address_number']
             streetName = form.cleaned_data['address_street']
-            area = form.cleaned_data['address_area']
             city = form.cleaned_data['address_city']
             postcode = form.cleaned_data['address_postcode']
-            address = Address.objects.create(number=number, streetName=streetName, area=area, city=city, postcode=postcode, user=profile.user_id)
+            address = Address.objects.create(number=number, streetName=streetName, city=city, postcode=postcode, user=profile)
             address.save()
 
             user_name = f"{firstname} {lastname}"

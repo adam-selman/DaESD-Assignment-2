@@ -2,12 +2,25 @@ from django import forms
 from .models import Appointment, UserProfile, PatientProfile, Prescription
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
+import datetime
+
+class CustomDateField(forms.DateField):
+    def to_python(self, value):
+        if not value:
+            return None
+        try:
+            day, month, year = map(int, value.split('/'))
+            return datetime.date(year, month, day)
+        except ValueError:
+            raise ValidationError('Invalid date format. Use DD/MM/YYYY.')
+
 
 class UserRegisterForm(UserCreationForm):
     firstname = forms.CharField(max_length=100)
     lastname = forms.CharField(max_length=100)
     email = forms.EmailField(required=True)
-    date_of_birth = forms.DateField(required=True)
+    date_of_birth = CustomDateField(required=True)
     gender = forms.CharField(max_length=10)
     #user_type = forms.ChoiceField(choices=UserProfile.USER_TYPE_CHOICES)
     user_type = PatientProfile
@@ -15,10 +28,6 @@ class UserRegisterForm(UserCreationForm):
     address_street = forms.CharField(max_length=100, required=True)
     address_city = forms.CharField(max_length=100, required=True)
     address_postcode = forms.CharField(max_length=10, required=True)
-
-
-
-  
 
     class Meta:
         model = User
