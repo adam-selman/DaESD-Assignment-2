@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Complete Appointment</title>
+</head>
+<body>
+    <h1>Complete Appointment for {{ appointment.patient_name }} on {{ appointment.appointment_date }}</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save Notes</button>
+    </form>
+</body>
+</html>
