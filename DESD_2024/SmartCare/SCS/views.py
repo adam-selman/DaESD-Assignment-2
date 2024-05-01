@@ -851,3 +851,28 @@ def update_nurse_service_rate(request):
         return redirect('admDash')
     else:
         pass
+
+
+@login_required(login_url='login')
+@custom_user_passes_test(is_admin)
+def ADM_delete_appointment(request,id):
+     
+     if request.method == 'DELETE':
+        try:
+            
+            a_details = Appointment.objects.get(appointmentID=id)
+          
+            if (a_details):
+               
+                a_details.delete()
+              
+                
+            else:
+                return HttpResponse("Could not delete the row , please try agin", status=400)
+            # Return a success response
+            return HttpResponse(status=204) 
+        except Appointment.DoesNotExist:
+            # If the row doesn't exist, return a not found response
+            return HttpResponse(status=404)  # 404 Not Found
+     else:
+       return HttpResponseNotAllowed(['DELETE'])

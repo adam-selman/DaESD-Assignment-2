@@ -57,7 +57,7 @@
 </div>
 
 
-
+<h3>Patients details</h3>
 <table class="table table-hover">
     <thead>
         <tr class="table-info">
@@ -280,8 +280,13 @@
             <div class="modal-body">
                 <form class="updateForm" id="updateForm" data-button-id="{{ patient.id}}" method="POST">
                     {% csrf_token %}
+                    <label>Name</label><br>
                     <input type="text" name="Name" value="{{ patient.user_profile }}">
+                    <br>
+                    <label>Allergies</label><br>
                     <input type="text" name="Allergies" value="{{ patient.allergies }}">
+                    <br>
+                    <label>Billing type</label><br>
                     <select name="Status">
                         <option value="True" {% if patient.isPrivate %}selected{% endif %}>Private</option>
                         <option value="False" {% if not patient.isPrivate %}selected{% endif %}>Public</option>
@@ -304,29 +309,6 @@
     </div>
 </div>
 
-
-
-
-<div class="modal fade" id="modal4{{ patient.user_profile }}" tabindex="-1" role="dialog" aria-labelledby="modal{{ patient.user_profile }}Label" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modal{{ patient.user_profile }}Label">Searching for {{ patient.user_profile }}' appointments</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <!-------------------Add code ----------------------->
-                   
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" data-id="{{ patient.id }}"  class="delete-button btn btn-danger " >Delete</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 {% endfor %}
 
@@ -391,6 +373,79 @@
         </div>
     </div>
 </div>
+
+
+
+<!----------------------------List of appointments ---------------------------------->
+
+<div class="container">
+    <h3>Scheduled Appointments </h3>
+<table class="table table-hover">
+    <thead>
+        <tr class="table-info">
+            <th>Appointment </th>
+            <th> Date</th>
+            <th>Time</th>
+            <th>Service</th>
+            <th>Practitionner </th>
+            <th>Details </th>
+        </tr>
+    </thead>
+    <tbody>
+
+        {% for appt in appointments %}
+
+        <tr class="table-dark" data2-row-id="{{appt.appointmentID}}">
+
+            <td>{{appt.appointmentID}}</td>
+            <td>{{ appt.date }}</td>
+            <td>{{ appt.time}}</td>
+            <td>{{ appt.service }}</td>
+            <td> {% if not appt.doctor %}
+                {{ appt.nurse }}
+                {% else %}
+                {{ appt.doctor }}
+                {% endif %}</td>
+            <td>
+            <button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal3{{appt.appointmentID}}">Delete</button>
+            <button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal4{{appt.appointmentID}}">Search</button>
+            </td>
+
+
+        
+            {% endfor %}
+        </tr>
+    </tbody>
+</table>
+</div>
+{% for appt in appointments %}
+<div class="modal fade" id="modal3{{ appt.appointmentID }}" tabindex="-1" role="dialog" aria-labelledby="modal{{ appt.appointmentID }}Label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal{{ appt.appointmentID }}Label">Details of appointment {{ appointment.appointmentID}}</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+             <p>Are you sure you would like to delete this appointment </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" data-id="{{ appt.appointmentID }}" class="Delete-button btn btn-danger " >Delete</button>
+            </div>
+        </div>
+    </div>
+  </div>
+
+
+
+
+  {% endfor %}
+
+
+
 
 
 
@@ -639,5 +694,54 @@ selectElement.addEventListener('change', (event) => {
   
 
 </script>
+
+
+
+<script>
+   
+    
+    const DeleteButtons = document.querySelectorAll('.Delete-button');
+    DeleteButtons.forEach(button => {
+      button.addEventListener('click', () => {
+      
+        const id = button.dataset.id;
+       alert(id)
+        var token = "{{ csrf_token }}";
+        console.error(token);
+  
+        const rowElement = document.querySelector(`tr[data2-row-id="${id}"]`);
+        alert(rowElement)
+        fetch(`/ADM_Delete/${id}`, {
+          method: 'DELETE',
+          headers: {
+            'X-CSRFToken': token},
+            
+        })
+        .then(response => {
+          if (response.ok) {
+            // Row deleted successfully, updating the UI
+            rowElement.remove();
+            const modal = button.closest('.modal');
+            const modalInstance = bootstrap.Modal.getInstance(modal);
+            modalInstance.hide();
+            alert('Appointment has been cancelled');
+          } else {
+            
+            response.text().then(errorMessage => {
+            alert('Error: ' + errorMessage);
+            });
+            
+            console.error('Failed to delete row');
+          }
+        })
+        .catch(error => {
+          
+          console.error('Failed to delete row', error);
+          alert('Failed to delete row: ' + error.message);
+        });
+      });
+    });
+    </script>
+  
 
 {% endblock %}
