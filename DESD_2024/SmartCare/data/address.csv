@@ -1,11 +1,11 @@
-number,streetName,area,city,postcode,user
-1,street road,first area,bristol,bs1 1aa,4
-2,place crescent,second area,bristol,bs2 2bb,5
-3,avenue road,third area,bristol,bs3 3cc,6
-4,road avenue,fourth area,bristol,bs4 4dd,7
-5,street avenue,fifth area,bristol,bs5 5ee,8
-6,avenue street,sixth area,bristol,bs6 6ff,9
-7,main street,seventh area,bristol,bs7 7gg,10
-8,street park,eighth area,bristol,bs8 8hh,11
-9,park road,ninth area,bristol,bs9 9ii,12
-10,road park,tenth area,bristol,bs10 1jj,13
+number,streetName,city,postcode,user
+1,street road,bristol,bs1 1aa,4
+2,place crescent,bristol,bs2 2bb,5
+3,avenue road,bristol,bs3 3cc,6
+4,road avenue,bristol,bs4 4dd,7
+5,street avenue,bristol,bs5 5ee,8
+6,avenue street,bristol,bs6 6ff,9
+7,main street,bristol,bs7 7gg,10
+8,street park,bristol,bs8 8hh,11
+9,park road,bristol,bs9 9ii,12
+10,road park,bristol,bs10 1jj,13
