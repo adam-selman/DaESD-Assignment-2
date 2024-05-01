@@ -50,15 +50,7 @@
                       {% endif %}
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                      {% if user_type == 'doctor' %}
-                      <li><a class="dropdown-item" href="doctor_dashboard">Dashboard</a></li>
-                      {% elif user_type == 'patient' %}
-                      <li><a class="dropdown-item" href="patient_dashboard">Dashboard</a></li>
-                      {% elif user_type == 'nurse' %}
-                      <li><a class="dropdown-item" href="nurse_dashboard">Dashboard</a></li>
-                      {% elif user_type == 'admin' %}
-                      <li><a class="dropdown-item" href="admin_dashboard">Dashboard</a></li>
-                      {% endif %}
+                      <li><a class="dropdown-item" href="dashboard">Dashboard</a></li>
                       <li><a class="dropdown-item" href="logout">Logout</a></li>
                     </ul>
                   </li>
@@ -78,9 +70,11 @@
         
 <div id='1' class='container' >
 
-        {% block content%}
-        
-        {% endblock %}
     </div>
    
 </body>
+
+
+{% block content%}
+        
+{% endblock %}

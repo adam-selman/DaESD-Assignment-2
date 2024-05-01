@@ -32,15 +32,58 @@
   {
     // Get current date and time
     var currentDate = new Date();
+    var currentHour = currentDate.getHours();
+    var currentMinute = currentDate.getMinutes();
 
+    // if current time is after 4:45pm, set min date to tomorrow
+    if ((currentHour == 16 && currentMinute <= 44) || currentHour >= 17) {
+      tomorrow = new Date(currentDate);
+      tomorrow.setDate(currentDate.getDate() + 1);
+      var year = tomorrow.getFullYear();
+      var month = ('0' + (tomorrow.getMonth() + 1)).slice(-2); // Month is zero-based
+      var day = ('0' + tomorrow.getDate()).slice(-2);
+      var formattedDate = year + '-' + month + '-' + day;
+    }
+    // else set min date to now
+    else {
     // Format date
     var year = currentDate.getFullYear();
     var month = ('0' + (currentDate.getMonth() + 1)).slice(-2); // Month is zero-based
     var day = ('0' + currentDate.getDate()).slice(-2);
     var formattedDate = year + '-' + month + '-' + day;
-
+    }
     // Set min date and time for input element
     var inputElement = document.getElementById(datepickerId);
     inputElement.min = formattedDate;
-
   }
+
+/**
+ * Method to mark an invoice as paid 
+ * @param {HTMLFormElement} form - The form element to be submitted
+ */
+function markInvoiceAsPaid(form) {
+  var formData = new FormData(form);
+  var token = getCsrfToken();
+
+  fetch('mark_invoice_as_paid', {
+  method: 'POST',
+  headers: {
+          'X-CSRFToken': token
+          },
+  body: formData
+})
+.then(response => response.json())
+.then(data => {
+if (data.success) {
+  // show success message
+  // refresh page
+  alert('Invoice Marked as Paid.');
+  location.reload();
+
+} else {
+  
+  alert(data.error);
+}
+});
+
+}

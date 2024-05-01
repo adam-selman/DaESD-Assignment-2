@@ -149,7 +149,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = 'static/'
 
 # Define the directory where collected static files will be stored
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
@@ -165,6 +165,12 @@ STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 ]
+
+INVOICE_TEMPLATE_FILENAME = "invoice_template.txt"
+
+INVOICE_TEMPLATE_PATH = os.path.join(BASE_DIR, 'static', INVOICE_TEMPLATE_FILENAME)
+
+TEMP_FILE_DIRECTORY = os.path.join(STATIC_ROOT, 'temp')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

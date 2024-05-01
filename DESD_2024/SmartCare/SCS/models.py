@@ -3,10 +3,15 @@ from django.contrib.auth.models import User
 
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete = models.CASCADE)
-    user_type = models.CharField(max_length = 10, choices = [('doctor', 'Doctor'),
-                                    ('patient', 'Patient'), ('nurse', 'Nurse'),
-                                    ('admin', 'Admin')])
+    USER_TYPE_CHOICES = [
+        ('doctor', 'Doctor'),
+        ('patient', 'Patient'),
+        ('nurse', 'Nurse'),
+        ('admin', 'Admin'),
+    ]
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES)
     
     def __str__(self):
         return self.user.username
@@ -26,11 +31,12 @@ class NurseProfile(models.Model):
 
     def __str__(self):
         return self.user_profile.user.username
-    
+
 class PatientProfile(models.Model):
     user_profile = models.OneToOneField(UserProfile, on_delete = models.CASCADE, 
                                         related_name = 'patient_user')
-    age = models.IntegerField()
+    date_of_birth = models.DateField()
+    gender = models.CharField(max_length = 10)
     allergies = models.TextField()
     isPrivate = models.BooleanField(default = False)
 
@@ -40,6 +46,12 @@ class PatientProfile(models.Model):
 class AdminProfile(models.Model):
     user_profile = models.OneToOneField(UserProfile, on_delete = models.CASCADE, 
                                         related_name = 'admin_user')
+     
+    class Meta:
+        permissions = [
+            ("SCS.can_access_my_model_admin_dash", "Can access admin dash" ),
+        ]
+
 
     def __str__(self):
         return self.user_profile.user.username
@@ -67,6 +79,15 @@ class Address(models.Model):
     description = models.CharField(max_length = 100)
     user = models.ForeignKey(UserProfile, on_delete = models.CASCADE, 
                              related_name = 'addresses')
+    
+    def __str__(self):
+        if self.buildingName:
+            if self.number:
+                return f"{self.number} {self.buildingName}, {self.streetName}, {self.city}, {self.county}, {self.postcode}, {self.country}"
+            else:
+                return f"{self.buildingName}, {self.streetName}, {self.city}, {self.county}, {self.postcode}, {self.country}"
+        else:
+            return f"{self.number} {self.streetName}, {self.city}, {self.county}, {self.postcode}, {self.country}"
 
 class Service(models.Model):
     serviceID = models.AutoField(primary_key = True)
@@ -82,8 +103,6 @@ class Appointment(models.Model):
                                 related_name = 'appointment_service' )
     date = models.DateField()
     time = models.TimeField()
-    duration = models.ForeignKey(Service, on_delete = models.CASCADE,
-                                 related_name = 'appointment_duration')
     description = models.CharField(max_length=256)
     notes = models.TextField()
     status = models.CharField(max_length=100)
@@ -103,10 +122,10 @@ class Invoice(models.Model):
     amount = models.DecimalField(max_digits = 10, decimal_places = 2)
     status = models.BooleanField(max_length = 100) # either paid or unpaid
     dateIssued = models.DateTimeField()
-    appointment = models.OneToOneField(Appointment, on_delete = models.CASCADE, 
+    appointment = models.ForeignKey(Appointment, on_delete = models.CASCADE, 
                                          related_name = 'invoices')
-    patient = models.OneToOneField(UserProfile, on_delete = models.CASCADE, 
-                                   related_name = 'patient_invoice')
+    patient = models.ForeignKey(UserProfile, on_delete=models.CASCADE, 
+                                related_name='patient_invoice')
     billingParty = models.CharField(max_length = 100, 
                                    choices = [('nhs', 'NHS'),
                                               ('insurance', 'Insurance'), 

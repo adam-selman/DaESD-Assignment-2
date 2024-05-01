@@ -2,45 +2,184 @@
 {% block content%}
 {% include 'CheckSession.html' %}
 <h2>Dashboard</h2>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h3 class="toggle-table">Doctor Service Rates</h3>
+            <table class="table table-hover" style="display: none">
+                <thead>
+                    <tr class="table-info">
+                        <th>Service</th>
+                        <th>Rate</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for rate in doctor_service_rate %}
+                    <tr class="table-dark">
+                        <td>{{ rate.service }}</td>
+                        <td id="doctor_rate_{{ rate.doctorServiceRateID }}">{{ rate.rate }}</td>
+                        <td><button type="button" class="btn btn-primary edit-doctor-rate-btn"
+                                data-doctor-rate-id="{{ rate.doctorServiceRateID }}">Edit Rate</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <h3 class="toggle-table">Nurse Service Rates</h3>
+            <table class="table table-hover" style="display: none">
+                <thead>
+                    <tr class="table-info">
+                        <th>Service</th>
+                        <th>Rate</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                {% for rate in nurse_service_rate %}
+                <tr class="table-dark">
+                    <td>{{ rate.service }}</td>
+                    <td id="nurse_rate_{{ rate.nurseServiceRateID }}">{{ rate.rate }}</td>
+                    <td><button type="button" class="btn btn-primary edit-nurse-rate-btn"
+                            data-nurse-rate-id="{{ rate.nurseServiceRateID }}">Edit Rate</button></td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</div>
+
 <div>
     {% if user.is_authenticated %}
     <a href="DisplayPatients">Display patients</a>
-{% endif %}
-  </div>
+    {% endif %}
+</div>
 
 <table class="table table-hover">
     <thead>
         <tr class="table-info">
             <th>Patient name</th>
-            <th> Age</th>
+            <th>Age</th>
             <th>Known allergies</th>
             <th>Private billing</th>
             <th>Details</th>
-
         </tr>
     </thead>
     <tbody>
-{% for patient in patients %}
-<tr class="table-dark" data-row-id="{{patient.id}}">
-<td>{{ patient.user_profile }}</td>
-<td>{{ patient.age }}</td>
-<td>{{ patient.allergies }}</td>
-<td>{{ patient.isPrivate }}</td>
-<td><button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal1{{patient.user_profile}}">History</button>
-<button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal2{{patient.user_profile}}">Update</button>
-<button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal3{{patient.user_profile}}">Delete</button></td>
-</tr>
-   
-{% endfor %}
-</tbody>
+        {% for patient in patients %}
+        <tr class="table-dark">
+            <td>{{ patient.user_profile }}</td>
+            <td>{{ patient.age }}</td>
+            <td>{{ patient.allergies }}</td>
+            <td>{{ patient.isPrivate }}</td>
+            <td><button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#modal1{{patient.user_profile}}">History</button>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#modal2{{patient.user_profile}}">Update</button>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#modal3{{patient.user_profile}}">Delete</button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Invoices to be Paid</h2>
+            {% if invoices_to_be_paid %}
+
+            <table class="table">
+                <thead class="table-info">
+                    <tr class="table-info">
+                        <th>Service</th>
+                        <th>Amount</th>
+                        <th>Date Issued</th>
+                        <th>Invoice</th>
+                        <th>Payment Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for service_name, amount, issue_date, invoice_id, status in invoices_to_be_paid %}
+                    <tr class="table-dark">
+                        <td>{{service_name}}</td>
+                        <td>£{{amount}}</td>
+                        <td>{{issue_date}}</td>
+                        <td><a href="generate_invoice?invoiceID={{invoice_id}}">Download Invoice</a></td>
+                        <td>{% if status == 1 %}
+                            Paid
+                            {% elif status == 0 %}
+                            <form id="mark-invoice-as-paid" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="invoice_id" value="{{invoice_id}}">
+                                <button type="submit" class="btn btn-primary">Mark as Paid</button>
+                            </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>No outstanding invoices to approve payment for.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>All Invoices</h2>
+            <table class="table">
+                <thead class="table-info">
+                    <tr class="table-info">
+                        <th>Service</th>
+                        <th>Amount</th>
+                        <th>Date Issued</th>
+                        <th>Invoice</th>
+                        <th>Payment Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for service_name, amount, issue_date, invoice_id, status in all_invoices %}
+                    <tr class="table-dark">
+                        <td>{{service_name}}</td>
+                        <td>£{{amount}}</td>
+                        <td>{{issue_date}}</td>
+                        <td><a href="generate_invoice?invoiceID={{invoice_id}}">Download Invoice</a></td>
+                        <td>{% if status == 1 %}
+                            Paid
+                            {% elif status == 0 %}
+                            <form id="mark-invoice-as-paid" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="invoice_id" value="{{invoice_id}}">
+                                <button type="submit" class="btn btn-primary">Mark as Paid</button>
+                            </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
 {% for patient in patients %}
 
-<div class="modal fade" id="modal1{{ patient.user_profile }}" tabindex="-1" role="dialog" aria-labelledby="modal{{ patient.user_profile}}Label" aria-hidden="true">
+<div class="modal fade" id="modal1{{ patient.user_profile }}" tabindex="-1" role="dialog"
+    aria-labelledby="modal{{ patient.user_profile}}Label" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modal{{patient.user_profile}}Label">Details for {{ patient.user_profile }}</h5>
+                <h5 class="modal-title" id="modal{{patient.user_profile}}Label">Details for {{ patient.user_profile }}
+                </h5>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -49,7 +188,7 @@
                 <table class="table table-hover">
                     <thead>
                         <tr class="table-info">
-                            <th>Appointemnt </th>
+                            <th>Appointment </th>
                             <th> Date</th>
                             <th>Service</th>
                             <th>Description </th>
@@ -57,26 +196,26 @@
                         </tr>
                     </thead>
                     <tbody>
-               
-                    {% for appt in appointments %}
-                   
-                    {% if appt.patient.user_profile == patient.user_profile %}
-                  
-                 
-                
-                       
-                    <tr class="table-dark" data1-row-id="{{patient.id}}">
-                      
-                        <td>{{appt.appointmentID}}</td>
-                        <td>{{ appt.date }}</td>
-                        <td>{{ appt.service}}</td>
-                        <td>{{ appt.description }}</td>
-                        <td>{{ appt.notes }}</td>
-    
-                    
-                    {% endif %}
-                    {% endfor %}
-                </tr>
+
+                        {% for appt in appointments %}
+
+                        {% if appt.patient.user_profile == patient.user_profile %}
+
+
+
+
+                        <tr class="table-dark" data1-row-id="{{patient.id}}">
+
+                            <td>{{appt.appointmentID}}</td>
+                            <td>{{ appt.date }}</td>
+                            <td>{{ appt.service}}</td>
+                            <td>{{ appt.description }}</td>
+                            <td>{{ appt.notes }}</td>
+
+
+                            {% endif %}
+                            {% endfor %}
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -87,174 +226,292 @@
     </div>
 </div>
 
+{% endfor %}
+
+<script>
+    // Adding event listener that submits the form when the submit button is clicked
+    document.getElementById("mark-invoice-as-paid").addEventListener("submit", function (e) {
+        e.preventDefault();
+        markInvoiceAsPaid(this);
+    });
+</script>
 
 
 
-<div class="modal fade" id="modal3{{ patient.user_profile }}" tabindex="-1" role="dialog" aria-labelledby="modal{{ patient.user_profile }}Label" aria-hidden="true">
+
+
+
+<div class="modal fade" id="modal3{{ patient.user_profile }}" tabindex="-1" role="dialog"
+    aria-labelledby="modal{{ patient.user_profile }}Label" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modal{{ patient.user_profile }}Label">Details of {{ patient.user_profile }}</h5>
+                <h5 class="modal-title" id="modal{{ patient.user_profile }}Label">Details of {{ patient.user_profile }}
+                </h5>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-             <p>Are you sure you would like to delete the row? </p>
+                <p>Are you sure you would like to delete the row? </p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" data-id="{{ patient.id }}" data-user-profile-id="{{ patient.user_profile.id }}" class="delete-button btn btn-danger " >Delete</button>
+                <button type="button" data-id="{{ patient.id }}" data-user-profile-id="{{ patient.user_profile.id }}"
+                    class="delete-button btn btn-danger ">Delete</button>
             </div>
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="modal2{{ patient.user_profile }}" tabindex="-1" role="dialog" aria-labelledby="modal{{ patient.id }}Label" aria-hidden="true">
+<div class="modal fade" id="modal2{{ patient.user_profile }}" tabindex="-1" role="dialog"
+    aria-labelledby="modal{{ patient.id }}Label" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modal2{{ patient.user_profile }}Label">Details of {{ patient.user_profile }} </h5>
+                <h5 class="modal-title" id="modal2{{ patient.user_profile }}Label">Details of {{ patient.user_profile }}
+                </h5>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <form class="updateForm" id="updateForm" data-button-id="{{ patient.id}}"  method="POST">
+                <form class="updateForm" id="updateForm" data-button-id="{{ patient.id}}" method="POST">
                     {% csrf_token %}
                     <input type="text" name="Name" value="{{ patient.user_profile }}">
                     <input type="text" name="Age" value="{{ patient.age}}">
                     <input type="text" name="Allergies" value="{{ patient.allergies }}">
                     <select name="Status">
-                        <option value= "True" {% if patient.isPrivate %}selected{% endif %}>Private</option>
-                        <option value=  "False" {% if not patient.isPrivate %}selected{% endif %}>Public</option>
+                        <option value="True" {% if patient.isPrivate %}selected{% endif %}>Private</option>
+                        <option value="False" {% if not patient.isPrivate %}selected{% endif %}>Public</option>
                     </select>
 
-                
-                   
-                    <button type="submit" data-id="{{ patient.id }}"  class="update-button btn btn-warning" >Update</button>
+
+
+                    <button type="submit" data-id="{{ patient.id }}"
+                        class="update-button btn btn-warning">Update</button>
                 </form>
             </div>
-        
-             
+
+
             <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-             </div>
-       
-           
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+
+
         </div>
     </div>
 </div>
 
-{% endfor %}
 
+
+<!-- Edit Doctor Service Rate Modal -->
+<div class="modal fade" id="editDoctorRateModal" tabindex="-1" role="dialog" aria-labelledby="editDoctorRateModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <h5 class="modal-title" id="editDoctorRateModalLabel">Update Doctor Service Rate</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <form id="updateDoctorServiceRateForm" method="POST" action="{% url 'updateDoctorServiceRate' %}">
+            {% csrf_token %}
+            <input type="hidden" name="doctorServiceRateID" id="doctorServiceRateID" value="">
+            <div class="mb-3">
+                <label for="doctorService" class="form-label">Service</label>
+                <input type="text" class="form-control" id="doctorService" disabled>
+            </div>
+            <div class="mb-3">
+                <label for="doctorExistingRate" class="form-label">Existing Rate</label>
+                <input type="text" class="form-control" id="doctorExistingRate" disabled>
+            </div>
+            <div class="mb-3">
+                <label for="newRate" class="form-label">New Rate</label>
+                <input type="number" class="form-control" id="newRate" name="rate" placeholder="Enter new rate"
+                    required>
+            </div>
+            <button type="submit" class="btn btn-primary">Update Rate</button>
+        </form>
+    </div>
+</div>
+</div>
+
+<!-- Edit Nurse Service Rate Modal -->
+<div class="modal fade" id="editNurseRateModal" tabindex="-1" role="dialog" aria-labelledby="editNurseRateModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editNurseRateModalLabel">Update Nurse Service Rate</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="updateNurseServiceRateForm" method="POST" action="{% url 'updateNurseServiceRate' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="nurseServiceRateID" id="nurseServiceRateID" value="">
+                    <div class="mb-3">
+                        <label for="nurseService" class="form-label">Service</label>
+                        <input type="text" class="form-control" id="nurseService" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label for="nurseExistingRate" class="form-label">Existing Rate</label>
+                        <input type="text" class="form-control" id="nurseExistingRate" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label for="nurseNewRate" class="form-label">New Rate</label>
+                        <input type="number" class="form-control" id="newRate" name="rate" placeholder="Enter new rate"
+                            required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update Rate</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript to populate modal with doctor rate details -->
+<script>
+    $(document).ready(function () {
+        $('.edit-doctor-rate-btn').click(function () {
+            var rateID = $(this).data('doctor-rate-id');
+            var service = $('#doctor_rate_' + rateID).prev().text();
+            var existingRate = $('#doctor_rate_' + rateID).text();
+            $('#doctorServiceRateID').val(rateID);
+            $('#doctorService').val(service);
+            $('#doctorExistingRate').val(existingRate);
+            $('#editDoctorRateModal').modal('show');
+        });
+    });
+</script>
+
+<!-- JavaScript to populate modal with nurse rate details -->
+<script>
+    $(document).ready(function () {
+        $('.edit-nurse-rate-btn').click(function () {
+            var rateID = $(this).data('nurse-rate-id');
+            var service = $('#nurse_rate_' + rateID).prev().text();
+            var existingRate = $('#nurse_rate_' + rateID).text();
+            $('#nurseServiceRateID').val(rateID);
+            $('#nurseService').val(service);
+            $('#nurseExistingRate').val(existingRate);
+            $('#editNurseRateModal').modal('show');
+        });
+    });
+</script>
+
+<!-- JavaScript to toggle table visibility-->
+<script>
+    $(document).ready(function () {
+        $(".toggle-table").click(function () {
+            $(this).next('table').toggle();
+        });
+    });
+</script>
 
 <script>
-   
-    
+
+
     const deleteButtons = document.querySelectorAll('.delete-button');
     deleteButtons.forEach(button => {
-      button.addEventListener('click', () => {
-        
-        const id = button.dataset.id;
-        const userProfileId = button.dataset.userProfileId;
-        
-        alert(userProfileId)
-        var token = "{{ csrf_token }}";
-        console.error(token);
+        button.addEventListener('click', () => {
 
-        const rowElement = document.querySelector(`tr[data-row-id="${id}"]`);
-        
-        
-        
-        
-        
-        fetch(`/delete/${id}`, {
-          method: 'DELETE',
-          headers: {
-            'X-CSRFToken': token},
-            
-        })
-        .then(response => {
-          if (response.ok) {
-            // Row deleted successfully, updating the UI
-            rowElement.remove();
-            const modal = button.closest('.modal');
-            const modalInstance = bootstrap.Modal.getInstance(modal);
-            modalInstance.hide();
-            alert('Row has been deleted');
-          } else {
-            
-            response.text().then(errorMessage => {
-            alert('Error: ' + errorMessage);
-            });
-            // Handle error response
-            console.error('Failed to delete row');
-          }
-        })
-        .catch(error => {
-          // Handle network or other errors
-          console.error('Failed to delete row', error);
-          alert('Failed to delete row: ' + error.message);
+            const id = button.dataset.id;
+            const userProfileId = button.dataset.userProfileId;
+
+            alert(userProfileId)
+            var token = "{{ csrf_token }}";
+            console.error(token);
+
+            const rowElement = document.querySelector(`tr[data-row-id="${id}"]`);
+
+
+
+
+
+            fetch(`/delete/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRFToken': token
+                },
+
+            })
+                .then(response => {
+                    if (response.ok) {
+                        // Row deleted successfully, updating the UI
+                        rowElement.remove();
+                        const modal = button.closest('.modal');
+                        const modalInstance = bootstrap.Modal.getInstance(modal);
+                        modalInstance.hide();
+                        alert('Row has been deleted');
+                    } else {
+
+                        response.text().then(errorMessage => {
+                            alert('Error: ' + errorMessage);
+                        });
+                        // Handle error response
+                        console.error('Failed to delete row');
+                    }
+                })
+                .catch(error => {
+                    // Handle network or other errors
+                    console.error('Failed to delete row', error);
+                    alert('Failed to delete row: ' + error.message);
+                });
         });
-      });
     });
-    </script>
-   
-   <script>
+</script>
+
+<script>
     const forms = document.querySelectorAll('.updateForm');
     forms.forEach(form => {
-      form.addEventListener('submit', function(event) {
-        event.preventDefault();
-        var submitButton = event.submitter;
-      
-      // Get the ID of the submit button
-        var id = submitButton.dataset.id;
-    
-        
-        var formData =  new FormData(document.querySelector(`form[data-button-id="${id}"]`));
-        formData.append('id', id);
-        
-        var token = "{{ csrf_token }}";
-      
-      
-        fetch('/update-patient/', {
-          method: 'POST',
-          headers: {
-            'X-CSRFToken': token
-          },
-          body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-          
-          if (data.success) {
-            // Handle success case
-            alert('Model row updated successfully!');
-            var updatedRow = document.querySelector(`tr[data-row-id="${id}"]`);
-            updatedRow.querySelector('td:nth-child(1)').textContent = data.data.name;
-            updatedRow.querySelector('td:nth-child(2)').textContent = data.data.age;
-    
-            updatedRow.querySelector('td:nth-child(3)').textContent = data.data.allergies;
-            updatedRow.querySelector('td:nth-child(4)').textContent = data.data.status;
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+            var submitButton = event.submitter;
 
-            
-        
-    
-          } else {
-            // Handle error case
-            alert('Failed to update the model row: ' + data.message);
-          }
-        })
-        .catch(error => {
-          // Handle error case
-          alert('Failed fetch error ' + error);
+            // Get the ID of the submit button
+            var id = submitButton.dataset.id;
+
+
+            var formData = new FormData(document.querySelector(`form[data-button-id="${id}"]`));
+            formData.append('id', id);
+
+            var token = "{{ csrf_token }}";
+
+
+            fetch('/update-patient/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': token
+                },
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+
+                    if (data.success) {
+                        // Handle success case
+                        alert('Model row updated successfully!');
+                        var updatedRow = document.querySelector(`tr[data-row-id="${id}"]`);
+                        updatedRow.querySelector('td:nth-child(1)').textContent = data.data.name;
+                        updatedRow.querySelector('td:nth-child(2)').textContent = data.data.age;
+
+                        updatedRow.querySelector('td:nth-child(3)').textContent = data.data.allergies;
+                        updatedRow.querySelector('td:nth-child(4)').textContent = data.data.status;
+
+
+
+
+                    } else {
+                        // Handle error case
+                        alert('Failed to update the model row: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    // Handle error case
+                    alert('Failed fetch error ' + error);
+                });
         });
-      });
     });
-    
-    
-    </script>
+
+
+</script>
 
 
 
