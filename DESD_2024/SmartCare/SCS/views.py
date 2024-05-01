@@ -101,28 +101,29 @@ def register(request):
         form = UserRegisterForm(request.POST)
         if form.is_valid():
             user = form.save()
+
             gender = form.cleaned_data['gender']
             date_of_birth = form.cleaned_data['date_of_birth']
-            age = form.cleaned_data.get('age')
 
-            user_profile = UserProfile(user=user)
+            user_profile = UserProfile(user=user, date_of_birth=date_of_birth, gender = gender)
             user_profile.save()
 
-            patient_profile = PatientProfile(user_profile=user_profile, age = age, date_of_birth=date_of_birth, gender = gender)
+            allergies = form.cleaned_data['allergies']
+            isPrivate = form.cleaned_data['isPrivate']
+
+            patient_profile = PatientProfile(user_profile=user_profile, allergies = allergies, isPrivate = isPrivate)
             patient_profile.save()
 
             login(request, user)
 
-            firstname = form.cleaned_data['firstname']
-            lastname = form.cleaned_data['lastname']
-            email = form.cleaned_data['email']
-            username = form.cleaned_data['username']
+            firstname = form.cleaned_data['first_name']
+            lastname = form.cleaned_data['last_name']
                         
             number = form.cleaned_data['address_number']
             streetName = form.cleaned_data['address_street']
             city = form.cleaned_data['address_city']
             postcode = form.cleaned_data['address_postcode']
-            address = Address.objects.create(number=number, streetName=streetName, city=city, postcode=postcode, user=profile)
+            address = Address.objects.create(number=number, streetName=streetName, city=city, postcode=postcode, user=user_profile)
             address.save()
 
             user_name = f"{firstname} {lastname}"

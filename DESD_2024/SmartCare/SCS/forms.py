@@ -19,8 +19,8 @@ class CustomDateField(forms.DateField):
 
 #form now takes age as required by table to not be null 
 class UserRegisterForm(UserCreationForm):
-    firstname = forms.CharField(max_length=100)
-    lastname = forms.CharField(max_length=100)
+    first_name = forms.CharField(max_length=100)
+    last_name = forms.CharField(max_length=100)
     email = forms.EmailField(required=True)
     date_of_birth = CustomDateField(required=True)
     gender = forms.CharField(max_length=10)
@@ -30,10 +30,12 @@ class UserRegisterForm(UserCreationForm):
     address_street = forms.CharField(max_length=100, required=True)
     address_city = forms.CharField(max_length=100, required=True)
     address_postcode = forms.CharField(max_length=10, required=True)
+    allergies = forms.CharField(max_length=100, required=True)
+    isPrivate = forms.BooleanField(required=False, initial=False)
 
     class Meta:
         model = User
-        fields = ["username", "email", "password1", "password2", "age"]
+        fields = ["username", "email", "password1", "password2", "first_name", "last_name"]
 
 
 class DoctorNurseRegistrationForm(UserCreationForm):
