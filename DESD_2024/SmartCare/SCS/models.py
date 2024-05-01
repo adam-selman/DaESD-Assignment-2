@@ -58,14 +58,10 @@ class ContactNumber(models.Model):
 
 class Address(models.Model):
     addressID = models.AutoField(primary_key = True)
-    number = models.IntegerField(null = True)
-    buildingName = models.CharField(max_length = 100, null = True)
+    number = models.IntegerField()
     streetName = models.CharField(max_length = 100)
     city = models.CharField(max_length = 100)
-    county = models.CharField(max_length = 100)
     postcode = models.CharField(max_length = 8)
-    country = models.CharField(max_length = 16)
-    description = models.CharField(max_length = 100)
     user = models.ForeignKey(UserProfile, on_delete = models.CASCADE, 
                              related_name = 'addresses')
     

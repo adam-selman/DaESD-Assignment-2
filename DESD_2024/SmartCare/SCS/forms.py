@@ -7,8 +7,17 @@ class UserRegisterForm(UserCreationForm):
     firstname = forms.CharField(max_length=100)
     lastname = forms.CharField(max_length=100)
     email = forms.EmailField(required=True)
+    date_of_birth = forms.DateField(required=True)
+    gender = forms.CharField(max_length=10)
     #user_type = forms.ChoiceField(choices=UserProfile.USER_TYPE_CHOICES)
     user_type = PatientProfile
+    address_number = forms.IntegerField()
+    address_street = forms.CharField(max_length=100, required=True)
+    address_city = forms.CharField(max_length=100, required=True)
+    address_postcode = forms.CharField(max_length=10, required=True)
+
+
+
   
 
     class Meta:

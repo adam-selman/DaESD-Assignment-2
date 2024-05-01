@@ -14,7 +14,7 @@ from django.template import RequestContext
 from django.utils import timezone
 from django.utils.encoding import smart_str
 
-from .models import DoctorProfile, NurseProfile, UserProfile, Service, Appointment, PatientProfile, Prescription, Invoice, DoctorServiceRate, NurseServiceRate
+from .models import DoctorProfile, NurseProfile, UserProfile, Service, Appointment, Address, PatientProfile, Prescription, Invoice, DoctorServiceRate, NurseServiceRate
 from .forms import UserRegisterForm, DoctorNurseRegistrationForm, PrescriptionForm
 
 from .db_utility import get_user_profile_by_user_id, get_invoices_awaiting_payment, get_invoice_information_by_user_id, \
@@ -56,7 +56,19 @@ def register(request):
             login(request, user)
             firstname = form.cleaned_data['firstname']
             lastname = form.cleaned_data['lastname']
-            
+            gender = form.cleaned_data['gender']
+            date_string = form.cleaned_data['date_of_birth']
+            date_obj = datetime.strptime(date_string, '%d-%m-%Y').date()
+            date_of_birth = date_obj.strftime('%Y-%m-%d')
+
+            number = form.cleaned_data['address_number']
+            streetName = form.cleaned_data['address_street']
+            area = form.cleaned_data['address_area']
+            city = form.cleaned_data['address_city']
+            postcode = form.cleaned_data['address_postcode']
+            address = Address.objects.create(number=number, streetName=streetName, area=area, city=city, postcode=postcode, user=profile.user_id)
+            address.save()
+
             user_name = f"{firstname} {lastname}"
             request.session['user_name'] = user_name
             return redirect('auth')
