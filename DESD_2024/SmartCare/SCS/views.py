@@ -1,7 +1,7 @@
 from datetime import date
 import logging
 import tempfile
-
+import json
 from datetime import datetime
 from django.forms.models import model_to_dict
 from django.shortcuts import render,redirect, HttpResponse, get_object_or_404
@@ -527,7 +527,6 @@ def update_patient(request):
         # Get the rowId from the POST data
         id = request.POST.get('id')
         name = request.POST.get('Name')
-        age = request.POST.get('Age')
         allergies = request.POST.get('Allergies')
         isPrivate = request.POST.get('Status')
 
@@ -550,8 +549,6 @@ def update_patient(request):
             model_instance.user_profile = user_instance
           
           
-    
-            model_instance.age = age
             model_instance.allergies = allergies
             model_instance.isPrivate = isPrivate
         
@@ -562,7 +559,6 @@ def update_patient(request):
             # Return a JSON response indicating success
             return JsonResponse({'success': True ,'data':{
                 'name': model_instance.user_profile.user.username,
-                 'age': model_instance.age,
                  'allergies': model_instance.allergies,
                  'status': model_instance.isPrivate }
                  }
@@ -632,7 +628,28 @@ def approve_prescription(request):
     else:
         return JsonResponse({'success': 'false', 'error': 'Invalid request method'})
 
+def filter_patient(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        isPrivate = data.get('Bill')
+        #isPrivate = request.POST.get('Bill')
+        #isPrivate = bool(isPrivate)
+        print(isPrivate)
 
+        if isPrivate == False:
+            patients = PatientProfile.objects.filter(isPrivate=False)
+        elif isPrivate == True:
+            patients = PatientProfile.objects.filter(isPrivate=True)
+        else:
+            patients = PatientProfile.objects.all()
+
+        patient_data = [{'name': patient.user_profile.user.username, 'allergies': patient.allergies, 'isPrivate': patient.isPrivate } for patient in patients]
+        return JsonResponse({'success':True,'data': patient_data})
+    else:
+        return JsonResponse({'success': False, 'error': 'Invalid request method'})
+   
+               
+         
 
 
 def Logout(request):

@@ -30,8 +30,8 @@ class NurseProfile(models.Model):
 class PatientProfile(models.Model):
     user_profile = models.OneToOneField(UserProfile, on_delete = models.CASCADE, 
                                         related_name = 'patient_user')
-    date_of_birth = models.DateField()
-    gender = models.CharField(max_length = 10)
+    #date_of_birth = models.DateField(default=date.now)
+    #gender = models.CharField(max_length = 10)
     allergies = models.TextField()
     isPrivate = models.BooleanField(default = False)
 

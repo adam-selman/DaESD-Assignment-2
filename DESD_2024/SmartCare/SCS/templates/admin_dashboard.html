@@ -2,6 +2,11 @@
 {% block content%}
 {% include 'CheckSession.html' %}
 <h2>Dashboard</h2>
+<div>
+    {% if user.is_authenticated %}
+    <a href="DisplayPatients">Display patients</a>
+    {% endif %}
+</div>
 
 <div class="container">
     <div class="row">
@@ -51,38 +56,34 @@
     </div>
 </div>
 
-<div>
-    {% if user.is_authenticated %}
-    <a href="DisplayPatients">Display patients</a>
-    {% endif %}
-</div>
+
 
 <table class="table table-hover">
     <thead>
         <tr class="table-info">
             <th>Patient name</th>
-            <th>Age</th>
             <th>Known allergies</th>
             <th>Private billing</th>
             <th> <form class="UpdateForm" id="UpdateForm" data-button-id="{{ patient.id}}"  method="POST">
                 {% csrf_token %}
-                <select class="form-select" name="billingType" required>
+                <select id= "BillingType" class="form-select" name="billingType" required>
                     <option selected disabled value="">Select Billing type</option>
                 
                 <option value="True">Private</option>
                 <option value="False">Public</option>
+                
 
             
                 </select>
                 </form>
+                <a style="color: white;" href="DisplayPatients">Display patients</a>
                </th>
         </tr>
     </thead>
-    <tbody>
+    <tbody id="PatientTable">
         {% for patient in patients %}
-        <tr class="table-dark">
+        <tr class="table-dark" data-row-id="{{patient.id}}">
             <td>{{ patient.user_profile }}</td>
-            <td>{{ patient.age }}</td>
             <td>{{ patient.allergies }}</td>
             <td>{{ patient.isPrivate }}</td>
             <td><button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal1{{patient.user_profile}}">History</button>
@@ -280,7 +281,6 @@
                 <form class="updateForm" id="updateForm" data-button-id="{{ patient.id}}" method="POST">
                     {% csrf_token %}
                     <input type="text" name="Name" value="{{ patient.user_profile }}">
-                    <input type="text" name="Age" value="{{ patient.age}}">
                     <input type="text" name="Allergies" value="{{ patient.allergies }}">
                     <select name="Status">
                         <option value="True" {% if patient.isPrivate %}selected{% endif %}>Private</option>
@@ -526,10 +526,9 @@
                         alert('Model row updated successfully!');
                         var updatedRow = document.querySelector(`tr[data-row-id="${id}"]`);
                         updatedRow.querySelector('td:nth-child(1)').textContent = data.data.name;
-                        updatedRow.querySelector('td:nth-child(2)').textContent = data.data.age;
 
-                        updatedRow.querySelector('td:nth-child(3)').textContent = data.data.allergies;
-                        updatedRow.querySelector('td:nth-child(4)').textContent = data.data.status;
+                        updatedRow.querySelector('td:nth-child(2)').textContent = data.data.allergies;
+                        updatedRow.querySelector('td:nth-child(3)').textContent = data.data.status;
 
 
 
@@ -557,8 +556,88 @@
     markInvoiceAsPaid(this);
     });
 </script>
+<!-----------------------filtering the billing type ----------------------->
+<script>
+const selectElement = document.getElementById('BillingType');
+
+selectElement.addEventListener('change', (event) => {
+    event.preventDefault();
+  //const selectedOption = event.target.value;
+  const selectedOption = event.target.value === 'True'; 
+  alert(selectedOption)
+  var token = "{{ csrf_token }}";
+  fetch('/filter-patient/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': token,
+                    'Content-Type': 'application/json' 
+                    
+                },
+                body: JSON.stringify({ "Bill": selectedOption })
+
+            })
+            .then(response => response.json())
+                .then(data => {
+
+                    if (data.success) {
+                        // Handle success case
+                        const tableBody = document.getElementById('PatientTable');
+                        tableBody.innerHTML = '';
+                        
+                        data.data.forEach(patient => {
+                            alert(patient.isPrivate)
+                            const row = document.createElement('tr');
+                            row.className = "table-dark"; 
+                            
+                            const nameCell = document.createElement('td');
+                            nameCell.textContent = patient.name;
+                            row.appendChild(nameCell);
+
+                            const allergiesCell = document.createElement('td');
+                            allergiesCell.textContent = patient.allergies;
+                            row.appendChild(allergiesCell);
+                            
+                            const BillingCell = document.createElement('td');
+                            BillingCell.textContent = patient.isPrivate;
+                            row.appendChild(BillingCell);
+                            
+                            const buttonCell = document.createElement('td');
+
+                            const historyButton = document.createElement('button');
+                            historyButton.textContent = "History";
+                            historyButton.className = "btn btn-primary";
+                            buttonCell.appendChild(historyButton);
+
+                            const updateButton = document.createElement('button');
+                            updateButton.textContent = "Update";
+                            updateButton.className = "btn btn-primary";
+                            buttonCell.appendChild(updateButton);
+
+                            const deleteButton = document.createElement('button');
+                            deleteButton.textContent = "Delete";
+                            deleteButton.className = "btn btn-primary";
+                            buttonCell.appendChild(deleteButton);
+
+                            row.appendChild(buttonCell);
+                            tableBody.appendChild(row);
+                    });
+                
 
 
 
+
+                    } else {
+                        // Handle error case
+                        alert('Failed to filter  rows : ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    // Handle error case
+                    alert('Failed fetch error ' + error);
+                });
+        });
+  
+
+</script>
 
 {% endblock %}
