@@ -458,8 +458,10 @@ def currentAppt(request):
         current_date = date.today()
         nurse = request.user.id 
         appointments = Appointment.objects.filter(date=current_date, nurse=nurse)
-
-        return render(request, 'nurse_dashboard.html', {'Appointments': appointments,'clicked2':True})
+        user = request.user
+        user_name = user.get_full_name
+        user_type = 'nurse'
+        return render(request, 'nurse_dashboard.html', {'Appointments': appointments,'clicked2':True, 'user_name':user_name, 'user_type':user_type})
 
 @login_required(login_url='login')
 @custom_user_passes_test(is_doctor_or_nurse)

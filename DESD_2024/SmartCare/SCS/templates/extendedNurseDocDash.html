@@ -1,28 +1,32 @@
-
 <div>
     {% if user.is_authenticated %}
-    <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-html="true" title="Already signed in!!" >
-        <a class = "link_style" href="DisplayPatients">Display patients</a>
+    <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-html="true"
+        title="Already signed in!!">
+        <a class="link_style" href="DisplayPatients">Display patients</a>
     </button>
-   
-    <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-html="true" title="Already signed in!!" >
-        <a class = "link_style" href="DisplayAppt">Display today's appointments</a>
-    </button>
-      
-    <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-html="true" title="Already signed in!!" >
-        <a href="DisplayHistoricAppointments" class = "link_style">Display all appointments</a>
-    </button>
-    <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-html="true" title="Already signed in!!" >
-        <a href="DisplayPendingPrescriptions" class = "link_style">Display pending prescriptions</a>
-    </button>
-    <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-html="true" title="Already signed in!!" >
-        <a href="DisplayPrescriptions" class = "link_style">Display all prescriptions</a>
-    </button>
-    
-    <br>
-    
 
-  {% endif %}
+    <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-html="true"
+        title="Already signed in!!">
+        <a class="link_style" href="DisplayAppt">Display today's appointments</a>
+    </button>
+
+    <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-html="true"
+        title="Already signed in!!">
+        <a href="DisplayHistoricAppointments" class="link_style">Display all appointments</a>
+    </button>
+    <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-html="true"
+        title="Already signed in!!">
+        <a href="DisplayPendingPrescriptions" class="link_style">Display pending prescriptions</a>
+    </button>
+    <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-html="true"
+        title="Already signed in!!">
+        <a href="DisplayPrescriptions" class="link_style">Display all prescriptions</a>
+    </button>
+
+    <br>
+
+
+    {% endif %}
 </div>
 <br>
 {% if clicked %}
@@ -57,31 +61,29 @@
 <table class="table table-hover">
     <thead>
         <tr class="table-info">
-            <th>Appointemnt </th>
-            <th> Date</th>
+            <th>Time</th>
+            <th>Date</th>
+            <th>Patient</th>
             <th>Service</th>
             <th>Description </th>
             <th>Note</th>
         </tr>
     </thead>
-    {% endif %}
     <tbody>
-
         {% for appointment in Appointments %}
-
         <tr class="table-dark">
-
             <td>{{appointment.time}}</td>
+            <td>{{ appointment.date }}</td>
             <td>{{ appointment.patient.user_profile }}</td>
             <td>{{ appointment.service}}</td>
             <td>{{ appointment.service.description }}</td>
             <td>{{ appointment.notes }}</td>
-
-
             {% endfor %}
         </tr>
     </tbody>
 </table>
+{% endif %}
+
 
 {% if clicked3 %}
 <table class="table table-hover">
@@ -230,7 +232,7 @@
 </div>
 {% endfor %}
 <style>
-    .link_style{
+    .link_style {
         text-decoration: none;
         color: white;
     }

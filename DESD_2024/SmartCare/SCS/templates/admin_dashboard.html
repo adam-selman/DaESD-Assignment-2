@@ -17,10 +17,16 @@
             <div class="col-md-4">
                 <label for="startDate" class="form-label">Start Date</label>
                 <input type="date" class="form-control" id="startDate" name="start_date" required>
+                <div class="d-flex justify-content-center">
+                    <button type="button" class="btn btn-primary mt-2" onclick="setStartDate(7)">Last Week</button>
+                </div>
             </div>
             <div class="col-md-4">
                 <label for="endDate" class="form-label">End Date</label>
                 <input type="date" class="form-control" id="endDate" name="end_date" required>
+                <div class="d-flex justify-content-center">
+                    <button type="button" class="btn btn-primary mt-2" onclick="setStartDate(30)">Last Month</button>
+                </div>
             </div>
             <div class="col-md-4 d-flex justify-content-center align-items-center">
                 <div>
@@ -30,7 +36,6 @@
         </div>
     </form>
 </div>
-
 
 <div class="container">
     <div class="row">
@@ -536,7 +541,17 @@
 
 </script>
 
+<script>
+    function setStartDate(days) {
+        var startDate = new Date();
+        startDate.setDate(startDate.getDate() - days);
 
+        var endDate = new Date();
+
+        document.getElementById('startDate').value = startDate.toISOString().split('T')[0];
+        document.getElementById('endDate').value = endDate.toISOString().split('T')[0];
+    }
+</script>
 
 
 
