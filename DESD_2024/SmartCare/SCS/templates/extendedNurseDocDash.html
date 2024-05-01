@@ -61,23 +61,34 @@
 <table class="table table-hover">
     <thead>
         <tr class="table-info">
-            <th>Time</th>
-            <th>Date</th>
-            <th>Patient</th>
+            <th>Appointment </th>
+            <th> Date</th>
             <th>Service</th>
             <th>Description </th>
             <th>Note</th>
+            <th>Start Appointment</th>
         </tr>
     </thead>
     <tbody>
         {% for appointment in Appointments %}
         <tr class="table-dark">
             <td>{{appointment.time}}</td>
-            <td>{{ appointment.date }}</td>
-            <td>{{ appointment.patient.user_profile }}</td>
-            <td>{{ appointment.service}}</td>
-            <td>{{ appointment.service.description }}</td>
-            <td>{{ appointment.notes }}</td>
+            <td>{{appointment.patient.user_profile }}</td>
+            <td>{{appointment.service}}</td>
+            <td>{{appointment.service.description }}</td>
+            <td>{{appointment.notes }}</td>
+            <td>
+                {% if appointment.status != "complete" %}
+                <form action="/start_appointment" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="appointmentID" value="{{ appointment.appointmentID }}">
+                    <button type="submit" class="btn btn-primary">Start Appointment</button>
+                </form>
+                {% else %}
+                <p>Appointment Already Completed</p>
+                {% endif %}
+            </td>
+
             {% endfor %}
         </tr>
     </tbody>
@@ -89,11 +100,13 @@
 <table class="table table-hover">
     <thead>
         <tr class="table-info">
-            <th>Appointemnt </th>
-            <th> Date</th>
+            <th>Appointment </th>
+            <th>Date</th>
             <th>Service</th>
             <th>Description </th>
             <th>Note</th>
+            <th>Start Appointment</th>
+
         </tr>
     </thead>
     {% endif %}
@@ -104,13 +117,23 @@
         <tr class="table-dark">
 
             <td>{{appointment.time}}</td>
-            <td>{{ appointment.patient.user_profile }}</td>
-            <td>{{ appointment.service}}</td>
-            <td>{{ appointment.service.description }}</td>
-            <td>{{ appointment.notes }}</td>
+            <td>{{appointment.patient.user_profile }}</td>
+            <td>{{appointment.service}}</td>
+            <td>{{appointment.service.description }}</td>
+            <td>{{appointment.notes }}</td>
+            <td>
+                {% if appointment.status != "complete" %}
+                <form action="/start_appointment" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="appointmentID" value="{{ appointment.appointmentID }}">
+                    <button type="submit" class="btn btn-primary">Start Appointment</button>
+                </form>
+                {% else %}
+                <p>Appointment Already Completed</p>
+                {% endif %}
 
-
-            {% endfor %}
+                {% endfor %}
+            </td>
         </tr>
     </tbody>
 </table>

@@ -132,16 +132,16 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for service_name, amount, issue_date, invoice_id, status in invoices_to_be_paid %}
+                    {% for service_name, amount, issue_date, invoice_id, status, approved in invoices_to_be_paid %}
                     <tr class="table-dark">
                         <td>{{service_name}}</td>
                         <td>£{{amount}}</td>
                         <td>{{issue_date}}</td>
                         <td><a href="generate_invoice?invoiceID={{invoice_id}}">Download Invoice</a></td>
-                        <td>{% if status == 1 %}
+                        <td>{% if approved == 1 %}
                             Paid
-                            {% elif status == 0 %}
-                            <form id="mark-invoice-as-paid" method="post">
+                            {% elif approved == 0 %}
+                            <form id="mark-invoice-as-paid" method="post" action="/mark_invoice_as_paid">
                                 {% csrf_token %}
                                 <input type="hidden" name="invoice_id" value="{{invoice_id}}">
                                 <button type="submit" class="btn btn-primary">Mark as Paid</button>
@@ -174,16 +174,16 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for service_name, amount, issue_date, invoice_id, status in all_invoices %}
+                    {% for service_name, amount, issue_date, invoice_id, status, approved in all_invoices %}
                     <tr class="table-dark">
                         <td>{{service_name}}</td>
                         <td>£{{amount}}</td>
                         <td>{{issue_date}}</td>
                         <td><a href="generate_invoice?invoiceID={{invoice_id}}">Download Invoice</a></td>
-                        <td>{% if status == 1 %}
+                        <td>{% if approved == 1 %}
                             Paid
-                            {% elif status == 0 %}
-                            <form id="mark-invoice-as-paid" method="post">
+                            {% elif approved == 0 %}
+                            <form id="mark-invoice-as-paid" method="post" action="/mark_invoice_as_paid">
                                 {% csrf_token %}
                                 <input type="hidden" name="invoice_id" value="{{invoice_id}}">
                                 <button type="submit" class="btn btn-primary">Mark as Paid</button>

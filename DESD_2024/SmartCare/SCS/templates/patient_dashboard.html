@@ -5,8 +5,19 @@
 
 <script src="{% static 'js/patient_dashboard.js' %}"></script>
 <br>
-<h1>Welcome {{ user.first_name }}</h1>
-<hr>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <h1>Welcome {{ user.first_name }}</h1>
+      <hr>
+
+      <a href="generate_patient_forwarding_file?userProfileID={{user.id}}">
+        <button type="button" class="btn btn-primary">Download Medical History</button>
+      </a>
+    </div>
+  </div>
+</div>
 
 <br>
 
@@ -18,9 +29,9 @@
       <table class="table table-hover">
         <thead>
           <tr class="table-info">
-            <th>Appointemnt </th>
-            <th> Date</th>
-            <th> Time</th>
+            <th>Appointment </th>
+            <th>Date</th>
+            <th>Time</th>
             <th>Service</th>
             <th>Details</th>
           </tr>
@@ -38,7 +49,7 @@
 
             <td><button type="button" class="btn btn-primary" data-bs-toggle="modal"
                 data-bs-target="#modal1{{appointment.appointmentID}}">Details</button>
-              {% if appointment.date > date %}
+              {% if appointment.date > date and appointment.status != "complete" %}
               <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                 data-bs-target="#modal3{{appointment.appointmentID}}">Cancel </button>
             </td>
@@ -79,7 +90,7 @@
           </tr>
         </thead>
         <tbody>
-          {% for service_name, amount, issue_date, invoice_id, status in invoices %}
+          {% for service_name, amount, issue_date, invoice_id, status, approved in invoices %}
           <tr class="table-dark">
             <td>{{service_name}}</td>
             <td>£{{amount}}</td>
@@ -87,10 +98,14 @@
             <td>
               <a href="generate_invoice?invoiceID={{invoice_id}}">Download Invoice</a>
             </td>
-            <td>{% if status == 1 %}
+            <td>{% if approved %}
               Paid
+              {% elif status == 1 %}
+              Payment Submitted. Pending Approval
               {% elif status == 0 %}
-              Awaiting Payment
+              <a href="{% url 'make_payment' %}?invoiceID={{invoice_id}}">
+                <button type="button" class="btn btn-primary">Pay Invoice</button>
+              </a>
               {% endif %}
             </td>
           </tr>
@@ -161,151 +176,36 @@
 
 
 <div class="container">
-  {% if historic_prescriptions %}
-  <h2>Repeatable Prescriptions</h2>
-  <table class="table table-hover">
-    <thead>
-      <tr class="table-info">
-        <th>Patient name </th>
-        <th>Medication</th>
-        <th>Quantity</th>
-        <th>Issue Date</th>
-        <th>Request Before</th>
-        <th>Request Repeat</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for prescription in historic_prescriptions %}
-      {% if prescription.repeatable and prescription.approved %}
-      <tr class="table-dark">
-        <td>{{ prescription.patient }}</td>
-        <td>{{ prescription.medication.name }} {{ prescription.dosage }}</td>
-        <td>{{ prescription.quantity }}</td>
-        <td>{{ prescription.issueDate }}</td>
-        <td>{{ prescription.reissueDate }}</td>
-        <td>
-          <form action="{% url 'requestRepeatPrescription' %}" method="post">
-            {% csrf_token %}
-            <input type="hidden" name="prescription_id" value="{{ prescription.prescriptionID }}">
-            <button type="submit" class="btn btn-primary">Request Repeat</button>
-          </form>
-        </td>
-      </tr>
-      {% endif %}
-      {% endfor %}
-    </tbody>
-  </table>
-  {% else %}
   <div class="row">
-    <div class="col-md-12">
-      <h2>Repeatable Prescriptions</h2>
-      <p>No prescriptions to display</p>
-    </div>
-    {% endif %}
-
-  </div>
-
-  <br>
-
-  {% for appointment in historic_appointments %}
-
-  <div class="modal fade" id="modal1{{ appointment.appointmentID }}" tabindex="-1" role="dialog"
-    aria-labelledby="modal1{{ appointment.appointmentID}}Label" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="modal1{{appointment.appointmentID}}Label">Details for Appointment {{
-            appointment.appointmentID }}</h5>
-          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <table class="table table-hover">
-            <thead>
-              <tr class="table-info">
-
-                <th>Service</th>
-                <th>Note</th>
-                <th>Practitioner</th>
-
-
-              </tr>
-            </thead>
-            <tbody>
-
-
-              <tr class="table-dark" data1-row-id="{{appointment.appointmentID}}">
-
-
-                <td>{{ appointment.service.service }}</td>
-                <td>{{ appointment.notes }}</td>
-                <td>
-                  {% if not appointment.doctor %}
-                  {{ appointment.nurse }}
-                  {% else %}
-                  {{ appointment.doctor }}
-                  {% endif %}
-                </td>
-
-
-
-
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-  <div class="modal fade" id="modal3{{ appointment.appointmentID }}" tabindex="-1" role="dialog"
-    aria-labelledby="modal{{ appointment.appointmentID }}Label" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="modal{{ appointment.appointmentID }}Label">Details of appointment {{
-            appointment.appointmentID}}</h5>
-          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <p>Are you sure you would like to delete this appointment </p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" data-id="{{ appointment.appointmentID }}"
-            data-user-profile-id="{{ appointment.appointmentID }}" class="delete-button btn btn-danger ">Delete</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  {% endfor %}
-
-
-  <div class="container">
     {% if historic_prescriptions %}
-    <h2>Pending Prescription Requests</h2>
+    <h2>Repeatable Prescriptions</h2>
     <table class="table table-hover">
       <thead>
         <tr class="table-info">
           <th>Patient name </th>
           <th>Medication</th>
           <th>Quantity</th>
+          <th>Issue Date</th>
+          <th>Request Before</th>
+          <th>Request Repeat</th>
         </tr>
       </thead>
       <tbody>
         {% for prescription in historic_prescriptions %}
-        {% if prescription.repeatable and not prescription.approved %}
+        {% if prescription.repeatable and prescription.approved %}
         <tr class="table-dark">
           <td>{{ prescription.patient }}</td>
           <td>{{ prescription.medication.name }} {{ prescription.dosage }}</td>
           <td>{{ prescription.quantity }}</td>
+          <td>{{ prescription.issueDate }}</td>
+          <td>{{ prescription.reissueDate }}</td>
+          <td>
+            <form action="{% url 'requestRepeatPrescription' %}" method="post">
+              {% csrf_token %}
+              <input type="hidden" name="prescription_id" value="{{ prescription.prescriptionID }}">
+              <button type="submit" class="btn btn-primary">Request Repeat</button>
+            </form>
+          </td>
         </tr>
         {% endif %}
         {% endfor %}
@@ -314,190 +214,309 @@
     {% else %}
     <div class="row">
       <div class="col-md-12">
-        <h2>Pending Prescription Requests</h2>
-        <p>No pending prescription requests</p>
+        <h2>Repeatable Prescriptions</h2>
+        <p>No prescriptions to display</p>
       </div>
       {% endif %}
     </div>
+  </div>
+</div>
 
-    <br>
+<br>
 
-    <hr>
-    <div class="container">
-      <div class="row">
-        <div class="col-md-10">
-          <h2>Book Appointment</h2>
-          <p>Book an appointment with a doctor or nurse</p>
-          <form id="patient-booking-form" method="post">
-            {% csrf_token %}
-            <label for="service">Service: </label>
-            <div class="form-group">
-              <select id="service" name="service" class="form-control" required>
-                <option selected disabled hidden>Select a service</option>
-                {% for service_id, service_name, service_duration in services %}
-                <option value="{{service_id}}">{{ service_name }}</li>
-                  {% endfor %}
-              </select>
-            </div>
-            <br>
-            <div class="form_group">
-              <label for="bookingDate" id="bookingDateLabel">Date: </label>
-              <input id="bookingDate" type="date" name="bookingDate" class="form-control" disabled>
-            </div>
-            <br>
-            <div class="form_group">
-              <label for="practitioner" id="practitionerLabel">Doctor/Nurse: </label>
-              <select id="practitioner" name="practitioner" class="form-control" required disabled>
-                <option selected disabled hidden>Select a Practitioner</option>
-              </select>
-            </div>
-            <br>
-            <div class="form_group">
-              <label for="timeSlot" id="timeSlotLabel">Time Slot: </label>
-              <select id="timeSlot" name="timeSlot" class="form-control" required disabled>
-                <option selected disabled hidden>Select a Time Slot</option>
-              </select>
-            </div>
-            <br>
-            <textarea name="reason" id="reason" class="form-control" rows="3"
-              placeholder="Reason for appointment"></textarea>
-            <br>
-            <button class="btn btn-primary">Book Appointment</button>
-          </form>
-        </div>
+{% for appointment in historic_appointments %}
+
+<div class="modal fade" id="modal1{{ appointment.appointmentID }}" tabindex="-1" role="dialog"
+  aria-labelledby="modal1{{ appointment.appointmentID}}Label" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modal1{{appointment.appointmentID}}Label">Details for Appointment {{
+          appointment.appointmentID }}</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-hover">
+          <thead>
+            <tr class="table-info">
+
+              <th>Service</th>
+              <th>Note</th>
+              <th>Practitioner</th>
+
+
+            </tr>
+          </thead>
+          <tbody>
+
+
+            <tr class="table-dark" data1-row-id="{{appointment.appointmentID}}">
+
+
+              <td>{{ appointment.service.service }}</td>
+              <td>{{ appointment.notes }}</td>
+              <td>
+                {% if not appointment.doctor %}
+                {{ appointment.nurse }}
+                {% else %}
+                {{ appointment.doctor }}
+                {% endif %}
+              </td>
+
+
+
+
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
       </div>
     </div>
+  </div>
+</div>
 
 
-    <script>
-
-      document.addEventListener('DOMContentLoaded', function () {
-        setDatePickerMinDateNow("bookingDate");
-      });
-
-      // Adding event listener that listens for changes in the service select element
-      document.getElementById("service").addEventListener("change", function (e) {
-        e.preventDefault();
-        bookingDate = document.getElementById("bookingDate");
-        practitionerSelect = document.getElementById("practitioner");
-        timeSlotSelect = document.getElementById("timeSlot");
-        if (e.target.value == "") {
-          var bookingDate = document.getElementById('bookingDate');
-          var bookingDateLabel = document.getElementById('bookingDateLabel');
-          bookingDate.disabled = true;
-          bookingDate.innerHTML = createSelectPlaceholderElement("Select a Date");
-          bookingDate.style.backgroundColor = "red"
-          practitionerSelect.disabled = true;
-          practitionerSelect.innerHTML = createSelectPlaceholderElement("Select a Practitioner");
-          timeSlotSelect.disabled = true;
-          timeSlotSelect.innerHTML = "";
-          timeSlotSelect.add(createSelectPlaceholderElement("Select a Time Slot"));
-          document.getElementById('practitionerLabel').hidden = true;
-
-
-        }
-        else if (bookingDate.value !== "" && bookingDate.disabled === false) {
-          getPractitionersByDayAndService(e.target, bookingDate)
-          timeSlotSelect.disabled = true;
-          populateTimeSlots([]);
-        }
-        else {
-          var bookingDate = document.getElementById('bookingDate');
-          var bookingDateLabel = document.getElementById('bookingDateLabel');
-
-          bookingDate.disabled = false;
-        }
-      });
-
-      // Adding event listener that listens for changes in the bookingDate input element
-      document.getElementById("bookingDate").addEventListener("change", function (e) {
-        e.preventDefault();
-        if (e.target.value === "") {
-          var practitionerSelect = document.getElementById('practitioner');
-          practitionerSelect.disabled = true;
-          practitionerSelect.innerHTML = createSelectPlaceholderElement("Select a Date");
-          document.getElementById('practitionerLabel').hidden = true;
-          var timeSlotSelect = document.getElementById('timeSlot');
-          timeSlotSelect.disabled = true;
-          timeSlotSelect.innerHTML = "";
-          timeSlotSelect.add(createSelectPlaceholderElement("Select a Time Slot"));
-        }
-        else {
-          var timeSlotSelect = document.getElementById('timeSlot');
-          timeSlotSelect.disabled = true;
-          timeSlotSelect.innerHTML = "";
-          timeSlotSelect.add(createSelectPlaceholderElement("Select a Time Slot"));
-          var service = document.getElementById('service');
-          getPractitionersByDayAndService(service, e.target);
-        }
-        return;
-
-      });
-
-      // Adding event listener that listens for changes in the practitioner input element
-      document.getElementById("practitioner").addEventListener("change", function (e) {
-        e.preventDefault();
-        if (e.target.value !== "") {
-          var bookingDate = document.getElementById('bookingDate');
-          getTimeSlotsByDayAndPractitioner(bookingDate, e.target);
-        }
-
-      });
+<div class="modal fade" id="modal3{{ appointment.appointmentID }}" tabindex="-1" role="dialog"
+  aria-labelledby="modal{{ appointment.appointmentID }}Label" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modal{{ appointment.appointmentID }}Label">Details of appointment {{
+          appointment.appointmentID}}</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you would like to delete this appointment </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" data-id="{{ appointment.appointmentID }}"
+          data-user-profile-id="{{ appointment.appointmentID }}" class="delete-button btn btn-danger ">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
 
 
-      // Adding event listener that submits the form when the submit button is clicked
-      document.getElementById("patient-booking-form").addEventListener("submit", function (e) {
-        e.preventDefault();
-        makePatientAppointmentBooking(this);
-      });
+<div class="container">
+  {% if historic_prescriptions %}
+  <h2>Pending Prescription Requests</h2>
+  <table class="table table-hover">
+    <thead>
+      <tr class="table-info">
+        <th>Patient name </th>
+        <th>Medication</th>
+        <th>Quantity</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for prescription in historic_prescriptions %}
+      {% if prescription.repeatable and not prescription.approved %}
+      <tr class="table-dark">
+        <td>{{ prescription.patient }}</td>
+        <td>{{ prescription.medication.name }} {{ prescription.dosage }}</td>
+        <td>{{ prescription.quantity }}</td>
+      </tr>
+      {% endif %}
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="row">
+    <div class="col-md-12">
+      <h2>Pending Prescription Requests</h2>
+      <p>No pending prescription requests</p>
+    </div>
+    {% endif %}
+  </div>
 
-    </script>
+  <br>
 
-    <script>
+  <hr>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-10">
+        <h2>Book Appointment</h2>
+        <p>Book an appointment with a doctor or nurse</p>
+        <form id="patient-booking-form" method="post">
+          {% csrf_token %}
+          <label for="service">Service: </label>
+          <div class="form-group">
+            <select id="service" name="service" class="form-control" required>
+              <option selected disabled hidden>Select a service</option>
+              {% for service_id, service_name, service_duration in services %}
+              <option value="{{service_id}}">{{ service_name }}</li>
+                {% endfor %}
+            </select>
+          </div>
+          <br>
+          <div class="form_group">
+            <label for="bookingDate" id="bookingDateLabel">Date: </label>
+            <input id="bookingDate" type="date" name="bookingDate" class="form-control" disabled>
+          </div>
+          <br>
+          <div class="form_group">
+            <label for="practitioner" id="practitionerLabel">Doctor/Nurse: </label>
+            <select id="practitioner" name="practitioner" class="form-control" required disabled>
+              <option selected disabled hidden>Select a Practitioner</option>
+            </select>
+          </div>
+          <br>
+          <div class="form_group">
+            <label for="timeSlot" id="timeSlotLabel">Time Slot: </label>
+            <select id="timeSlot" name="timeSlot" class="form-control" required disabled>
+              <option selected disabled hidden>Select a Time Slot</option>
+            </select>
+          </div>
+          <br>
+          <textarea name="reason" id="reason" class="form-control" rows="3"
+            placeholder="Reason for appointment"></textarea>
+          <br>
+          <button class="btn btn-primary">Book Appointment</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <br>
 
 
-      const deleteButtons = document.querySelectorAll('.delete-button');
-      deleteButtons.forEach(button => {
-        button.addEventListener('click', () => {
+  <script>
 
-          const id = button.dataset.id;
+    document.addEventListener('DOMContentLoaded', function () {
+      setDatePickerMinDateNow("bookingDate");
+    });
 
-          var token = "{{ csrf_token }}";
-          console.error(token);
+    // Adding event listener that listens for changes in the service select element
+    document.getElementById("service").addEventListener("change", function (e) {
+      e.preventDefault();
+      bookingDate = document.getElementById("bookingDate");
+      practitionerSelect = document.getElementById("practitioner");
+      timeSlotSelect = document.getElementById("timeSlot");
+      if (e.target.value == "") {
+        var bookingDate = document.getElementById('bookingDate');
+        var bookingDateLabel = document.getElementById('bookingDateLabel');
+        bookingDate.disabled = true;
+        bookingDate.innerHTML = createSelectPlaceholderElement("Select a Date");
+        bookingDate.style.backgroundColor = "red"
+        practitionerSelect.disabled = true;
+        practitionerSelect.innerHTML = createSelectPlaceholderElement("Select a Practitioner");
+        timeSlotSelect.disabled = true;
+        timeSlotSelect.innerHTML = "";
+        timeSlotSelect.add(createSelectPlaceholderElement("Select a Time Slot"));
+        document.getElementById('practitionerLabel').hidden = true;
 
-          const rowElement = document.querySelector(`tr[data-row-id="${id}"]`);
 
-          fetch(`/Delete/${id}`, {
-            method: 'DELETE',
-            headers: {
-              'X-CSRFToken': token
-            },
+      }
+      else if (bookingDate.value !== "" && bookingDate.disabled === false) {
+        getPractitionersByDayAndService(e.target, bookingDate)
+        timeSlotSelect.disabled = true;
+        populateTimeSlots([]);
+      }
+      else {
+        var bookingDate = document.getElementById('bookingDate');
+        var bookingDateLabel = document.getElementById('bookingDateLabel');
 
+        bookingDate.disabled = false;
+      }
+    });
+
+    // Adding event listener that listens for changes in the bookingDate input element
+    document.getElementById("bookingDate").addEventListener("change", function (e) {
+      e.preventDefault();
+      if (e.target.value === "") {
+        var practitionerSelect = document.getElementById('practitioner');
+        practitionerSelect.disabled = true;
+        practitionerSelect.innerHTML = createSelectPlaceholderElement("Select a Date");
+        document.getElementById('practitionerLabel').hidden = true;
+        var timeSlotSelect = document.getElementById('timeSlot');
+        timeSlotSelect.disabled = true;
+        timeSlotSelect.innerHTML = "";
+        timeSlotSelect.add(createSelectPlaceholderElement("Select a Time Slot"));
+      }
+      else {
+        var timeSlotSelect = document.getElementById('timeSlot');
+        timeSlotSelect.disabled = true;
+        timeSlotSelect.innerHTML = "";
+        timeSlotSelect.add(createSelectPlaceholderElement("Select a Time Slot"));
+        var service = document.getElementById('service');
+        getPractitionersByDayAndService(service, e.target);
+      }
+      return;
+
+    });
+
+    // Adding event listener that listens for changes in the practitioner input element
+    document.getElementById("practitioner").addEventListener("change", function (e) {
+      e.preventDefault();
+      if (e.target.value !== "") {
+        var bookingDate = document.getElementById('bookingDate');
+        getTimeSlotsByDayAndPractitioner(bookingDate, e.target);
+      }
+
+    });
+
+
+    // Adding event listener that submits the form when the submit button is clicked
+    document.getElementById("patient-booking-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      makePatientAppointmentBooking(this);
+    });
+
+  </script>
+
+  <script>
+
+
+    const deleteButtons = document.querySelectorAll('.delete-button');
+    deleteButtons.forEach(button => {
+      button.addEventListener('click', () => {
+
+        const id = button.dataset.id;
+
+        var token = "{{ csrf_token }}";
+        console.error(token);
+
+        const rowElement = document.querySelector(`tr[data-row-id="${id}"]`);
+
+        fetch(`/Delete/${id}`, {
+          method: 'DELETE',
+          headers: {
+            'X-CSRFToken': token
+          },
+
+        })
+          .then(response => {
+            if (response.ok) {
+              // Row deleted successfully, updating the UI
+              rowElement.remove();
+              const modal = button.closest('.modal');
+              const modalInstance = bootstrap.Modal.getInstance(modal);
+              modalInstance.hide();
+              alert('Appointment has been cancelled');
+            } else {
+
+              response.text().then(errorMessage => {
+                alert('Error: ' + errorMessage);
+              });
+
+              console.error('Failed to delete row');
+            }
           })
-            .then(response => {
-              if (response.ok) {
-                // Row deleted successfully, updating the UI
-                rowElement.remove();
-                const modal = button.closest('.modal');
-                const modalInstance = bootstrap.Modal.getInstance(modal);
-                modalInstance.hide();
-                alert('Appointment has been cancelled');
-              } else {
+          .catch(error => {
 
-                response.text().then(errorMessage => {
-                  alert('Error: ' + errorMessage);
-                });
-
-                console.error('Failed to delete row');
-              }
-            })
-            .catch(error => {
-
-              console.error('Failed to delete row', error);
-              alert('Failed to delete row: ' + error.message);
-            });
-        });
+            console.error('Failed to delete row', error);
+            alert('Failed to delete row: ' + error.message);
+          });
       });
-    </script>
+    });
+  </script>
 
-    {% endblock %}
+  {% endblock %}
