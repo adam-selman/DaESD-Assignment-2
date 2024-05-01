@@ -483,10 +483,14 @@ def create_groups():
     groups = [Group.objects.get_or_create(name=name)[0] for name in group_names]
 
     # Assign users to groups based on their roles
-    doctor_users = User.objects.filter(userprofile__user_type='doctor')
-    nurse_users = User.objects.filter(userprofile__user_type='nurse')
-    patient_users = User.objects.filter(userprofile__user_type='patient')
-    admin_users = User.objects.filter(userprofile__user_type='admin')
+    doctor_profiles = UserProfile.objects.filter(user_type='doctor')
+    doctor_users = [profile.user for profile in doctor_profiles]
+    nurse_profiles = UserProfile.objects.filter(user_type='nurse')
+    nurse_users = [profile.user for profile in nurse_profiles]
+    patient_profiles = UserProfile.objects.filter(user_type='patient')
+    patient_users = [profile.user for profile in patient_profiles]
+    admin_profiles = UserProfile.objects.filter(user_type='admin')
+    admin_users = [profile.user for profile in admin_profiles]
 
     for user in doctor_users:
         user.groups.add(groups[0])

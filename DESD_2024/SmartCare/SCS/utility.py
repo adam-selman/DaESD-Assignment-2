@@ -11,7 +11,7 @@ from django.conf import settings
 from .models import Service, DoctorServiceRate, NurseServiceRate, User, \
         UserProfile, Prescription, Appointment, Service, \
         Invoice, Address, PatientProfile
-from .db_utility import get_patient_appointments_by_user_id, get_service_rate_by_appointment, get_practitioner_name_by_user_profile_id, get_user_by_user_profile
+from .db_utility import get_patient_appointments_by_user_id, get_service_rate_by_appointment, get_practitioner_name_by_user_profile_id, get_user_by_user_profile, get_all_appointments_by_patient_profile
 
 logger = logging.getLogger(__name__)
 
@@ -166,16 +166,22 @@ def create_patient_forwarding_file(patient: PatientProfile) -> tuple:
 
     # appointment history
     appointment_string = ""
-    past_appointments = get_patient_appointments_by_user_id(patient.user_profile_id, past=True)
-
+    past_appointments = get_all_appointments_by_patient_profile(patient)
     if len(past_appointments) < 1:
         past_appointments = None
     else:
-        for service_name, date, time, _, practitioner in past_appointments:
-            date = date.strftime("%d/%m/%Y")
-            time = time.strftime("%H:%M")
-            appointment_string += f"{date} at {time} - {service_name} with {practitioner}\n"
-    logger.info(appointment_string)
+        for appointment in past_appointments:
+            date = appointment.date.strftime("%d/%m/%Y")
+            time = appointment.time.strftime("%H:%M")
+            if appointment.doctor_id is not None:
+                practitioner = get_practitioner_name_by_user_profile_id(appointment.doctor_id)
+            else:
+                practitioner = get_practitioner_name_by_user_profile_id(appointment.nurse_id)
+            appointment_string += "######################################################\n"
+            appointment_string += f"{date} at {time} - {appointment.service.service} with {practitioner}.\n"
+            appointment_string += f"Notes: {appointment.notes}\n"
+            appointment_string += "######################################################\n"
+
     #! Format the appointment times for the file
 
     # Prescription history
@@ -191,8 +197,6 @@ def create_patient_forwarding_file(patient: PatientProfile) -> tuple:
             else:
                 practitioner_name = get_practitioner_name_by_user_profile_id(prescription.nurse_id)
             prescription_string += f"{prescription.dosage} dose of {prescription.medication.name}. Prescribed on {date_prescribed} by {practitioner_name}\n"
-    logger.info(prescription_string)
-    #! Format the Prescription history for the file
 
     # Patient info
     #! GET ADDRESS FROM USER PROFILE
