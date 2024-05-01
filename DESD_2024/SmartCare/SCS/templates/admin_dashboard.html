@@ -2,11 +2,7 @@
 {% block content%}
 {% include 'CheckSession.html' %}
 <h2>Dashboard</h2>
-<div>
-    {% if user.is_authenticated %}
-    <a href="DisplayPatients">Display patients</a>
-    {% endif %}
-</div>
+
 
 <div class="container">
     <div class="row">
@@ -386,7 +382,7 @@
             <th> Date</th>
             <th>Time</th>
             <th>Service</th>
-            <th>Practitionner </th>
+            <th>Practitioner </th>
             <th><form class="UpForm" id="UpForm" data-button-id="{{ appt.appointmentID}}"  method="POST">
                 {% csrf_token %}
                 <select id="Pract"  name="Pract" required>
@@ -404,6 +400,7 @@
                     </select>
                     <button id="filter-button" type="button">Filter</button>
                     </form>
+                    <a style="color: white;" href="dashboard">Remove filter</a>
             </th>
         </tr>
     </thead>
@@ -522,7 +519,7 @@
             const id = button.dataset.id;
             const userProfileId = button.dataset.userProfileId;
 
-            alert(userProfileId)
+            
             var token = "{{ csrf_token }}";
             console.error(token);
 
@@ -635,7 +632,7 @@ selectElement.addEventListener('change', (event) => {
     event.preventDefault();
   //const selectedOption = event.target.value;
   const selectedOption = event.target.value === 'True'; 
-  alert(selectedOption)
+  
   var token = "{{ csrf_token }}";
   fetch('/filter-patient/', {
                 method: 'POST',
@@ -656,7 +653,7 @@ selectElement.addEventListener('change', (event) => {
                         tableBody.innerHTML = '';
                         
                         data.data.forEach(patient => {
-                            alert(patient.isPrivate)
+                            
                             const row = document.createElement('tr');
                             row.className = "table-dark"; 
                             
@@ -721,12 +718,12 @@ selectElement.addEventListener('change', (event) => {
       button.addEventListener('click', () => {
       
         const id = button.dataset.id;
-       alert(id)
+       
         var token = "{{ csrf_token }}";
         console.error(token);
   
         const rowElement = document.querySelector(`tr[data2-row-id="${id}"]`);
-        alert(rowElement)
+        
         fetch(`/ADM_Delete/${id}`, {
           method: 'DELETE',
           headers: {
@@ -767,15 +764,14 @@ selectElement.addEventListener('change', (event) => {
     document.getElementById('filter-button').addEventListener('click', function() {
     var selectedDate = document.getElementById('date').value;
     var selectedEmployee = document.getElementById('Pract').value;
-    alert(selectedDate)
-    alert(selectedEmployee)
+    
     var token = "{{ csrf_token }}";
 
     var details = {
       date: selectedDate,
       employee: selectedEmployee
     };
-    alert(details)
+    
 
     fetch('/filter-appointments/', {
       method: 'POST',
