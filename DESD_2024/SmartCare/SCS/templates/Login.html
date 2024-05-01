@@ -53,10 +53,8 @@ function Click() {
       body: formData
     })
     .then(response => {
-      if (response.redirected) {
-       
+      if (response.headers.get('content-type').includes('html')) {
         
-        // 
       } else if (response.status === 403) {
         alert('403 Forbidden: incorrect CSRF token. Page will be refreshed.');
         

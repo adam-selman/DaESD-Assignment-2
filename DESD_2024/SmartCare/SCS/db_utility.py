@@ -1,12 +1,116 @@
+from enum import Enum
 from datetime import datetime
 import logging 
 import copy 
 
-from .models import Service, Invoice, DoctorServiceRate, Timetable, NurseServiceRate, User, DoctorProfile, NurseProfile, UserProfile, Appointment, PatientProfile
-from .utility import BILLABLE_PARTIES, calculate_appointment_cost, APPOINTMENT_TIMES
+from .models import Service, Invoice, DoctorServiceRate, Timetable, NurseServiceRate, User, DoctorProfile, NurseProfile, UserProfile, Appointment, PatientProfile, Medication
 
 
 logger = logging.getLogger(__name__)
+
+
+class BILLABLE_PARTIES(Enum):
+    """
+    Enum for the billing parties
+    """
+
+    NHS = 'NHS',
+    INSURANCE = 'Insurance'
+    PRIVATE = 'Private'
+
+    @property
+    def valid_choices(self):
+        return [self.NHS, self.INSURANCE, self.PRIVATE]
+    
+    def validate(self, party: str) -> bool:
+        """
+        Validates the billing party
+
+        Args:
+            party (str): The given billing party string to validate
+
+        Returns:
+            bool: Whether the billing party is valid
+        """
+        if party not in self.valid_choices:
+            return False
+        return True
+
+def calculate_appointment_cost(appointment_id: int) -> float:
+    """
+    Calculates the cost of an appointment
+
+    Args:
+        service_id (int): The id of the service
+
+    Returns:
+        float: The cost of the appointment
+    """
+    appointment = Appointment.objects.get(appointmentID=appointment_id)
+    service_id = appointment.service_id
+    service = Service.objects.get(serviceID=service_id)
+    service_rate = get_service_rate_by_appointment(appointment)
+    
+    cost = service_rate * service.duration
+    
+    return cost
+
+def get_service_rate_by_appointment(appointment: Appointment) -> float:
+    """
+    Gets the rate of a service
+
+    Args:
+        appointment_id (Appointment): The appointment object
+
+    Returns:
+        float: The rate of the service
+    """
+    service_id = appointment.service_id
+    service = Service.objects.get(serviceID=service_id)
+
+    doctor = False
+    nurse = False
+
+    if appointment.doctor_id is not None:
+        doctor = True
+    elif appointment.nurse_id is not None:
+        nurse = True
+    else:
+        raise ValueError("Appointment must have a doctor or a nurse")
+    if doctor:
+        doctor_service_rate_object = DoctorServiceRate.objects.get(service_id=service_id) 
+        service_rate = doctor_service_rate_object.rate
+    else:
+        nurse_service_rate_object = NurseServiceRate.objects.get(service_id=service_id)
+        service_rate = nurse_service_rate_object.rate
+        
+    return service_rate
+
+
+def convert_to_datetimes(appointment_times) -> list:
+    """
+    Converts a list of strings to a list of datetime objects
+
+    Args:
+        appointment_times (list[str]): A list of strings representing times
+
+    Returns:
+        list: A list of datetime objects
+    """
+
+    formatted_times = []
+    for time_str in appointment_times:
+        formatted_time = datetime.strptime(time_str, "%H:%M:%S").time()
+        formatted_times.append(formatted_time)
+    return formatted_times
+
+APPOINTMENT_TIMES = convert_to_datetimes(["09:00:00", "09:15:00", "09:30:00", "09:45:00", "10:00:00", \
+                               "10:15:00", "10:30:00", "10:45:00", "11:00:00", "11:15:00", \
+                               "11:30:00", "11:45:00", "12:00:00", "12:15:00", "12:30:00", \
+                               "12:45:00", "13:00:00", "13:15:00", "13:30:00", "13:45:00", \
+                               "14:00:00", "14:15:00", "14:30:00", "14:45:00", "15:00:00", \
+                               "15:15:00", "15:30:00", "15:45:00", "16:00:00", "16:15:00", \
+                               "16:30:00", "16:45:00"])
 
 def get_service_by_appointment_id(appointment_id: int) -> Service:
     """
@@ -32,7 +136,7 @@ def create_invoice_for_appointment(appointment_id: int, billing_party: str) -> N
         None
     """
 
-    if billing_party not in BILLABLE_PARTIES.valid_choices:
+    if billing_party not in ["NHS", "Private", "nhs", "private"]:
         raise ValueError("Billing party must be NHS, Insurance or Private.")
 
     amount = calculate_appointment_cost(appointment_id)
@@ -113,14 +217,16 @@ def get_invoice_information_by_user_id(user_id: int) -> list:
     Returns:
         list: The invoices for the user
     """
-    invoices = Invoice.objects.filter(patient_id=user_id).all()
+    logger.info(f"user_id: {user_id}")
+    patient_profile = get_patient_profile_by_user_id(user_id)
+    invoices = Invoice.objects.filter(patient_id=patient_profile.id).all()
     invoice_info = []
     for invoice in invoices:
         service = get_service_by_appointment_id(invoice.appointment_id)
         service_name = service.service.title()
         amount = invoice.amount
         issue_date = invoice.dateIssued.strftime("%d-%m-%Y")
-        invoice_info.append([service_name, amount, issue_date, invoice.invoiceID, invoice.status])
+        invoice_info.append([service_name, amount, issue_date, invoice.invoiceID, invoice.status, invoice.approved])
     return invoice_info
 
 def get_all_invoice_information() -> list:
@@ -137,7 +243,7 @@ def get_all_invoice_information() -> list:
         service_name = service.service.title()
         amount = invoice.amount
         issue_date = invoice.dateIssued.strftime("%d-%m-%Y")
-        invoice_info.append([service_name, amount, issue_date, invoice.invoiceID, invoice.status])
+        invoice_info.append([service_name, amount, issue_date, invoice.invoiceID, invoice.status, invoice.approved])
     return invoice_info
 
 def get_invoices_awaiting_payment() -> list:
@@ -147,16 +253,110 @@ def get_invoices_awaiting_payment() -> list:
     Returns:
         list: A list of invoices awaiting payment
     """
-    invoices = Invoice.objects.filter(status=False).all()
+    invoices = Invoice.objects.filter(approved=False).all()
     invoice_info = []
     for invoice in invoices:
         service = get_service_by_appointment_id(invoice.appointment_id)
         service_name = service.service.title()
         amount = invoice.amount
         issue_date = invoice.dateIssued.strftime("%d-%m-%Y")
-        if invoice.status == 0:
-            invoice_info.append([service_name, amount, issue_date, invoice.invoiceID, invoice.status])
+        if invoice.approved == 0:
+            invoice_info.append([service_name, amount, issue_date, invoice.invoiceID, invoice.status, invoice.approved])
+    
+    logger.info(invoice_info)
     return invoice_info
+
+def get_patient_profile_by_user_profile(user_profile: int) -> PatientProfile:
+    """
+    Returns the patient profile
+
+    Args:
+        user_profile_id (int): The user profile id
+
+    Returns:
+        PatientProfile: The patient profile of the user
+    """
+    patient_profile = PatientProfile.objects.get(user_profile_id=user_profile.id)
+    return patient_profile
+
+def get_all_appointments_by_patient_profile(patient_profile) -> list:
+    """
+    Returns all appointments for a patient
+
+    Returns:
+        list: The appointments for the patient
+    """
+    appointments = Appointment.objects.filter(patient_id=patient_profile.id).all()
+    return appointments
+
+def get_doctor_profile_by_user_profile_id(user_profile_id: int) -> DoctorProfile:
+    """
+    Returns the doctor profile
+
+    Args:
+        user_profile_id (int): The user profile id
+
+    Returns:
+        DoctorProfile: The doctor profile of the user
+    """
+    doctor_profile = DoctorProfile.objects.get(user_profile_id=user_profile_id)
+    return doctor_profile
+
+def get_nurse_profile_by_user_profile_id(user_profile_id: int) -> NurseProfile:
+    """
+    Returns the nurse profile
+
+    Args:
+        user_profile_id (int): The user profile id
+
+    Returns:
+        NurseProfile: The nurse profile of the user
+    """
+    nurse_profile = NurseProfile.objects.get(user_profile_id=user_profile_id)
+    return nurse_profile
+
+def get_all_medications() -> list:
+    """
+    Returns all medication
+
+    Returns:
+        list: A list of all medication
+    """
+    medication = Medication.objects.all()
+    return medication
+
+def get_user_by_user_profile(user_profile: int) -> User:
+    """
+    Returns the user
+
+    Args:
+        user_profile_id (int): The user profile id
+
+    Returns:
+        User: The user of the user profile
+    """
+    user = User.objects.get(id=user_profile.user_id)
+    return user
+
+def get_practitioner_name_by_user_profile_id(user_profile_id: int) -> str:
+    """
+    Returns the name of a practitioner
+
+    Args:
+        user_profile_id (int): The user profile id
+
+    Returns:
+        str: The name of the practitioner
+    """
+    user_profile = UserProfile.objects.get(id=user_profile_id)
+    user = User.objects.get(id=user_profile.user_id)
+    user_type = get_user_type_by_id(user.id)
+
+    if user_type == "doctor":
+        name = "Dr. " + user.first_name + " " + user.last_name
+    elif user_type == "nurse":
+        name = "Nurse " + user.first_name + " " + user.last_name
+    return name
 
 def get_patient_appointments_by_user_id(user_id: int, future=False, past=False) -> list:
     """
@@ -168,22 +368,26 @@ def get_patient_appointments_by_user_id(user_id: int, future=False, past=False) 
     Returns:
         list: The appointments for the patient
     """
-    user_profile = UserProfile.objects.get(user_id=user_id)
-    patient_profile = PatientProfile.objects.get(user_profile_id=user_profile.id)
-    appointments = Appointment.objects.filter(patient_id=patient_profile.id).all()
+    
+    user_profile = get_user_profile_by_user_id(user_id)
+    logger.info(user_profile.id)
+    patient_profile = get_patient_profile_by_user_profile(user_profile)
+    appointments = get_all_appointments_by_patient_profile(patient_profile)
     appointment_info = []
     for appointment in appointments:
         service = get_service_by_appointment_id(appointment.appointmentID)
         service_name = service.service.title()
 
+        practitioner_name = get_practitioner_name_by_user_profile_id(appointment.doctor_id)
+
         if future:
             if appointment.date >= datetime.now().date():
-                appointment_info.append([service_name, appointment.date, appointment.time, appointment.appointmentID])
-        elif past:
+                appointment_info.append([service_name, appointment.date, appointment.time, appointment.appointmentID, practitioner_name])
+        if past:
             if appointment.date < datetime.now().date():
-                appointment_info.append([service_name, appointment.date, appointment.time, appointment.appointmentID])
+                appointment_info.append([service_name, appointment.date, appointment.time, appointment.appointmentID, practitioner_name])
         else:
-            appointment_info.append([service_name, appointment.date, appointment.time, appointment.appointmentID])
+            appointment_info.append([service_name, appointment.date, appointment.time, appointment.appointmentID, practitioner_name])
     return appointment_info
 
 def get_user_profile_by_user_id(user_id: int) -> int:

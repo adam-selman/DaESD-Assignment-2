@@ -391,7 +391,7 @@ def populate_prescription(csvFileName, modelClass):
         except Exception as e:
             print(f"Error creating {modelClass.__name__}:", e)
 
-def populate_invoice(csvFileName, modelClass):
+def populate_template(csvFileName, modelClass):
     reader = open_csv(csvFileName)
     if not reader:
         return
@@ -483,10 +483,14 @@ def create_groups():
     groups = [Group.objects.get_or_create(name=name)[0] for name in group_names]
 
     # Assign users to groups based on their roles
-    doctor_users = User.objects.filter(userprofile__user_type='doctor')
-    nurse_users = User.objects.filter(userprofile__user_type='nurse')
-    patient_users = User.objects.filter(userprofile__user_type='patient')
-    admin_users = User.objects.filter(userprofile__user_type='admin')
+    doctor_profiles = UserProfile.objects.filter(user_type='doctor')
+    doctor_users = [profile.user for profile in doctor_profiles]
+    nurse_profiles = UserProfile.objects.filter(user_type='nurse')
+    nurse_users = [profile.user for profile in nurse_profiles]
+    patient_profiles = UserProfile.objects.filter(user_type='patient')
+    patient_users = [profile.user for profile in patient_profiles]
+    admin_profiles = UserProfile.objects.filter(user_type='admin')
+    admin_users = [profile.user for profile in admin_profiles]
 
     for user in doctor_users:
         user.groups.add(groups[0])
@@ -505,7 +509,7 @@ if __name__ == '__main__':
     populate_users('data/doctors.csv', 'doctor', DoctorProfile, ['specialization', 'isPartTime'])
     populate_users('data/admins.csv', 'admin', AdminProfile, [])
     populate_users('data/nurses.csv', 'nurse', NurseProfile, [])
-    populate_users('data/patients.csv', 'patient', PatientProfile, ['gender','date_of_birth', 'allergies', 'isPrivate'])
+    populate_users('data/patients.csv', 'patient', PatientProfile, ['allergies', 'isPrivate'])
     populate_contact('data/address.csv', Address)
     populate_contact('data/contactnumber.csv', ContactNumber)
     populate_services('data/service.csv', Service, 'service', ignore_service= True)
@@ -514,7 +518,7 @@ if __name__ == '__main__':
     populate_medication('data/medication.csv', Medication, 'name')
     populate_appointment('data/appointment.csv', Appointment)
     populate_prescription('data/prescription.csv', Prescription)
-    populate_invoice('data/invoice.csv', Invoice)
+    populate_template('data/invoice.csv', Invoice)
     populate_timetables('timetable.csv')
     create_groups()
     print("Populating complete!")

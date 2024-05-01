@@ -1,0 +1,153 @@
+{% extends 'index.html' %}
+{% block content %}
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Welcome {{ user.first_name }} {{ user.last_name }}</h1>
+        </div>
+    </div>
+</div>
+
+
+<div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <hr>
+        <h2>Appointment Information</h2>
+        <p>Appointment with {{ patient_name }} at {{ appointment.time }} on {{ appointment.date }}  </p>
+        <p>Service: {{service.service}}</p>
+        <p>Appointment Reason: {{ appointment.description }}</p>
+        <hr>
+        <h2>Appointment Completion Form</h2>
+        <form id="appointment-completion-form" method="post" action="/complete_appointment">
+            {% csrf_token %}
+            <input type="hidden" name="appointmentID" value="{{ appointment.appointmentID }}">
+            <input type="hidden" name="patientID" value="{{ appointment.patient.id }}">
+            <div class="form-group">
+                <label for="notes">Notes: </label>
+            <textarea name="notes" id="notes" class="form-control" rows="3"
+                placeholder="Appointment notes"></textarea>
+            </div>
+          <div class="form-group">
+          <label for="medication">Medication: </label>
+            <select id="medication" name="medication" class="form-control" required>
+                <option selected disabled hidden>Select a medication</option>
+                <option value="none">None</option>
+                {% for medication in medications %}
+                    <option value="{{medication.medicationID}}">{{ medication.name }}</li>
+                {% endfor %}
+            </select>
+            </div>
+
+            <div class="form-group">
+            <label for="dosage">Dosage: </label>
+            <input type="number" name="dosage" id="dosage" class="form-control" placeholder="Milligram (mg) dosage" disabled></input>
+            </div>
+
+            <div class="form-group">
+            <label for="quantity">Quantity: </label>
+            <input type="number" name="quantity" id="quantity" class="form-control" placeholder="Number of Tablets" disabled></input>
+            </div>
+
+            <div class="form-group">
+            <label for="instructions">Instructions: </label>
+            <input type="text" name="instructions" id="instructions" class="form-control" placeholder="Medication Instructions" disabled></input>
+            </div>
+            
+            <br>
+
+            <div class="form-group">
+                <label for="repeatable">Repeatable: </label>
+            <input type="checkbox" name="repeatable" id="repeatable" value="1" disabled></input>
+            </div>
+
+            <br>
+            <a href="generate_patient_forwarding_file?userProfileID={{patient.user_profile.id}}">
+                <button type="button" class="btn btn-primary">Download Medical History</button>
+            </a>
+            <br>
+
+          <br>
+          <button class="btn btn-primary">Complete Appointment</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <br>
+
+<script>
+    // Adding event listener that listens for changes in the service select element
+document.getElementById("medication").addEventListener("change", function (e) {
+    e.preventDefault();
+    var medication = e.target.value;
+    var repeatable = document.getElementById("repeatable");
+    var dosage = document.getElementById("dosage");
+    var quantity = document.getElementById("quantity");
+    var instructions = document.getElementById("instructions");
+    if (e.target.value === "" || e.target.value === "none" ) {
+        var bookingDate = document.getElementById('bookingDate');
+        var bookingDateLabel = document.getElementById('bookingDateLabel');
+        dosage.disabled = true;
+        repeatable.disabled = true;
+        quantity.disabled = true;
+        instructions.disabled = true;
+        quantity.value = "";
+        dosage.value = "";
+        instructions.value = "";
+        repeatable.checked = false;
+
+        }
+        else if (medication.value !== "") {
+            dosage.disabled = false;
+            repeatable.disabled = false;
+            quantity.disabled = false;
+            instructions.disabled = false;
+        }
+    });
+
+// Adding event listener that submits the form when the submit button is clicked
+document.getElementById("appointment-completion-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    completeAppointmentBooking(this);
+});
+
+
+/**
+ * Method to make a complete an appointment booking
+ * @param {HTMLFormElement} form - The form element to be submitted
+ */
+function completeAppointmentBooking(form) {
+    var formData = new FormData(form);
+    var token = getCsrfToken() ;
+
+    if (formData.get('notes') === "") {
+        alert("Please write some notes for the appointment");
+        return;
+    }
+
+    fetch('complete_appointment', {
+    method: 'POST',
+    headers: {
+            'X-CSRFToken': token
+            },
+    body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+    if (data.success) {
+    // show success message
+    // refresh page
+    alert('Appointment Completed successfully');
+    window.location.href = '/dashboard';
+    } else {
+    
+    alert(data.error);
+    }
+    });
+
+    }
+</script>
+
+{% endblock %}
