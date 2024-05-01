@@ -22,6 +22,7 @@ urlpatterns = [
    path('ADM_Delete/<int:id>/',views.ADM_delete_appointment),
    path('update-patient/',views.update_patient),
    path('filter-patient/',views.filter_patient),
+   path('filter-appointments/',views.filter_appointments),
    path('DisplayHistoricAppointments',views.historic_appointments),
    path('DisplayPendingPrescriptions',views.prescription_approval),
    path('DisplayPrescriptions',views.historic_prescriptions),

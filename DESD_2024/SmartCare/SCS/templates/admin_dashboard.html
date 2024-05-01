@@ -76,7 +76,7 @@
             
                 </select>
                 </form>
-                <a style="color: white;" href="DisplayPatients">Display patients</a>
+                <a style="color: white;" href="dashboard">Remove filter</a>
                </th>
         </tr>
     </thead>
@@ -88,8 +88,7 @@
             <td>{{ patient.isPrivate }}</td>
             <td><button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal1{{patient.user_profile}}">History</button>
             <button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal2{{patient.user_profile}}">Update</button>
-            <button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal3{{patient.user_profile}}">Delete</button>
-            <button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal4{{patient.user_profile}}">Search</button></td>
+            <button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal3{{patient.user_profile}}">Delete</button></td>
         </tr>
         {% endfor %}
     </tbody>
@@ -388,10 +387,27 @@
             <th>Time</th>
             <th>Service</th>
             <th>Practitionner </th>
-            <th>Details </th>
+            <th><form class="UpForm" id="UpForm" data-button-id="{{ appt.appointmentID}}"  method="POST">
+                {% csrf_token %}
+                <select id="Pract"  name="Pract" required>
+                    <option selected disabled value="">Select Practitioner</option>
+                    {% for practitioner in practitioners %}
+                        <option value="{{ practitioner }}">{{ practitioner }}</option>
+                    {% endfor %}
+                </select>
+                <select id="date"  name="date" required>
+                    <option selected disabled value="">Select a date </option>
+                    
+                    {% for date in dates %}
+                        <option value="{{ date }}">{{ date }}</option>
+                    {% endfor %}
+                    </select>
+                    <button id="filter-button" type="button">Filter</button>
+                    </form>
+            </th>
         </tr>
     </thead>
-    <tbody>
+    <tbody id="AppointmentTable">
 
         {% for appt in appointments %}
 
@@ -408,7 +424,7 @@
                 {% endif %}</td>
             <td>
             <button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal3{{appt.appointmentID}}">Delete</button>
-            <button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal4{{appt.appointmentID}}">Search</button>
+            
             </td>
 
 
@@ -744,4 +760,92 @@ selectElement.addEventListener('change', (event) => {
     </script>
   
 
+
+<!---------------------------------Filtering appointments per date and practitioner --------->
+
+<script>
+    document.getElementById('filter-button').addEventListener('click', function() {
+    var selectedDate = document.getElementById('date').value;
+    var selectedEmployee = document.getElementById('Pract').value;
+    alert(selectedDate)
+    alert(selectedEmployee)
+    var token = "{{ csrf_token }}";
+
+    var details = {
+      date: selectedDate,
+      employee: selectedEmployee
+    };
+    alert(details)
+
+    fetch('/filter-appointments/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': token
+      },
+      body: JSON.stringify(details)
+    })
+                .then(response => response.json())
+                    .then(data => {
+    
+                        if (data.success) {
+                            // Handle success case
+                            const tableBody = document.getElementById('AppointmentTable');
+                            tableBody.innerHTML = '';
+                            
+                            data.data.forEach(appt => {
+                                
+                                const row = document.createElement('tr');
+                                row.className = "table-dark"; 
+                                
+                                const IDCell = document.createElement('td');
+                                IDCell.textContent = appt.ID;
+                                row.appendChild(IDCell);
+    
+                                const dateCell = document.createElement('td');
+                                dateCell.textContent = appt.date;
+                                row.appendChild(dateCell);
+                                
+                                const timeCell = document.createElement('td');
+                                timeCell.textContent = appt.time;
+                                row.appendChild(timeCell);
+
+                                const serviceCell = document.createElement('td');
+                                serviceCell.textContent = appt.service;
+                                row.appendChild(serviceCell);
+
+                                const pracCell = document.createElement('td');
+                                pracCell.textContent = appt.practitioner;
+                                row.appendChild(pracCell);
+                                
+                                const buttonCell = document.createElement('td');
+    
+                         
+    
+                                const deleteButton = document.createElement('button');
+                                deleteButton.textContent = "Delete";
+                                deleteButton.className = "btn btn-primary";
+                                buttonCell.appendChild(deleteButton);
+    
+                                row.appendChild(buttonCell);
+                                tableBody.appendChild(row);
+                        });
+                    
+    
+    
+    
+    
+                        } else {
+                            // Handle error case
+                            alert('Failed to filter  rows : ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        // Handle error case
+                        alert('Failed fetch error ' + error);
+                    });
+            });
+      
+    
+    </script>
 {% endblock %}

@@ -12,7 +12,7 @@ from django.contrib.auth import authenticate, login , logout
 from django.middleware.csrf import get_token
 from django.template import RequestContext
 from django.utils import timezone
-
+from django.db.models import Q
 from .models import DoctorProfile, NurseProfile, UserProfile, Service, Appointment, PatientProfile, Prescription, Invoice, DoctorServiceRate, NurseServiceRate
 from .forms import UserRegisterForm, DoctorNurseRegistrationForm, PrescriptionForm
 
@@ -21,7 +21,8 @@ from .db_utility import get_user_profile_by_user_id, get_invoices_awaiting_payme
                     make_patient_appointment_booking, get_time_slots_by_day_and_practitioner, get_all_invoice_information, \
                     get_patient_appointments_by_user_id
 from .utility import parse_times_for_view, get_prescriptions_for_practitioner, generate_invoice_file_content
-
+from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
 logger = logging.getLogger(__name__)
 def register_doctor_nurse(request):
     if request.method == 'POST':
@@ -370,9 +371,21 @@ def admin(request):
     invoices_to_be_paid = get_invoices_awaiting_payment()
     doctor_service_rate = DoctorServiceRate.objects.all()
     nurse_service_rate = NurseServiceRate.objects.all()
+    patient_details = PatientProfile.objects.all()
+    appointments=Appointment.objects.all()
+    Dates = []
+    for appt in appointments:
+        if appt.date and appt.date not in Dates:
+            Dates.append(appt.date)
+    practitioners = []
+    for appt in appointments:
+        if appt.doctor and appt.doctor not in practitioners:
+            practitioners.append(appt.doctor)
+        elif appt.nurse and appt.nurse not in practitioners:
+            practitioners.append(appt.nurse)
     return render(request, 'admin_dashboard.html', {'user_type': user_type, "user_name": user_name,
                                                      "all_invoices": all_invoices, "invoices_to_be_paid": invoices_to_be_paid,
-                                                     "doctor_service_rate": doctor_service_rate, "nurse_service_rate": nurse_service_rate})
+                                                     "doctor_service_rate": doctor_service_rate, "nurse_service_rate": nurse_service_rate,"practitioners": practitioners,"patients":patient_details,"appointments":appointments,"dates":Dates})
 
 @login_required(login_url='login')
 @custom_user_passes_test(is_nurse)
@@ -648,7 +661,27 @@ def filter_patient(request):
     else:
         return JsonResponse({'success': False, 'error': 'Invalid request method'})
    
-               
+def filter_appointments(request):
+    if request.method =='POST':
+        data = json.loads(request.body)
+        selectedDate = data['date']
+        selectedEmployee = data['employee']  
+        selectedDate = datetime.strptime(selectedDate, '%B %d, %Y').strftime('%Y-%m-%d')  
+        try:
+            # Get the actual employee object
+            user = User.objects.get(username=selectedEmployee)
+            user_profile = UserProfile.objects.get(user=user)
+            
+
+            filtered_appointments = Appointment.objects.filter(Q(date=selectedDate) & (Q(nurse=user_profile) | Q(doctor=user_profile)))
+            filt_app = [{'ID': appt.appointmentID, 'date': appt.date, 'time': appt.time,'service':appt.service.service,'practitioner':selectedEmployee } for appt in filtered_appointments]
+            return JsonResponse({'success':True,'data': filt_app})    
+        except ObjectDoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Employee not found'})
+    else:
+        return JsonResponse({'success': False, 'error': 'Invalid request method'})
+    
+        
          
 
 
