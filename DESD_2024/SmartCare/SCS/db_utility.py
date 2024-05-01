@@ -2,7 +2,7 @@ from datetime import datetime
 import logging 
 import copy 
 
-from .models import Service, Invoice, DoctorServiceRate, Timetable, NurseServiceRate, User, DoctorProfile, NurseProfile, UserProfile, Appointment, PatientProfile
+from .models import Service, Invoice, DoctorServiceRate, Timetable, NurseServiceRate, User, DoctorProfile, NurseProfile, UserProfile, Appointment, PatientProfile, Medication
 
 
 logger = logging.getLogger(__name__)
@@ -308,6 +308,16 @@ def get_nurse_profile_by_user_profile_id(user_profile_id: int) -> NurseProfile:
     """
     nurse_profile = NurseProfile.objects.get(user_profile_id=user_profile_id)
     return nurse_profile
+
+def get_all_medications() -> list:
+    """
+    Returns all medication
+
+    Returns:
+        list: A list of all medication
+    """
+    medication = Medication.objects.all()
+    return medication
 
 def get_user_by_user_profile(user_profile: int) -> User:
     """

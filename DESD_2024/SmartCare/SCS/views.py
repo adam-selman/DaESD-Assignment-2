@@ -19,15 +19,13 @@ from django.shortcuts import get_object_or_404, Http404
 from .forms import UserRegisterForm, DoctorNurseRegistrationForm, PrescriptionForm
 from datetime import date
 
-from .models import DoctorProfile, NurseProfile, PatientProfile, UserProfile, Service, Appointment, Prescription, Invoice
-
-from .models import DoctorProfile, NurseProfile, UserProfile, Service, Appointment, PatientProfile, Prescription, Invoice, PatientProfile, DoctorServiceRate, NurseServiceRate
+from .models import DoctorProfile, NurseProfile, UserProfile, Service, Appointment, PatientProfile, Prescription, Invoice, PatientProfile, DoctorServiceRate, NurseServiceRate, Medication
 from .forms import UserRegisterForm, DoctorNurseRegistrationForm, AppointmentBookingForm, PrescriptionForm
 
 from .db_utility import get_user_profile_by_user_id, get_invoices_awaiting_payment, get_invoice_information_by_user_id, \
                     get_medical_services, get_user_profile_by_user_id, get_practitioners_by_day_and_service,  \
                     make_patient_appointment_booking, get_time_slots_by_day_and_practitioner, get_all_invoice_information, \
-                    get_patient_appointments_by_user_id, APPOINTMENT_TIMES
+                    get_patient_appointments_by_user_id, APPOINTMENT_TIMES, get_all_medications
 from .utility import parse_times_for_view, generate_invoice_file_content, \
                     generate_patient_forwarding_file_content, get_prescriptions_for_practitioner, \
                     get_patient_appointments_by_user_id, parse_times_for_view, get_prescriptions_for_practitioner, generate_invoice_file_content
@@ -129,17 +127,6 @@ def register(request):
         form = UserRegisterForm()
     return render(request, 'register.html', {'form': form})
 
-def complete_appointment(request, appointment_id):
-    appointment = get_object_or_404(Appointment, pk=appointment_id)
-    if request.method == 'POST':
-        form = AppointmentBookingForm(request.POST, instance=appointment)
-        if form.is_valid():
-            form.save()
-            return redirect('some-view-name')  # Redirect to a confirmation page or elsewhere
-    else:
-        form = AppointmentBookingForm(instance=appointment)
-
-    return render(request, 'complete_appointment.html', {'form': form, 'appointment': appointment})  
     
 def is_doctor(user):
     return user.groups.filter(name='doctor_group').exists()
@@ -168,6 +155,98 @@ def custom_user_passes_test(test_func):
                 return HttpResponseNotFound("404 Error: Page does not exist")
         return wrapper
     return decorator
+
+
+@login_required(login_url='login')
+@custom_user_passes_test(is_doctor_or_nurse)
+def start_appointment(request):
+
+    appointment_id = request.POST.get('appointmentID')
+
+    appointment = Appointment.objects.get(appointmentID=appointment_id)
+    
+    service = appointment.service
+    
+    medications = get_all_medications()
+    patient = appointment.patient
+    patient_name = f"{patient.user_profile.user.first_name} {patient.user_profile.user.last_name}"
+
+    context = {
+        'appointment': appointment,
+        'patient_name': patient_name,
+        'patient': patient,
+        'medications': medications,
+        'service': service
+    }
+    return render(request, 'complete_appointment.html', context)
+
+def complete_appointment(request):
+    if request.method == 'POST':
+        appointment_id = request.POST.get('appointmentID')
+        notes = request.POST.get('notes')
+
+        appointment = Appointment.objects.get(appointmentID=appointment_id)
+        appointment.status = 'complete'
+        appointment.notes = notes
+        appointment.save()
+
+        patient_id = request.POST.get('patientID')
+        patient = PatientProfile.objects.get(id=patient_id)
+        patient_user_profile = patient.user_profile
+        
+        medication = request.POST.get('medication')
+        medication = Medication.objects.get(medicationID=medication)
+        dosage = request.POST.get('dosage')
+        dosage = str(dosage) + "mg"
+        
+        quantity = request.POST.get('quantity')
+        instructions = request.POST.get('instructions')
+        repeatable = request.POST.get('repeatable')
+        if repeatable == 'on':
+            repeatable = True
+        else:
+            repeatable = False
+
+        logger.info(f"Repeatable: {repeatable}")
+        practitioner = request.user.id
+
+        current_date = datetime.now().date()
+
+        practitioner_type = get_user_type(practitioner)
+
+        if medication is not None:
+            if practitioner_type == 'doctor':
+                doctor = DoctorProfile.objects.get(user_profile__user=request.user)
+                doctor_user_profile = doctor.user_profile
+                Prescription.objects.create(repeatable=repeatable,
+                                            approved=True, 
+                                            medication=medication,
+                                            dosage=dosage,
+                                            quantity=quantity,
+                                            instructions=instructions,
+                                            issueDate=current_date,
+                                            appointment=appointment,
+                                            patient=patient_user_profile,
+                                            doctor=doctor_user_profile,
+                                            nurse=None,)
+            elif practitioner_type == 'nurse':
+                nurse = NurseProfile.objects.get(user_profile__user=request.user)
+                nurse_user_profile = nurse.user_profile
+                Prescription.objects.create(repeatable=repeatable,
+                                            approved=True, 
+                                            medication=medication,
+                                            dosage=dosage,
+                                            quantity=quantity,
+                                            instructions=instructions,
+                                            issueDate=current_date,
+                                            appointment=appointment,
+                                            patient=patient_user_profile,
+                                            doctor=None,
+                                            nurse=nurse_user_profile,
+                                            )
+            
+
+    return redirect('dashboard')  
 
 def index(request):
     """
@@ -250,7 +329,6 @@ def Login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-        
 
         user = authenticate(username=username, password=password)
         if user is not None:
@@ -779,7 +857,6 @@ def generate_patient_forwarding_file(request):
     """
     csrf_token = get_token(request)
     if request.method == 'GET':
-        user_id = request.user.id
         user_profile_id = request.GET.get('userProfileID')
         patient = PatientProfile.objects.filter(user_profile_id=user_profile_id).first()
         
