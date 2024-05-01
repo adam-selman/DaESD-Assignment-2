@@ -976,7 +976,7 @@ def mark_invoice_as_paid(request):
             return redirect(Http404)
     else:
         data = {'success': 'false'}
-    return JsonResponse(data) 
+    return redirect('dashboard') 
 
 
 
