@@ -812,14 +812,12 @@ def update_patient(request):
 def prescription_approval(request):
     if is_doctor(request.user):
         doctor = request.user.id
-        pending_prescriptions = Prescription.objects.filter(doctor=doctor, approved=False)
-
+        pending_prescriptions = Prescription.objects.all()
         return render(request, 'doctor_dashboard.html', {'pending_prescriptions': pending_prescriptions, 'clicked4':True})
     
     elif is_nurse(request.user):
         nurse = request.user.id
-        pending_prescriptions = Prescription.objects.filter(nurse=nurse, approved=False)
-
+        pending_prescriptions = Prescription.objects.all()
         return render(request, 'nurse_dashboard.html', {'pending_prescriptions': pending_prescriptions, 'clicked4':True})
 
 
@@ -828,13 +826,13 @@ def prescription_approval(request):
 def historic_prescriptions(request):
     if is_doctor(request.user):
         doctor = request.user.id
-        historic_prescriptions = Prescription.objects.filter(doctor=doctor)
+        historic_prescriptions = Prescription.objects.all()
 
         return render(request, 'doctor_dashboard.html', {'historic_prescriptions': historic_prescriptions, 'clicked5':True})
     
     elif is_nurse(request.user):
         nurse = request.user.id
-        historic_prescriptions = Prescription.objects.filter(nurse=nurse)
+        historic_prescriptions = Prescription.objects.all()
 
         return render(request, 'nurse_dashboard.html', {'historic_prescriptions': historic_prescriptions, 'clicked5':True})
 

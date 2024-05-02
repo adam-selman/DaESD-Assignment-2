@@ -416,8 +416,8 @@
     <table class="table table-hover" style="display: none">
         <thead>
             <tr class="table-info">
-                <th>Appointment </th>
-                <th> Date</th>
+                <th>Patient</th>
+                <th>Date</th>
                 <th>Time</th>
                 <th>Service</th>
                 <th>Practitioner </th>
@@ -449,9 +449,9 @@
 
             <tr class="table-dark" data2-row-id="{{appt.appointmentID}}">
 
-                <td>{{appt.appointmentID}}</td>
+                <td>{{ appt.patient }}</td>
                 <td>{{ appt.date }}</td>
-                <td>{{ appt.time}}</td>
+                <td>{{ appt.time }}</td>
                 <td>{{ appt.service }}</td>
                 <td> {% if not appt.doctor %}
                     {{ appt.nurse }}
@@ -712,46 +712,53 @@
 
                 if (data.success) {
                     // Handle success case
-                    const tableBody = document.getElementById('PatientTable');
+                    const tableBody = document.getElementById('AppointmentTable');
                     tableBody.innerHTML = '';
 
-                    data.data.forEach(patient => {
+                    data.data.forEach(appt => {
 
                         const row = document.createElement('tr');
                         row.className = "table-dark";
+                        row.setAttribute('data2-row-id', appt.ID);
 
-                        const nameCell = document.createElement('td');
-                        nameCell.textContent = patient.name;
-                        row.appendChild(nameCell);
+                        const IDCell = document.createElement('td');
+                        IDCell.textContent = appt.ID;
+                        row.appendChild(IDCell);
 
-                        const allergiesCell = document.createElement('td');
-                        allergiesCell.textContent = patient.allergies;
-                        row.appendChild(allergiesCell);
+                        const dateCell = document.createElement('td');
+                        dateCell.textContent = appt.date;
+                        row.appendChild(dateCell);
 
-                        const BillingCell = document.createElement('td');
-                        BillingCell.textContent = patient.isPrivate;
-                        row.appendChild(BillingCell);
+                        const timeCell = document.createElement('td');
+                        timeCell.textContent = appt.time;
+                        row.appendChild(timeCell);
+
+                        const serviceCell = document.createElement('td');
+                        serviceCell.textContent = appt.service;
+                        row.appendChild(serviceCell);
+
+                        const pracCell = document.createElement('td');
+                        pracCell.textContent = appt.practitioner;
+                        row.appendChild(pracCell);
 
                         const buttonCell = document.createElement('td');
 
-                        const historyButton = document.createElement('button');
-                        historyButton.textContent = "History";
-                        historyButton.className = "btn btn-primary";
-                        buttonCell.appendChild(historyButton);
 
-                        const updateButton = document.createElement('button');
-                        updateButton.textContent = "Update";
-                        updateButton.className = "btn btn-primary";
-                        buttonCell.appendChild(updateButton);
 
                         const deleteButton = document.createElement('button');
                         deleteButton.textContent = "Delete";
                         deleteButton.className = "btn btn-primary";
+                        deleteButton.setAttribute('type', 'button');
+                        deleteButton.setAttribute('data-bs-toggle', 'modal');
+                        deleteButton.setAttribute('data-bs-target', `#modal3${appt.ID}`);
                         buttonCell.appendChild(deleteButton);
 
                         row.appendChild(buttonCell);
                         tableBody.appendChild(row);
                     });
+
+
+
 
 
                 } else {
@@ -764,8 +771,6 @@
                 alert('Failed fetch error ' + error);
             });
     });
-
-
 </script>
 
 

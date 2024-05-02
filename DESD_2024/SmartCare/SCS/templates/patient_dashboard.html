@@ -33,6 +33,7 @@
             <th>Date</th>
             <th>Time</th>
             <th>Service</th>
+            <th>Practitioner</th>
             <th>Details</th>
           </tr>
         </thead>
@@ -46,6 +47,12 @@
             <td>{{ appointment.date }}</td>
             <td>{{ appointment.time }}</td>
             <td>{{ appointment.service}}</td>
+            <td>
+              {% if not appointment.doctor %}
+              {{ appointment.nurse }}
+              {% else %}
+              {{ appointment.doctor }}
+              {% endif %}
 
             <td><button type="button" class="btn btn-primary" data-bs-toggle="modal"
                 data-bs-target="#modal1{{appointment.appointmentID}}">Details</button>
