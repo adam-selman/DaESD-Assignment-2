@@ -228,10 +228,9 @@ def complete_appointment(request):
                 quantity = request.POST.get('quantity')
                 instructions = request.POST.get('instructions')
                 repeatable = request.POST.get('repeatable')
-                if repeatable == 'on':
+                if repeatable :
                     repeatable = True
-                else:
-                    repeatable = False
+               
 
             practitioner = request.user.id
 
@@ -1056,7 +1055,7 @@ def mark_invoice_as_paid(request):
             return redirect(Http404)
     else:
         data = {'success': 'false'}
-    return JsonResponse(data)
+    return redirect('dashboard')
 
 
 
