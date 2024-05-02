@@ -3,6 +3,11 @@
 {% include 'CheckSession.html' %}
 <h2>Dashboard</h2>
 
+<div>
+    {% if user.is_authenticated %}
+    <a href="{% url 'staff_register' %}" class="btn btn-primary">Staff Register</a>
+    {% endif %}
+</div>
 
 <div class="container">
     <h3>Generate Report</h3>
@@ -88,20 +93,21 @@
             <th>Patient name</th>
             <th>Known allergies</th>
             <th>Private billing</th>
-            <th> <form class="UpdateForm" id="UpdateForm" data-button-id="{{ patient.id}}"  method="POST">
-                {% csrf_token %}
-                <select id= "BillingType" class="form-select" name="billingType" required>
-                    <option selected disabled value="">Select Billing type</option>
-                
-                <option value="True">Private</option>
-                <option value="False">Public</option>
-                
+            <th>
+                <form class="UpdateForm" id="UpdateForm" data-button-id="{{ patient.id}}" method="POST">
+                    {% csrf_token %}
+                    <select id="BillingType" class="form-select" name="billingType" required>
+                        <option selected disabled value="">Select Billing type</option>
 
-            
-                </select>
+                        <option value="True">Private</option>
+                        <option value="False">Public</option>
+
+
+
+                    </select>
                 </form>
                 <a style="color: white;" href="dashboard">Remove filter</a>
-               </th>
+            </th>
         </tr>
     </thead>
     <tbody id="PatientTable">
@@ -110,9 +116,13 @@
             <td>{{ patient.user_profile }}</td>
             <td>{{ patient.allergies }}</td>
             <td>{{ patient.isPrivate }}</td>
-            <td><button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal1{{patient.id}}">History</button>
-            <button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal2{{patient.id}}">Update</button>
-            <button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal3{{patient.id}}">Delete</button></td>
+            <td><button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#modal1{{patient.id}}">History</button>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#modal2{{patient.id}}">Update</button>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#modal3{{patient.id}}">Delete</button>
+            </td>
         </tr>
         {% endfor %}
     </tbody>
@@ -217,7 +227,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <table class="table table-hover" >
+                <table class="table table-hover">
                     <thead>
                         <tr class="table-info">
                             <th>Appointment </th>
@@ -403,87 +413,92 @@
 
 <div class="container">
     <h3>Scheduled Appointments </h3>
-<table class="table table-hover">
-    <thead>
-        <tr class="table-info">
-            <th>Appointment </th>
-            <th> Date</th>
-            <th>Time</th>
-            <th>Service</th>
-            <th>Practitioner </th>
-            <th><form class="UpForm" id="UpForm" data-button-id="{{ appt.appointmentID}}"  method="POST">
-                {% csrf_token %}
-                <select id="Pract"  name="Pract" required>
-                    <option selected disabled value="">Select Practitioner</option>
-                    {% for practitioner in practitioners %}
-                        <option value="{{ practitioner }}">{{ practitioner }}</option>
-                    {% endfor %}
-                </select>
-                <select id="date"  name="date" required>
-                    <option selected disabled value="">Select a date </option>
-                    
-                    {% for date in dates %}
-                        <option value="{{ date }}">{{ date }}</option>
-                    {% endfor %}
-                    </select>
-                    <button id="filter-button" type="button">Filter</button>
+    <table class="table table-hover">
+        <thead>
+            <tr class="table-info">
+                <th>Appointment </th>
+                <th> Date</th>
+                <th>Time</th>
+                <th>Service</th>
+                <th>Practitioner </th>
+                <th>
+                    <form class="UpForm" id="UpForm" data-button-id="{{ appt.appointmentID}}" method="POST">
+                        {% csrf_token %}
+                        <select id="Pract" name="Pract" required>
+                            <option selected disabled value="">Select Practitioner</option>
+                            {% for practitioner in practitioners %}
+                            <option value="{{ practitioner }}">{{ practitioner }}</option>
+                            {% endfor %}
+                        </select>
+                        <select id="date" name="date" required>
+                            <option selected disabled value="">Select a date </option>
+
+                            {% for date in dates %}
+                            <option value="{{ date }}">{{ date }}</option>
+                            {% endfor %}
+                        </select>
+                        <button id="filter-button" type="button">Filter</button>
                     </form>
                     <a style="color: white;" href="dashboard">Remove filter</a>
-            </th>
-        </tr>
-    </thead>
-    <tbody id="AppointmentTable">
+                </th>
+            </tr>
+        </thead>
+        <tbody id="AppointmentTable">
 
-        {% for appt in appointments %}
+            {% for appt in appointments %}
 
-        <tr class="table-dark" data2-row-id="{{appt.appointmentID}}">
+            <tr class="table-dark" data2-row-id="{{appt.appointmentID}}">
 
-            <td>{{appt.appointmentID}}</td>
-            <td>{{ appt.date }}</td>
-            <td>{{ appt.time}}</td>
-            <td>{{ appt.service }}</td>
-            <td> {% if not appt.doctor %}
-                {{ appt.nurse }}
-                {% else %}
-                {{ appt.doctor }}
-                {% endif %}</td>
-            <td>
-            <button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal3{{appt.appointmentID}}">Delete</button>
-            
-            </td>
+                <td>{{appt.appointmentID}}</td>
+                <td>{{ appt.date }}</td>
+                <td>{{ appt.time}}</td>
+                <td>{{ appt.service }}</td>
+                <td> {% if not appt.doctor %}
+                    {{ appt.nurse }}
+                    {% else %}
+                    {{ appt.doctor }}
+                    {% endif %}</td>
+                <td>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#modal3{{appt.appointmentID}}">Delete</button>
+
+                </td>
 
 
-        
-            {% endfor %}
-        </tr>
-    </tbody>
-</table>
+
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
 </div>
 {% for appt in appointments %}
-<div class="modal fade" id="modal3{{ appt.appointmentID }}" tabindex="-1" role="dialog" aria-labelledby="modal{{ appt.appointmentID }}Label" aria-hidden="true">
+<div class="modal fade" id="modal3{{ appt.appointmentID }}" tabindex="-1" role="dialog"
+    aria-labelledby="modal{{ appt.appointmentID }}Label" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modal{{ appt.appointmentID }}Label">Details of appointment {{ appointment.appointmentID}}</h5>
+                <h5 class="modal-title" id="modal{{ appt.appointmentID }}Label">Details of appointment {{
+                    appointment.appointmentID}}</h5>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-             <p>Are you sure you would like to delete this appointment </p>
+                <p>Are you sure you would like to delete this appointment </p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" data-id="{{ appt.appointmentID }}" class="Delete-button btn btn-danger " >Delete</button>
+                <button type="button" data-id="{{ appt.appointmentID }}"
+                    class="Delete-button btn btn-danger ">Delete</button>
             </div>
         </div>
     </div>
-  </div>
+</div>
 
 
 
 
-  {% endfor %}
+{% endfor %}
 
 
 
@@ -547,7 +562,7 @@
             const id = button.dataset.id;
             const userProfileId = button.dataset.userProfileId;
 
-            
+
             var token = "{{ csrf_token }}";
             console.error(token);
 
@@ -659,226 +674,226 @@
 <script>
     // Adding event listener that submits the form when the submit button is clicked
     document.getElementById("mark-invoice-as-paid").addEventListener("submit", function (e) {
-    e.preventDefault();
-    markInvoiceAsPaid(this);
+        e.preventDefault();
+        markInvoiceAsPaid(this);
     });
 </script>
 <!-----------------------filtering the billing type ----------------------->
 <script>
-const selectElement = document.getElementById('BillingType');
+    const selectElement = document.getElementById('BillingType');
 
-selectElement.addEventListener('change', (event) => {
-    event.preventDefault();
-  //const selectedOption = event.target.value;
-  const selectedOption = event.target.value === 'True'; 
-  
-  var token = "{{ csrf_token }}";
-  fetch('/filter-patient/', {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': token,
-                    'Content-Type': 'application/json' 
-                    
-                },
-                body: JSON.stringify({ "Bill": selectedOption })
+    selectElement.addEventListener('change', (event) => {
+        event.preventDefault();
+        //const selectedOption = event.target.value;
+        const selectedOption = event.target.value === 'True';
 
-            })
+        var token = "{{ csrf_token }}";
+        fetch('/filter-patient/', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': token,
+                'Content-Type': 'application/json'
+
+            },
+            body: JSON.stringify({ "Bill": selectedOption })
+
+        })
             .then(response => response.json())
-                .then(data => {
+            .then(data => {
 
-                    if (data.success) {
-                        // Handle success case
-                        const tableBody = document.getElementById('PatientTable');
-                        tableBody.innerHTML = '';
-                        
-                        data.data.forEach(patient => {
-                            
-                            const row = document.createElement('tr');
-                            row.className = "table-dark"; 
-                            
-                            const nameCell = document.createElement('td');
-                            nameCell.textContent = patient.name;
-                            row.appendChild(nameCell);
+                if (data.success) {
+                    // Handle success case
+                    const tableBody = document.getElementById('PatientTable');
+                    tableBody.innerHTML = '';
 
-                            const allergiesCell = document.createElement('td');
-                            allergiesCell.textContent = patient.allergies;
-                            row.appendChild(allergiesCell);
-                            
-                            const BillingCell = document.createElement('td');
-                            BillingCell.textContent = patient.isPrivate;
-                            row.appendChild(BillingCell);
-                            
-                            const buttonCell = document.createElement('td');
+                    data.data.forEach(patient => {
 
-                            const historyButton = document.createElement('button');
-                            historyButton.textContent = "History";
-                            historyButton.className = "btn btn-primary";
-                            buttonCell.appendChild(historyButton);
+                        const row = document.createElement('tr');
+                        row.className = "table-dark";
 
-                            const updateButton = document.createElement('button');
-                            updateButton.textContent = "Update";
-                            updateButton.className = "btn btn-primary";
-                            buttonCell.appendChild(updateButton);
+                        const nameCell = document.createElement('td');
+                        nameCell.textContent = patient.name;
+                        row.appendChild(nameCell);
 
-                            const deleteButton = document.createElement('button');
-                            deleteButton.textContent = "Delete";
-                            deleteButton.className = "btn btn-primary";
-                            buttonCell.appendChild(deleteButton);
+                        const allergiesCell = document.createElement('td');
+                        allergiesCell.textContent = patient.allergies;
+                        row.appendChild(allergiesCell);
 
-                            row.appendChild(buttonCell);
-                            tableBody.appendChild(row);
+                        const BillingCell = document.createElement('td');
+                        BillingCell.textContent = patient.isPrivate;
+                        row.appendChild(BillingCell);
+
+                        const buttonCell = document.createElement('td');
+
+                        const historyButton = document.createElement('button');
+                        historyButton.textContent = "History";
+                        historyButton.className = "btn btn-primary";
+                        buttonCell.appendChild(historyButton);
+
+                        const updateButton = document.createElement('button');
+                        updateButton.textContent = "Update";
+                        updateButton.className = "btn btn-primary";
+                        buttonCell.appendChild(updateButton);
+
+                        const deleteButton = document.createElement('button');
+                        deleteButton.textContent = "Delete";
+                        deleteButton.className = "btn btn-primary";
+                        buttonCell.appendChild(deleteButton);
+
+                        row.appendChild(buttonCell);
+                        tableBody.appendChild(row);
                     });
-                
 
-                    } else {
-                        // Handle error case
-                        alert('Failed to filter  rows : ' + data.message);
-                    }
-                })
-                .catch(error => {
+
+                } else {
                     // Handle error case
-                    alert('Failed fetch error ' + error);
-                });
-        });
-  
+                    alert('Failed to filter  rows : ' + data.message);
+                }
+            })
+            .catch(error => {
+                // Handle error case
+                alert('Failed fetch error ' + error);
+            });
+    });
+
 
 </script>
 
 
 
 <script>
-   
-    
+
+
     const DeleteButtons = document.querySelectorAll('.Delete-button');
     DeleteButtons.forEach(button => {
-      button.addEventListener('click', () => {
-      
-        const id = button.dataset.id;
-       
-        var token = "{{ csrf_token }}";
-        console.error(token);
-  
-        const rowElement = document.querySelector(`tr[data2-row-id="${id}"]`);
-        
-        fetch(`/ADM_Delete/${id}`, {
-          method: 'DELETE',
-          headers: {
-            'X-CSRFToken': token},
-            
-        })
-        .then(response => {
-          if (response.ok) {
-            // Row deleted successfully, updating the UI
-            rowElement.remove();
-            const modal = button.closest('.modal');
-            const modalInstance = bootstrap.Modal.getInstance(modal);
-            modalInstance.hide();
-            alert('Appointment has been cancelled');
-          } else {
-            
-            response.text().then(errorMessage => {
-            alert('Error: ' + errorMessage);
-            });
-            
-            console.error('Failed to delete row');
-          }
-        })
-        .catch(error => {
-          
-          console.error('Failed to delete row', error);
-          alert('Failed to delete row: ' + error.message);
+        button.addEventListener('click', () => {
+
+            const id = button.dataset.id;
+
+            var token = "{{ csrf_token }}";
+            console.error(token);
+
+            const rowElement = document.querySelector(`tr[data2-row-id="${id}"]`);
+
+            fetch(`/ADM_Delete/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRFToken': token
+                },
+
+            })
+                .then(response => {
+                    if (response.ok) {
+                        // Row deleted successfully, updating the UI
+                        rowElement.remove();
+                        const modal = button.closest('.modal');
+                        const modalInstance = bootstrap.Modal.getInstance(modal);
+                        modalInstance.hide();
+                        alert('Appointment has been cancelled');
+                    } else {
+
+                        response.text().then(errorMessage => {
+                            alert('Error: ' + errorMessage);
+                        });
+
+                        console.error('Failed to delete row');
+                    }
+                })
+                .catch(error => {
+
+                    console.error('Failed to delete row', error);
+                    alert('Failed to delete row: ' + error.message);
+                });
         });
-      });
     });
-    </script>
-  
+</script>
+
 
 
 <!---------------------------------Filtering appointments per date and practitioner --------->
 
 <script>
-    document.getElementById('filter-button').addEventListener('click', function() {
-    var selectedDate = document.getElementById('date').value;
-    var selectedEmployee = document.getElementById('Pract').value;
-    
-    var token = "{{ csrf_token }}";
+    document.getElementById('filter-button').addEventListener('click', function () {
+        var selectedDate = document.getElementById('date').value;
+        var selectedEmployee = document.getElementById('Pract').value;
 
-    var details = {
-      date: selectedDate,
-      employee: selectedEmployee
-    };
-    
+        var token = "{{ csrf_token }}";
 
-    fetch('/filter-appointments/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': token
-      },
-      body: JSON.stringify(details)
-    })
-                .then(response => response.json())
-                    .then(data => {
-    
-                        if (data.success) {
-                            // Handle success case
-                            const tableBody = document.getElementById('AppointmentTable');
-                            tableBody.innerHTML = '';
-                            
-                            data.data.forEach(appt => {
-                                
-                                const row = document.createElement('tr');
-                                row.className = "table-dark"; 
-                                
-                                const IDCell = document.createElement('td');
-                                IDCell.textContent = appt.ID;
-                                row.appendChild(IDCell);
-    
-                                const dateCell = document.createElement('td');
-                                dateCell.textContent = appt.date;
-                                row.appendChild(dateCell);
-                                
-                                const timeCell = document.createElement('td');
-                                timeCell.textContent = appt.time;
-                                row.appendChild(timeCell);
+        var details = {
+            date: selectedDate,
+            employee: selectedEmployee
+        };
 
-                                const serviceCell = document.createElement('td');
-                                serviceCell.textContent = appt.service;
-                                row.appendChild(serviceCell);
 
-                                const pracCell = document.createElement('td');
-                                pracCell.textContent = appt.practitioner;
-                                row.appendChild(pracCell);
-                                
-                                const buttonCell = document.createElement('td');
-    
-                         
-    
-                                const deleteButton = document.createElement('button');
-                                deleteButton.textContent = "Delete";
-                                deleteButton.className = "btn btn-primary";
-                                buttonCell.appendChild(deleteButton);
-    
-                                row.appendChild(buttonCell);
-                                tableBody.appendChild(row);
-                        });
-                    
-    
-    
-    
-    
-                        } else {
-                            // Handle error case
-                            alert('Failed to filter  rows : ' + data.message);
-                        }
-                    })
-                    .catch(error => {
-                        // Handle error case
-                        alert('Failed fetch error ' + error);
+        fetch('/filter-appointments/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': token
+            },
+            body: JSON.stringify(details)
+        })
+            .then(response => response.json())
+            .then(data => {
+
+                if (data.success) {
+                    // Handle success case
+                    const tableBody = document.getElementById('AppointmentTable');
+                    tableBody.innerHTML = '';
+
+                    data.data.forEach(appt => {
+
+                        const row = document.createElement('tr');
+                        row.className = "table-dark";
+
+                        const IDCell = document.createElement('td');
+                        IDCell.textContent = appt.ID;
+                        row.appendChild(IDCell);
+
+                        const dateCell = document.createElement('td');
+                        dateCell.textContent = appt.date;
+                        row.appendChild(dateCell);
+
+                        const timeCell = document.createElement('td');
+                        timeCell.textContent = appt.time;
+                        row.appendChild(timeCell);
+
+                        const serviceCell = document.createElement('td');
+                        serviceCell.textContent = appt.service;
+                        row.appendChild(serviceCell);
+
+                        const pracCell = document.createElement('td');
+                        pracCell.textContent = appt.practitioner;
+                        row.appendChild(pracCell);
+
+                        const buttonCell = document.createElement('td');
+
+
+
+                        const deleteButton = document.createElement('button');
+                        deleteButton.textContent = "Delete";
+                        deleteButton.className = "btn btn-primary";
+                        buttonCell.appendChild(deleteButton);
+
+                        row.appendChild(buttonCell);
+                        tableBody.appendChild(row);
                     });
-            });
-      
-    
-    </script>
-{% endblock %}
 
+
+
+
+
+                } else {
+                    // Handle error case
+                    alert('Failed to filter  rows : ' + data.message);
+                }
+            })
+            .catch(error => {
+                // Handle error case
+                alert('Failed fetch error ' + error);
+            });
+    });
+
+
+</script>
+{% endblock %}
