@@ -12,7 +12,8 @@ from django.contrib.auth import authenticate, login , logout
 from django.middleware.csrf import get_token
 from django.utils import timezone
 from django.contrib.auth.models import Group
-
+from django.urls import reverse
+from django.http import HttpResponseRedirect
 from .models import DoctorProfile, NurseProfile, Timetable, UserProfile, Service, Appointment, Address, PatientProfile, Prescription, Invoice, PatientProfile, DoctorServiceRate, NurseServiceRate, Medication
 from django.db.models import Q
 from django.http import HttpResponseNotFound
@@ -1159,16 +1160,16 @@ def update_nurse_service_rate(request):
 @custom_user_passes_test(is_admin)
 def ADM_delete_appointment(request,id):
      
-     if request.method == 'DELETE':
+    if request.method == 'DELETE':
         try:
-            
+           
             a_details = Appointment.objects.get(appointmentID=id)
-          
+
             if (a_details):
-               
+            
                 a_details.delete()
-              
-                
+             
+               
             else:
                 return HttpResponse("Could not delete the row , please try agin", status=400)
             # Return a success response
@@ -1176,9 +1177,9 @@ def ADM_delete_appointment(request,id):
         except Appointment.DoesNotExist:
             # If the row doesn't exist, return a not found response
             return HttpResponse(status=404)  # 404 Not Found
-     else:
-       return HttpResponseNotAllowed(['DELETE'])
-     
+    else:
+        return HttpResponseNotAllowed(['DELETE'])   
+               
 def password_reset(request):
     csrf_token = get_token(request)
     if request.method == 'POST':
