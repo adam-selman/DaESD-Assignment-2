@@ -77,13 +77,7 @@ class Address(models.Model):
                              related_name = 'addresses')
     
     def __str__(self):
-        if self.buildingName:
-            if self.number:
-                return f"{self.number} {self.buildingName}, {self.streetName}, {self.city}, {self.county}, {self.postcode}, {self.country}"
-            else:
-                return f"{self.buildingName}, {self.streetName}, {self.city}, {self.county}, {self.postcode}, {self.country}"
-        else:
-            return f"{self.number} {self.streetName}, {self.city}, {self.county}, {self.postcode}, {self.country}"
+            return f"{self.number} {self.streetName}, {self.city}, {self.postcode}"
 
 class Service(models.Model):
     serviceID = models.AutoField(primary_key = True)
