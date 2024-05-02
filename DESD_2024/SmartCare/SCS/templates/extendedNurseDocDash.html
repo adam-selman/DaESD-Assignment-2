@@ -1,28 +1,32 @@
-
 <div>
     {% if user.is_authenticated %}
-    <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-html="true" title="Already signed in!!" >
-        <a class = "link_style" href={% url "DisplayPatients"%}>Display patients</a>
+    <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-html="true"
+        title="Already signed in!!">
+        <a class="link_style" href="DisplayPatients">Display patients</a>
     </button>
-   
-    <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-html="true" title="Already signed in!!" >
-        <a class = "link_style" href={% url "DisplayAppt"%}>Display today's appointments</a>
-    </button>
-      
-    <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-html="true" title="Already signed in!!" >
-        <a href={% url "DisplayHistoricAppointments"%} class = "link_style">Display all appointments</a>
-    </button>
-    <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-html="true" title="Already signed in!!" >
-        <a href={% url "DisplayPendingPrescriptions"%} class = "link_style">Display pending prescriptions</a>
-    </button>
-    <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-html="true" title="Already signed in!!" >
-        <a href={% url "DisplayPrescriptions"%} class = "link_style">Display all prescriptions</a>
-    </button>
-    
-    <br>
-    
 
-  {% endif %}
+    <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-html="true"
+        title="Already signed in!!">
+        <a class="link_style" href="DisplayAppt">Display today's appointments</a>
+    </button>
+
+    <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-html="true"
+        title="Already signed in!!">
+        <a href="DisplayHistoricAppointments" class="link_style">Display all appointments</a>
+    </button>
+    <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-html="true"
+        title="Already signed in!!">
+        <a href="DisplayPendingPrescriptions" class="link_style">Display pending prescriptions</a>
+    </button>
+    <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-html="true"
+        title="Already signed in!!">
+        <a href="DisplayPrescriptions" class="link_style">Display all prescriptions</a>
+    </button>
+
+    <br>
+
+
+    {% endif %}
 </div>
 <br>
 {% if clicked %}
@@ -46,7 +50,7 @@
             <td>{{ patient.allergies }}</td>
             <td>{{ patient.isPrivate }}</td>
             <td><button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                    data-bs-target="#modal1{{patient.user_profile}}">History</button></td>
+                    data-bs-target="#modal1{{patient.id}}">History</button></td>
         </tr>
 
         {% endfor %}
@@ -65,13 +69,9 @@
             <th>Start Appointment</th>
         </tr>
     </thead>
-    {% endif %}
     <tbody>
-
         {% for appointment in Appointments %}
-
         <tr class="table-dark">
-
             <td>{{appointment.time}}</td>
             <td>{{appointment.patient.user_profile }}</td>
             <td>{{appointment.service}}</td>
@@ -93,6 +93,8 @@
         </tr>
     </tbody>
 </table>
+{% endif %}
+
 
 {% if clicked3 %}
 <table class="table table-hover">
@@ -199,7 +201,7 @@
 
 
 
-<div class="modal fade" id="modal1{{ patient.user_profile }}" tabindex="-1" role="dialog"
+<div class="modal fade" id="modal1{{ patient.id }}" tabindex="-1" role="dialog"
     aria-labelledby="modal{{ patient.user_profile}}Label" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -227,9 +229,6 @@
 
                         {% if appt.patient.user_profile == patient.user_profile %}
 
-
-
-
                         <tr class="table-dark" data1-row-id="{{patient.user_profile}}">
 
                             <td>{{appt.appointmentID}}</td>
@@ -237,7 +236,6 @@
                             <td>{{ appt.service}}</td>
                             <td>{{ appt.description }}</td>
                             <td>{{ appt.notes }}</td>
-
 
                             {% endif %}
                             {% endfor %}
@@ -253,7 +251,7 @@
 </div>
 {% endfor %}
 <style>
-    .link_style{
+    .link_style {
         text-decoration: none;
         color: white;
     }

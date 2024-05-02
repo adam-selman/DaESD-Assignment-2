@@ -6,6 +6,8 @@ from datetime import datetime
 import logging 
 import os
 import shutil
+import csv
+from io import StringIO
 
 from django.conf import settings
 from .models import Service, DoctorServiceRate, NurseServiceRate, User, \
@@ -255,3 +257,61 @@ def get_appointments_for_practitioner(user):
         return Appointment.objects.filter(nurse=user)
     else:
         return None
+    
+def create_report(start_date, end_date):
+    appointment_data = create_report_content(start_date, end_date)
+
+    csv_buffer = StringIO()
+    csv_writer = csv.writer(csv_buffer)
+
+    # write the data to the buffer
+    csv_writer.writerow(['Start Date', 'End Date', 'Appointments',
+                         'Nurse Appointments', 'Doctor Appointments', 'Expected Turnover',
+                         'Turnover', 'Missing Turnover', 'Invoices', 'Paid Invoices',
+                         'Unpaid Invoices'])
+    
+    csv_writer.writerow(appointment_data)
+
+    base_file_name = f"report_{start_date}_to_{end_date}.csv"
+    file_name = base_file_name
+    file_path = f"/code/SmartCare/Reports/{file_name}"
+
+    counter = 1
+    while os.path.exists(file_path):
+        file_name = f"{base_file_name.split('.csv')[0]}({counter}).csv"  # Append counter to filename
+        file_path = f"/code/SmartCare/Reports/{file_name}"
+        counter += 1
+
+    with open(file_path, 'w') as file:
+        file.write(csv_buffer.getvalue())
+
+    return file_name
+
+def create_report_content(start_date, end_date):
+    appointment_list = Appointment.objects.filter(date__range=[start_date, end_date])
+    nurse_appointments = Appointment.objects.filter(nurse__isnull=False, date__range=[start_date, end_date])
+    invoice_list = Invoice.objects.filter(dateIssued__range=[start_date, end_date])
+    appointments = len(appointment_list)
+    nurse_appointments = len(nurse_appointments)
+    doctor_appointments = appointments - nurse_appointments
+    expected_turnover = 0
+    turnover = 0
+    invoices = len(invoice_list)
+    paid_invoices = 0
+
+
+    for invoice in invoice_list:
+        expected_turnover += invoice.amount
+        if invoice.status:
+            turnover += invoice.amount
+            paid_invoices += 1
+
+    unpaid_invoices = invoices - paid_invoices
+    missing_turnover = expected_turnover - turnover
+
+
+    appointment_data = [start_date, end_date, appointments, nurse_appointments,
+                        doctor_appointments, expected_turnover, turnover,
+                        missing_turnover, invoices, paid_invoices, unpaid_invoices]
+
+    return appointment_data

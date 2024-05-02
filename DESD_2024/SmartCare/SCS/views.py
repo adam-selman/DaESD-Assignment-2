@@ -874,7 +874,8 @@ def request_repeat_prescription(request):
 from datetime import date
 import logging
 import tempfile
-
+import json
+import re 
 from datetime import datetime
 from django.db import transaction
 from django.forms.models import model_to_dict
@@ -886,6 +887,12 @@ from django.contrib.auth import authenticate, login , logout
 from django.middleware.csrf import get_token
 from django.template import RequestContext
 from django.utils import timezone
+from django.utils.encoding import smart_str
+from django.contrib.auth.models import Group
+
+from .models import DoctorProfile, NurseProfile, Timetable, UserProfile, Service, Appointment, Address, PatientProfile, Prescription, Invoice, PatientProfile, DoctorServiceRate, NurseServiceRate
+from django.db.models import Q
+from .models import DoctorProfile, NurseProfile, UserProfile, Service, Appointment, PatientProfile, Prescription, Invoice, DoctorServiceRate, NurseServiceRate
 
 from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponseNotFound
@@ -893,16 +900,20 @@ from django.shortcuts import get_object_or_404, Http404
 from .forms import UserRegisterForm, DoctorNurseRegistrationForm, PrescriptionForm
 from datetime import date
 
-from .models import DoctorProfile, NurseProfile, UserProfile, Service, Appointment, PatientProfile, Prescription, Invoice, PatientProfile, DoctorServiceRate, NurseServiceRate, Medication
+from .models import DoctorProfile, NurseProfile, UserProfile, Service, Appointment, PatientProfile, Prescription, Invoice, PatientProfile, DoctorServiceRate, NurseServiceRate, Address, Medication
 from .forms import UserRegisterForm, DoctorNurseRegistrationForm, AppointmentBookingForm, PrescriptionForm
 
 from .db_utility import get_user_profile_by_user_id, get_invoices_awaiting_payment, get_invoice_information_by_user_id, \
                     get_medical_services, get_user_profile_by_user_id, get_practitioners_by_day_and_service,  \
                     make_patient_appointment_booking, get_time_slots_by_day_and_practitioner, get_all_invoice_information, \
-                    get_patient_appointments_by_user_id, APPOINTMENT_TIMES, get_all_medications, create_invoice_for_appointment
+                    get_patient_appointments_by_user_id,get_patient_appointments_by_user_id, APPOINTMENT_TIMES, get_all_medications, create_invoice_for_appointment
+from .utility import parse_times_for_view, get_prescriptions_for_practitioner, generate_invoice_file_content
+from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
+                
 from .utility import parse_times_for_view, generate_invoice_file_content, \
                     generate_patient_forwarding_file_content, get_prescriptions_for_practitioner, \
-                    get_patient_appointments_by_user_id, parse_times_for_view, get_prescriptions_for_practitioner, generate_invoice_file_content
+                    get_patient_appointments_by_user_id, parse_times_for_view, get_prescriptions_for_practitioner, generate_invoice_file_content, create_report
 
 logger = logging.getLogger(__name__)
 
@@ -946,34 +957,54 @@ def register_doctor_nurse(request):
             user_type = form.cleaned_data.get('user_type')  # Fixed typo from cleaned.data to cleaned_data
 
             # Create UserProfile
-            user_profile = UserProfile.objects.create(user=user, user_type=user_type)
+            gender = form.cleaned_data['gender']
+            date_of_birth = form.cleaned_data['date_of_birth']
+
+            user_profile = UserProfile(user=user, user_type = user_type, date_of_birth=date_of_birth, gender = gender)
             user_profile.save()
 
-            Doctor_profile = DoctorProfile(user_profile=user_profile, user_type = user_type)
-            Doctor_profile.save()
-
-            Nurse_profile = NurseProfile(user_profile=user_profile, user_type = user_type)
-            Nurse_profile.save()
+            number = form.cleaned_data['address_number']
+            streetName = form.cleaned_data['address_street']
+            city = form.cleaned_data['address_city']
+            postcode = form.cleaned_data['address_postcode']
+            address = Address.objects.create(number=number, streetName=streetName, city=city, postcode=postcode, user=user_profile)
+            address.save()
 
             # Depending on the user_type, create the corresponding profile
             if user_type == 'doctor':
-                DoctorProfile.objects.create(
+                doctor_profile = DoctorProfile.objects.create(
                     user_profile=user_profile,  # Refer to the just created user_profile
                     specialization=form.cleaned_data['specialization'],
                     isPartTime=form.cleaned_data['isPartTime']
                 )
+                doctor_profile.save()
+                doctor_group = Group.objects.get(name='doctor_group')
+                doctor_group.user_set.add(user)
             elif user_type == 'nurse':
-                NurseProfile.objects.create(
+                nurse_profile = NurseProfile.objects.create(
                     user_profile=user_profile  # Refer to the just created user_profile
                 )
+                nurse_profile.save()
+                nurse_group = Group.objects.get(name='nurse_group')
+                nurse_group.user_set.add(user)
 
-            # Assuming you want the user to be logged in after registration
-            login(request, user)
-            return redirect('/login')  # Ensure 'home' is the name of your home page's URL pattern
+            monday = True
+            tuesday = True
+            wednesday = True
+            thursday = True
+            friday = True
+            saturday = False
+            sunday = False
+            timetable = Timetable.objects.create(practitioner = user_profile, monday = monday, tuesday = tuesday, wednesday = wednesday, thursday = thursday, friday = friday, saturday = saturday, sunday = sunday)
+            timetable.save()
+
+
+            return redirect('dashboard')  # Ensure 'home' is the name of your home page's URL pattern
     else:
         form = DoctorNurseRegistrationForm()
 
     return render(request, 'staff_register.html', {'form': form})
+            
             
 
 #fixs for the register view which takes age and first creates a user profile 
@@ -982,18 +1013,31 @@ def register(request):
         form = UserRegisterForm(request.POST)
         if form.is_valid():
             user = form.save()
-            age = form.cleaned_data.get('age')
 
-            user_profile = UserProfile(user=user)
+            gender = form.cleaned_data['gender']
+            date_of_birth = form.cleaned_data['date_of_birth']
+
+            user_profile = UserProfile(user=user, date_of_birth=date_of_birth, gender = gender)
             user_profile.save()
 
-            patient_profile = PatientProfile(user_profile=user_profile, age = age)
+            allergies = form.cleaned_data['allergies']
+            isPrivate = form.cleaned_data['isPrivate']
+
+            patient_profile = PatientProfile(user_profile=user_profile, allergies = allergies, isPrivate = isPrivate)
             patient_profile.save()
 
             login(request, user)
-            firstname = form.cleaned_data['firstname']
-            lastname = form.cleaned_data['lastname']
-            
+
+            firstname = form.cleaned_data['first_name']
+            lastname = form.cleaned_data['last_name']
+                        
+            number = form.cleaned_data['address_number']
+            streetName = form.cleaned_data['address_street']
+            city = form.cleaned_data['address_city']
+            postcode = form.cleaned_data['address_postcode']
+            address = Address.objects.create(number=number, streetName=streetName, city=city, postcode=postcode, user=user_profile)
+            address.save()
+
             user_name = f"{firstname} {lastname}"
             request.session['user_name'] = user_name
             return redirect('auth')
@@ -1081,10 +1125,9 @@ def complete_appointment(request):
                 quantity = request.POST.get('quantity')
                 instructions = request.POST.get('instructions')
                 repeatable = request.POST.get('repeatable')
-                if repeatable == 'on':
+                if repeatable :
                     repeatable = True
-                else:
-                    repeatable = False
+               
 
             practitioner = request.user.id
 
@@ -1230,6 +1273,7 @@ def Login(request):
             user_type = user_profile.user_type
             
             login(request, user)
+            
             return redirect('dashboard')
             
         else:
@@ -1415,9 +1459,21 @@ def admin(request):
     invoices_to_be_paid = get_invoices_awaiting_payment()
     doctor_service_rate = DoctorServiceRate.objects.all()
     nurse_service_rate = NurseServiceRate.objects.all()
+    patient_details = PatientProfile.objects.all()
+    appointments=Appointment.objects.all()
+    Dates = []
+    for appt in appointments:
+        if appt.date and appt.date not in Dates:
+            Dates.append(appt.date)
+    practitioners = []
+    for appt in appointments:
+        if appt.doctor and appt.doctor not in practitioners:
+            practitioners.append(appt.doctor)
+        elif appt.nurse and appt.nurse not in practitioners:
+            practitioners.append(appt.nurse)
     return render(request, 'admin_dashboard.html', {'user_type': user_type, "user_name": user_name,
                                                      "all_invoices": all_invoices, "invoices_to_be_paid": invoices_to_be_paid,
-                                                     "doctor_service_rate": doctor_service_rate, "nurse_service_rate": nurse_service_rate})
+                                                     "doctor_service_rate": doctor_service_rate, "nurse_service_rate": nurse_service_rate,"practitioners": practitioners,"patients":patient_details,"appointments":appointments,"dates":Dates})
 
 @login_required(login_url='login')
 @custom_user_passes_test(is_nurse)
@@ -1502,8 +1558,10 @@ def currentAppt(request):
         current_date = date.today()
         nurse = request.user.id 
         appointments = Appointment.objects.filter(date=current_date, nurse=nurse)
-
-        return render(request, 'nurse_dashboard.html', {'Appointments': appointments,'clicked2':True})
+        user = request.user
+        user_name = user.get_full_name
+        user_type = 'nurse'
+        return render(request, 'nurse_dashboard.html', {'Appointments': appointments,'clicked2':True, 'user_name':user_name, 'user_type':user_type})
 
 @login_required(login_url='login')
 @custom_user_passes_test(is_doctor_or_nurse)
@@ -1572,9 +1630,17 @@ def update_patient(request):
         # Get the rowId from the POST data
         id = request.POST.get('id')
         name = request.POST.get('Name')
-        age = request.POST.get('Age')
         allergies = request.POST.get('Allergies')
         isPrivate = request.POST.get('Status')
+
+
+        if not re.match(r"^[A-Za-z.]+$", name) :
+            return JsonResponse({'success': False, 'message': 'Invalid name format'})
+
+
+        # Allergies validation 
+        elif not re.match(r"^[A-Za-z.]+$", allergies) :
+            return JsonResponse({'success': False, 'message': 'Invalid format for the allergie field'})
 
         try:
             
@@ -1586,8 +1652,7 @@ def update_patient(request):
             user_instance.user.save()
           
             model_instance.user_profile = user_instance
-    
-            model_instance.age = age
+
             model_instance.allergies = allergies
             model_instance.isPrivate = isPrivate
         
@@ -1598,7 +1663,6 @@ def update_patient(request):
             # Return a JSON response indicating success
             return JsonResponse({'success': True ,'data':{
                 'name': model_instance.user_profile.user.username,
-                 'age': model_instance.age,
                  'allergies': model_instance.allergies,
                  'status': model_instance.isPrivate }
                  }
@@ -1668,7 +1732,47 @@ def approve_prescription(request):
     else:
         return JsonResponse({'success': 'false', 'error': 'Invalid request method'})
 
+def filter_patient(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        isPrivate = data.get('Bill')
+       
+        print(isPrivate)
 
+        if isPrivate == False:
+            patients = PatientProfile.objects.filter(isPrivate=False)
+        elif isPrivate == True:
+            patients = PatientProfile.objects.filter(isPrivate=True)
+        else:
+            patients = PatientProfile.objects.all()
+
+        patient_data = [{'name': patient.user_profile.user.username, 'allergies': patient.allergies, 'isPrivate': patient.isPrivate } for patient in patients]
+        return JsonResponse({'success':True,'data': patient_data})
+    else:
+        return JsonResponse({'success': False, 'error': 'Invalid request method'})
+   
+def filter_appointments(request):
+    if request.method =='POST':
+        data = json.loads(request.body)
+        selectedDate = data['date']
+        selectedEmployee = data['employee']  
+        selectedDate = datetime.strptime(selectedDate, '%B %d, %Y').strftime('%Y-%m-%d')  
+        try:
+            
+            user = User.objects.get(username=selectedEmployee)
+            user_profile = UserProfile.objects.get(user=user)
+            
+
+            filtered_appointments = Appointment.objects.filter(Q(date=selectedDate) & (Q(nurse=user_profile) | Q(doctor=user_profile)))
+            filt_app = [{'ID': appt.appointmentID, 'date': appt.date, 'time': appt.time,'service':appt.service.service,'practitioner':selectedEmployee } for appt in filtered_appointments]
+            return JsonResponse({'success':True,'data': filt_app})    
+        except ObjectDoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Employee not found'})
+    else:
+        return JsonResponse({'success': False, 'error': 'Invalid request method'})
+    
+        
+         
 
 
 def Logout(request):
@@ -1849,7 +1953,7 @@ def mark_invoice_as_paid(request):
             return redirect(Http404)
     else:
         data = {'success': 'false'}
-    return redirect('dashboard') 
+    return redirect('dashboard')
 
 
 
@@ -1913,5 +2017,47 @@ def update_nurse_service_rate(request):
         nurse_service_rate.rate = new_rate
         nurse_service_rate.save()
         return redirect('admDash')
+    else:
+        pass
+
+
+@login_required(login_url='login')
+@custom_user_passes_test(is_admin)
+def ADM_delete_appointment(request,id):
+     
+     if request.method == 'DELETE':
+        try:
+            
+            a_details = Appointment.objects.get(appointmentID=id)
+          
+            if (a_details):
+               
+                a_details.delete()
+              
+                
+            else:
+                return HttpResponse("Could not delete the row , please try agin", status=400)
+            # Return a success response
+            return HttpResponse(status=204) 
+        except Appointment.DoesNotExist:
+            # If the row doesn't exist, return a not found response
+            return HttpResponse(status=404)  # 404 Not Found
+     else:
+       return HttpResponseNotAllowed(['DELETE'])
+@login_required(login_url='login')
+@custom_user_passes_test(is_admin)
+def generate_report(request):
+    file_name = None
+    if request.method == 'POST':
+        start_date_input = request.POST.get('start_date')
+        end_date_input = request.POST.get('end_date')
+
+        start_date = datetime.strptime(start_date_input, '%Y-%m-%d').date()
+        end_date = datetime.strptime(end_date_input, '%Y-%m-%d').date()
+
+        file_name = create_report(start_date, end_date)
+
+        file_path = f"/code/SmartCare/Reports/{file_name}"
+        return FileResponse(open(file_path, 'rb'))
     else:
         pass

@@ -3,19 +3,39 @@ from .models import Appointment, UserProfile, PatientProfile, DoctorProfile, Nur
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.db import transaction
+from django.core.exceptions import ValidationError
+import datetime
+
+class CustomDateField(forms.DateField):
+    def to_python(self, value):
+        if not value:
+            return None
+        try:
+            day, month, year = map(int, value.split('/'))
+            return datetime.date(year, month, day)
+        except ValueError:
+            raise ValidationError('Invalid date format. Use DD/MM/YYYY.')
+
 
 #form now takes age as required by table to not be null 
 class UserRegisterForm(UserCreationForm):
-    firstname = forms.CharField(max_length=100)
-    lastname = forms.CharField(max_length=100)
+    first_name = forms.CharField(max_length=100)
+    last_name = forms.CharField(max_length=100)
     email = forms.EmailField(required=True)
+    date_of_birth = CustomDateField(required=True)
+    gender = forms.CharField(max_length=10)
     #user_type = forms.ChoiceField(choices=UserProfile.USER_TYPE_CHOICES)
-    age = forms.IntegerField(required=True)
-    user_type = 'patient' #Tim's fix :P
-  
+    user_type = PatientProfile
+    address_number = forms.IntegerField()
+    address_street = forms.CharField(max_length=100, required=True)
+    address_city = forms.CharField(max_length=100, required=True)
+    address_postcode = forms.CharField(max_length=10, required=True)
+    allergies = forms.CharField(max_length=100, required=True)
+    isPrivate = forms.BooleanField(required=False, initial=False)
+
     class Meta:
         model = User
-        fields = ["username", "email", "password1", "password2", "age"]
+        fields = ["username", "email", "password1", "password2", "first_name", "last_name"]
 
 
 class DoctorNurseRegistrationForm(UserCreationForm):
@@ -23,38 +43,20 @@ class DoctorNurseRegistrationForm(UserCreationForm):
     specialization = forms.CharField(required=False)  # Optional, shown only if Doctor is selected
     isPartTime = forms.BooleanField(required=False, initial=False)
 
-    def save(self, commit=True):
-        user = super().save(commit=False)
-        if commit:
-            user.save()
-            user_type = self.cleaned_data.get('user_type')
+    first_name = forms.CharField(max_length=100)
+    last_name = forms.CharField(max_length=100)
+    email = forms.EmailField(required=True)
+    date_of_birth = CustomDateField(required=True)
+    gender = forms.CharField(max_length=10)
 
-            # Create or update the UserProfile instance.
-            user_profile, _ = UserProfile.objects.update_or_create(
-                user=user, defaults={'user_type': user_type}
-            )
+    address_number = forms.IntegerField()
+    address_street = forms.CharField(max_length=100, required=True)
+    address_city = forms.CharField(max_length=100, required=True)
+    address_postcode = forms.CharField(max_length=10, required=True)
 
-            if user_type == 'doctor':
-                # Check explicitly for an existing DoctorProfile.
-                doctor_profile = DoctorProfile.objects.filter(user_profile=user_profile).first()
-                if doctor_profile:
-                    # Update existing DoctorProfile.
-                    doctor_profile.specialization = self.cleaned_data.get('specialization')
-                    doctor_profile.isPartTime = self.cleaned_data.get('isPartTime')
-                    doctor_profile.save()
-                else:
-                    # Create a new DoctorProfile.
-                    DoctorProfile.objects.create(
-                        user_profile=user_profile,
-                        specialization=self.cleaned_data.get('specialization'),
-                        isPartTime=self.cleaned_data.get('isPartTime')
-                    )
-
-            elif user_type == 'nurse':
-                # Ensure only one NurseProfile exists for the UserProfile.
-                NurseProfile.objects.get_or_create(user_profile=user_profile)
-
-        return user
+    class Meta:
+        model = User
+        fields = ["username", "email", "password1", "password2", "first_name", "last_name"]
 
 
 

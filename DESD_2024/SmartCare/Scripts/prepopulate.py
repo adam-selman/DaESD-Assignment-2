@@ -86,6 +86,9 @@ def populate_users(csvFileName, userType, profileClass, additionalFields):
                 'date_joined': timezone.now()
             }
 
+            date_of_birth = row.get('date_of_birth')
+            gender = row.get('gender')
+
             specificFields = {field: row.get(field) for field in additionalFields}
             if additionalFields:
                 for field in additionalFields:
@@ -97,7 +100,7 @@ def populate_users(csvFileName, userType, profileClass, additionalFields):
 
             user = User.objects.create_user(**commonFields)
             
-            userProfile = UserProfile.objects.create(user=user, user_type=userType)
+            userProfile = UserProfile.objects.create(user=user, user_type=userType, date_of_birth=date_of_birth, gender=gender)
             
             specificProfile = profileClass.objects.create(user_profile=userProfile, **specificFields)
             
@@ -336,7 +339,7 @@ def populate_prescription(csvFileName, modelClass):
                 issueDate = timezone.make_aware(issueDate)
                 objData['issueDate'] = issueDate
 
-            if 'reissueDate' in objData:
+            if 'reissueDate' in objData and objData['reissueDate'] is not None:
                 reissueDateStr = objData['reissueDate']
                 reissueDate = datetime.strptime(reissueDateStr, '%Y-%m-%d %H:%M:%S')
                 reissueDate = timezone.make_aware(reissueDate)
@@ -506,8 +509,8 @@ def create_groups():
     print("Admins added to group")
 if __name__ == '__main__':
     print("Starting to populate the database... ")
-    populate_users('data/doctors.csv', 'doctor', DoctorProfile, ['specialization', 'isPartTime'])
     populate_users('data/admins.csv', 'admin', AdminProfile, [])
+    populate_users('data/doctors.csv', 'doctor', DoctorProfile, ['specialization', 'isPartTime'])
     populate_users('data/nurses.csv', 'nurse', NurseProfile, [])
     populate_users('data/patients.csv', 'patient', PatientProfile, ['allergies', 'isPrivate'])
     populate_contact('data/address.csv', Address)
