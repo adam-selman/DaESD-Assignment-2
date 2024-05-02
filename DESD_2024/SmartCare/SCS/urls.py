@@ -37,4 +37,7 @@ urlpatterns = [
    path('complete_appointment', views.complete_appointment, name='completeAppointment'),
    path('start_appointment', views.start_appointment, name='startAppointment'),
    path('make_payment', views.make_payment, name='make_payment'),
+   path('password_reset', views.password_reset, name='password_reset'),
+   path('password_reset_change/', views.password_reset_change, name='password_reset_change'),
+   path('password_reset_done', views.password_reset_done, name='password_reset_done')
 ]

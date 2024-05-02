@@ -40,19 +40,19 @@
           </li>
           {% if user.is_authenticated %}
           <li class="nav-item dropdown">
-            <a a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown"
+            <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown"
               aria-expanded="false" href="logout">
               {% if user_type == 'doctor' %}
-              <img src="{% static " doctor.png" %}" alt="" width="32" height="32" class="rounded-circle me-2">
+              <img src="{% static "doctor.png" %}" alt="" width="32" height="32" class="rounded-circle me-2">
               <strong>Dr. {{ user_name }}</strong>
               {% elif user_type == 'patient' %}
-              <img src="{% static " patient.png" %}" alt="" width="32" height="32" class="rounded-circle me-2">
+              <img src="{% static "patient.png" %}" alt="" width="32" height="32" class="rounded-circle me-2">
               <strong>{{ user_name }}</strong>
               {% elif user_type == 'nurse' %}
-              <img src="{% static " nurse.png" %}" alt="" width="32" height="32" class="rounded-circle me-2">
+              <img src="{% static "nurse.png" %}" alt="" width="32" height="32" class="rounded-circle me-2">
               <strong>Nurse {{ user_name }}</strong>
               {% elif user_type == 'admin' %}
-              <img src="{% static " admin.png" %}" alt="" width="32" height="32" class="rounded-circle me-2">
+              <img src="{% static "admin.png" %}" alt="" width="32" height="32" class="rounded-circle me-2">
               <strong>{{ user_name }}</strong>
               {% endif %}
             </a>

@@ -68,6 +68,7 @@ def admin_dash(request):
     if request.method == 'POST':
         registration_form = DoctorNurseRegistrationForm(request.POST)
         if registration_form.is_valid():
+                
             user = registration_form.save()  # Saves the User instance
 
             # Determine the type of user and create corresponding profile
@@ -825,14 +826,18 @@ def historic_prescriptions(request):
     if is_doctor(request.user):
         doctor = request.user.id
         historic_prescriptions = Prescription.objects.all()
-
-        return render(request, 'doctor_dashboard.html', {'historic_prescriptions': historic_prescriptions, 'clicked5':True})
+        user = request.user
+        user_name = user.get_full_name
+        user_type = 'doctor'
+        return render(request, 'doctor_dashboard.html', {'historic_prescriptions': historic_prescriptions, 'clicked5':True, 'user_name':user_name, 'user_type':user_type})
     
     elif is_nurse(request.user):
         nurse = request.user.id
         historic_prescriptions = Prescription.objects.all()
-
-        return render(request, 'nurse_dashboard.html', {'historic_prescriptions': historic_prescriptions, 'clicked5':True})
+        user = request.user
+        user_name = user.get_full_name
+        user_type = 'nurse'
+        return render(request, 'nurse_dashboard.html', {'historic_prescriptions': historic_prescriptions, 'clicked5':True, 'user_name':user_name, 'user_type':user_type})
 
 @login_required(login_url='login')
 @custom_user_passes_test(is_doctor_or_nurse)
@@ -1173,6 +1178,45 @@ def ADM_delete_appointment(request,id):
             return HttpResponse(status=404)  # 404 Not Found
      else:
        return HttpResponseNotAllowed(['DELETE'])
+     
+def password_reset(request):
+    csrf_token = get_token(request)
+    if request.method == 'POST':
+        try:
+            eml = request.POST.get('email')
+            usernm = request.POST.get('username')
+            user = User.objects.get(username=usernm)
+            em = User.objects.get(email=eml)
+            if user == em:
+                return redirect(reverse('password_reset_change') + f'?key={usernm}')
+                #return redirect(reverse('password_reset_change', kwargs={'username': usernm}))
+            else:
+                message = "User doesn't exist in records"
+                return render(request, 'password_reset.html', {'message': message, 'csrf_token': csrf_token})
+        except ObjectDoesNotExist:
+            message = "User doesn't exist in records"
+            return render(request, 'password_reset.html', {'message': message, 'csrf_token': csrf_token})
+    return render(request, 'password_reset.html', {'csrf_token': csrf_token})
+
+def password_reset_change(request):
+    username = request.GET.get('key')
+    csrf_token = get_token(request)
+    if request.method == 'POST':
+        user = User.objects.get(username=username)
+        if user != None:
+            password = request.POST.get('password')
+            confirm_password = request.POST.get('password2')
+            if password == confirm_password:
+                user.set_password(password)
+                user.save()
+                return redirect('password_reset_done')
+        else:
+            message = "Error could retrieve user info"
+            return render(request, 'password_reset_change.html', {'message':message})
+    return render(request, 'password_reset_change.html', {'username':username})
+
+def password_reset_done(request):
+    return render(request, 'password_reset_done.html')    
      
 @login_required(login_url='login')
 @custom_user_passes_test(is_admin)
