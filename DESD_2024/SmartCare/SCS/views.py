@@ -152,6 +152,9 @@ def register(request):
             patient_profile = PatientProfile(user_profile=user_profile, allergies = allergies, isPrivate = isPrivate)
             patient_profile.save()
 
+            patient_group = Group.objects.get(name='patient_group')
+            patient_group.user_set.add(user)
+
             login(request, user)
 
             firstname = form.cleaned_data['first_name']
@@ -243,7 +246,7 @@ def complete_appointment(request):
             medication = request.POST.get('medication')
 
             logger.info(f"Medication: {medication}")
-            if medication is not None:
+            if medication != 'none':
                 medication = Medication.objects.get(medicationID=medication)
                 dosage = request.POST.get('dosage')
                 dosage = str(dosage) + "mg"
@@ -253,6 +256,8 @@ def complete_appointment(request):
                 repeatable = request.POST.get('repeatable')
                 if repeatable:
                     repeatable = True
+                else: 
+                    repeatable = False
 
             practitioner = request.user.id
 
@@ -265,7 +270,7 @@ def complete_appointment(request):
 
             practitioner_type = get_user_type(practitioner)
 
-            if medication is not None:
+            if medication != 'none':
                 if practitioner_type == 'doctor':
                     doctor = DoctorProfile.objects.get(user_profile__user=request.user)
                     doctor_user_profile = doctor.user_profile
