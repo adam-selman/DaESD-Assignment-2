@@ -563,7 +563,6 @@
 
 <script>
 
-
     const deleteButtons = document.querySelectorAll('.delete-button');
     deleteButtons.forEach(button => {
         button.addEventListener('click', () => {
@@ -712,53 +711,46 @@
 
                 if (data.success) {
                     // Handle success case
-                    const tableBody = document.getElementById('AppointmentTable');
+                    const tableBody = document.getElementById('PatientTable');
                     tableBody.innerHTML = '';
 
-                    data.data.forEach(appt => {
+                    data.data.forEach(patient => {
 
                         const row = document.createElement('tr');
                         row.className = "table-dark";
-                        row.setAttribute('data2-row-id', appt.ID);
 
-                        const IDCell = document.createElement('td');
-                        IDCell.textContent = appt.ID;
-                        row.appendChild(IDCell);
+                        const nameCell = document.createElement('td');
+                        nameCell.textContent = patient.name;
+                        row.appendChild(nameCell);
 
-                        const dateCell = document.createElement('td');
-                        dateCell.textContent = appt.date;
-                        row.appendChild(dateCell);
+                        const allergiesCell = document.createElement('td');
+                        allergiesCell.textContent = patient.allergies;
+                        row.appendChild(allergiesCell);
 
-                        const timeCell = document.createElement('td');
-                        timeCell.textContent = appt.time;
-                        row.appendChild(timeCell);
-
-                        const serviceCell = document.createElement('td');
-                        serviceCell.textContent = appt.service;
-                        row.appendChild(serviceCell);
-
-                        const pracCell = document.createElement('td');
-                        pracCell.textContent = appt.practitioner;
-                        row.appendChild(pracCell);
+                        const BillingCell = document.createElement('td');
+                        BillingCell.textContent = patient.isPrivate;
+                        row.appendChild(BillingCell);
 
                         const buttonCell = document.createElement('td');
 
+                        const historyButton = document.createElement('button');
+                        historyButton.textContent = "History";
+                        historyButton.className = "btn btn-primary";
+                        buttonCell.appendChild(historyButton);
 
+                        const updateButton = document.createElement('button');
+                        updateButton.textContent = "Update";
+                        updateButton.className = "btn btn-primary";
+                        buttonCell.appendChild(updateButton);
 
                         const deleteButton = document.createElement('button');
                         deleteButton.textContent = "Delete";
                         deleteButton.className = "btn btn-primary";
-                        deleteButton.setAttribute('type', 'button');
-                        deleteButton.setAttribute('data-bs-toggle', 'modal');
-                        deleteButton.setAttribute('data-bs-target', `#modal3${appt.ID}`);
                         buttonCell.appendChild(deleteButton);
 
                         row.appendChild(buttonCell);
                         tableBody.appendChild(row);
                     });
-
-
-
 
 
                 } else {
@@ -771,6 +763,8 @@
                 alert('Failed fetch error ' + error);
             });
     });
+
+
 </script>
 
 
