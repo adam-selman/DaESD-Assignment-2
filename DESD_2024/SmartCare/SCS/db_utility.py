@@ -571,7 +571,7 @@ def make_patient_appointment_booking(patient, booking_date, service_id, practiti
                                                             time=time,
                                                             description=reason,
                                                             nurse_id=practitioner,
-                                                            patient_id=patient.id,
+                                                            patient_id=patient_profile.id,
                                                             service_id=service_id)
 
             new_appointment.save()
