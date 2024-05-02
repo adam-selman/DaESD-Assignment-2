@@ -37,7 +37,6 @@ logger = logging.getLogger(__name__)
 def admin_dash(request):
     registration_form = DoctorNurseRegistrationForm()
     appointments = Appointment.objects.all()
-
     if request.method == 'POST':
         registration_form = DoctorNurseRegistrationForm(request.POST)
         if registration_form.is_valid():
@@ -114,7 +113,7 @@ def register(request):
             gender = form.cleaned_data['gender']
             date_of_birth = form.cleaned_data['date_of_birth']
 
-            user_profile = UserProfile(user=user, date_of_birth=date_of_birth, gender = gender)
+            user_profile = UserProfile(user=user, user_type = 'patient', date_of_birth=date_of_birth, gender = gender)
             user_profile.save()
 
             allergies = form.cleaned_data['allergies']
@@ -222,10 +221,8 @@ def complete_appointment(request):
                 quantity = request.POST.get('quantity')
                 instructions = request.POST.get('instructions')
                 repeatable = request.POST.get('repeatable')
-                if repeatable == 'on':
+                if repeatable:
                     repeatable = True
-                else:
-                    repeatable = False
 
             practitioner = request.user.id
 
@@ -1012,7 +1009,7 @@ def request_repeat_prescription(request):
             'doctor': existing_prescription.doctor,
             'nurse': existing_prescription.nurse,
             'approved': False,
-            'issueDate': datetime.date.now(),
+            'issueDate': date.today(),
             'reissueDate': None,
             'appointment': existing_prescription.appointment,
         }

@@ -272,6 +272,9 @@ def create_report(start_date, end_date):
     
     csv_writer.writerow(appointment_data)
 
+    if not os.path.exists("/code/SmartCare/Reports"):
+        os.makedirs("/code/SmartCare/Reports")
+
     base_file_name = f"report_{start_date}_to_{end_date}.csv"
     file_name = base_file_name
     file_path = f"/code/SmartCare/Reports/{file_name}"
