@@ -829,6 +829,7 @@ selectElement.addEventListener('change', (event) => {
                                 
                                 const row = document.createElement('tr');
                                 row.className = "table-dark"; 
+                                row.setAttribute('data2-row-id', appt.ID);
                                 
                                 const IDCell = document.createElement('td');
                                 IDCell.textContent = appt.ID;
@@ -857,6 +858,9 @@ selectElement.addEventListener('change', (event) => {
                                 const deleteButton = document.createElement('button');
                                 deleteButton.textContent = "Delete";
                                 deleteButton.className = "btn btn-primary";
+                                deleteButton.setAttribute('type', 'button'); 
+                                deleteButton.setAttribute('data-bs-toggle', 'modal'); 
+                                deleteButton.setAttribute('data-bs-target', `#modal3${appt.ID}`);
                                 buttonCell.appendChild(deleteButton);
     
                                 row.appendChild(buttonCell);
