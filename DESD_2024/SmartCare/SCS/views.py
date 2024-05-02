@@ -1,49 +1,67 @@
-from datetime import date
 import logging
 import tempfile
 import json
 import re 
 from datetime import datetime
 from django.db import transaction
-from django.forms.models import model_to_dict
-from django.shortcuts import render,redirect, HttpResponse, get_object_or_404, get_object_or_404
+from django.shortcuts import render,redirect, HttpResponse, get_object_or_404, Http404
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, FileResponse, Http404, HttpResponseNotFound, HttpResponseNotAllowed
 from django.contrib import messages
 from django.contrib.auth import authenticate, login , logout
 from django.middleware.csrf import get_token
-from django.template import RequestContext
 from django.utils import timezone
-from django.utils.encoding import smart_str
 from django.contrib.auth.models import Group
 
-from .models import DoctorProfile, NurseProfile, Timetable, UserProfile, Service, Appointment, Address, PatientProfile, Prescription, Invoice, PatientProfile, DoctorServiceRate, NurseServiceRate
+from .models import DoctorProfile, NurseProfile, Timetable, UserProfile, Service, Appointment, Address, PatientProfile, Prescription, Invoice, PatientProfile, DoctorServiceRate, NurseServiceRate, Medication
 from django.db.models import Q
-from .models import DoctorProfile, NurseProfile, UserProfile, Service, Appointment, PatientProfile, Prescription, Invoice, DoctorServiceRate, NurseServiceRate
-
-from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponseNotFound
-from django.shortcuts import get_object_or_404, Http404
 from .forms import UserRegisterForm, DoctorNurseRegistrationForm, PrescriptionForm
 from datetime import date
 
-from .models import DoctorProfile, NurseProfile, UserProfile, Service, Appointment, PatientProfile, Prescription, Invoice, PatientProfile, DoctorServiceRate, NurseServiceRate, Address, Medication
-from .forms import UserRegisterForm, DoctorNurseRegistrationForm, AppointmentBookingForm, PrescriptionForm
 
-from .db_utility import get_user_profile_by_user_id, get_invoices_awaiting_payment, get_invoice_information_by_user_id, \
-                    get_medical_services, get_user_profile_by_user_id, get_practitioners_by_day_and_service,  \
+from .db_utility import get_invoices_awaiting_payment, get_invoice_information_by_user_id, \
+                    get_medical_services, get_practitioners_by_day_and_service,  \
                     make_patient_appointment_booking, get_time_slots_by_day_and_practitioner, get_all_invoice_information, \
-                    get_patient_appointments_by_user_id,get_patient_appointments_by_user_id, APPOINTMENT_TIMES, get_all_medications, create_invoice_for_appointment
-from .utility import parse_times_for_view, get_prescriptions_for_practitioner, generate_invoice_file_content
+                   get_all_medications, create_invoice_for_appointment
+from .utility import parse_times_for_view, get_prescriptions_for_practitioner, generate_invoice_file_content,  generate_patient_forwarding_file_content, create_report
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
                 
-from .utility import parse_times_for_view, generate_invoice_file_content, \
-                    generate_patient_forwarding_file_content, get_prescriptions_for_practitioner, \
-                    get_patient_appointments_by_user_id, parse_times_for_view, get_prescriptions_for_practitioner, generate_invoice_file_content, create_report
+
 
 logger = logging.getLogger(__name__)
 
+def is_doctor(user):
+    return user.groups.filter(name='doctor_group').exists()
+
+def is_nurse(user):
+    return user.groups.filter(name='nurse_group').exists()
+
+def is_patient(user):
+    return user.groups.filter(name='patient_group').exists()
+
+def is_admin(user):
+    return user.groups.filter(name='admin_group').exists()
+
+def is_doctor_or_nurse_or_admin(user):
+    return user.groups.filter(name__in=['doctor_group', 'nurse_group','admin_group']).exists()
+
+def is_doctor_or_nurse(user):
+    return user.groups.filter(name__in=['doctor_group', 'nurse_group']).exists()
+
+def custom_user_passes_test(test_func):
+    def decorator(view_func):
+        def wrapper(request, *args, **kwargs):
+            if test_func(request.user):
+                return view_func(request, *args, **kwargs)
+            else:
+                return HttpResponseNotFound("404 Error: Page does not exist")
+        return wrapper
+    return decorator
+
+@login_required(login_url='login')
+@custom_user_passes_test(is_admin)
 def admin_dash(request):
     registration_form = DoctorNurseRegistrationForm()
     appointments = Appointment.objects.all()
@@ -74,7 +92,8 @@ def admin_dash(request):
     return render(request, 'admin_dashboard.html', context)
 
 
-
+@login_required(login_url='login')
+@custom_user_passes_test(is_admin)
 def register_doctor_nurse(request):
     if request.method == 'POST':
         form = DoctorNurseRegistrationForm(request.POST)
@@ -174,35 +193,6 @@ def register(request):
         form = UserRegisterForm()
     return render(request, 'register.html', {'form': form})
 
-    
-def is_doctor(user):
-    return user.groups.filter(name='doctor_group').exists()
-
-def is_nurse(user):
-    return user.groups.filter(name='nurse_group').exists()
-
-def is_patient(user):
-    return user.groups.filter(name='patient_group').exists()
-
-def is_admin(user):
-    return user.groups.filter(name='admin_group').exists()
-
-def is_doctor_or_nurse_or_admin(user):
-    return user.groups.filter(name__in=['doctor_group', 'nurse_group','admin_group']).exists()
-
-def is_doctor_or_nurse(user):
-    return user.groups.filter(name__in=['doctor_group', 'nurse_group']).exists()
-
-def custom_user_passes_test(test_func):
-    def decorator(view_func):
-        def wrapper(request, *args, **kwargs):
-            if test_func(request.user):
-                return view_func(request, *args, **kwargs)
-            else:
-                return HttpResponseNotFound("404 Error: Page does not exist")
-        return wrapper
-    return decorator
-
 
 @login_required(login_url='login')
 @custom_user_passes_test(is_doctor_or_nurse)
@@ -227,6 +217,8 @@ def start_appointment(request):
     }
     return render(request, 'complete_appointment.html', context)
 
+@login_required(login_url='login')
+@custom_user_passes_test(is_doctor_or_nurse)
 def complete_appointment(request):
     if request.method == 'POST':
 
@@ -245,8 +237,8 @@ def complete_appointment(request):
             
             medication = request.POST.get('medication')
 
-            logger.info(f"Medication: {medication}")
-            if medication != 'none':
+           
+            if medication not in [None, 'none']:
                 medication = Medication.objects.get(medicationID=medication)
                 dosage = request.POST.get('dosage')
                 dosage = str(dosage) + "mg"
@@ -270,7 +262,7 @@ def complete_appointment(request):
 
             practitioner_type = get_user_type(practitioner)
 
-            if medication != 'none':
+            if medication not in [None, 'none']:
                 if practitioner_type == 'doctor':
                     doctor = DoctorProfile.objects.get(user_profile__user=request.user)
                     doctor_user_profile = doctor.user_profile
@@ -305,6 +297,8 @@ def complete_appointment(request):
 
     return JsonResponse(data) 
 
+@login_required(login_url='login')
+@custom_user_passes_test(is_patient)
 def make_payment(request):
     if request.method == 'GET':
         invoice_id = request.GET.get('invoiceID')
@@ -450,7 +444,7 @@ def patient(request):
         user_name = request.session.get('user_name')
         if user_name is None:
             user_name = ""
-    logger.info(f"invoices: {invoices}")
+    
 
     context = {"services": services,
                 "user_type": user_type,
@@ -515,10 +509,12 @@ def retrieve_time_slots_by_day_and_practitioner(request) -> JsonResponse:
 
         available_times = get_time_slots_by_day_and_practitioner(practitioner, parsed_date)
         available_times = parse_times_for_view(available_times)
-        logger.info(f"Available times: {available_times}")
+        
 
     return JsonResponse({'success': 'true', 'timeSlots': available_times})
 
+@login_required(login_url='login')
+@custom_user_passes_test(is_patient)
 def patient_appointment_booking(request) -> JsonResponse:
     """
     View function for patient appointment booking
@@ -547,6 +543,7 @@ def patient_appointment_booking(request) -> JsonResponse:
         check = False
     return JsonResponse(data) 
 
+@login_required(login_url='login')
 def dashboard_resolver(request):
     """
     Function to resolve the dashboard based on the user type
@@ -707,8 +704,9 @@ def historic_appointments(request):
         historic_appointments = Appointment.objects.filter(nurse=nurse)
         return render(request, 'nurse_dashboard.html', {'historic_appointments': historic_appointments, 'clicked3':True})
 
+@login_required(login_url='login')
+@custom_user_passes_test(is_admin)
 def delete_patient(request,id):
-     
      if request.method == 'DELETE':
         try:
             # Filter the rows per patient_id
@@ -731,6 +729,7 @@ def delete_patient(request,id):
      else:
        return HttpResponseNotAllowed(['DELETE'])
      
+@login_required(login_url='login')
 def delete_appointment(request,id):
      
      if request.method == 'DELETE':
@@ -753,8 +752,7 @@ def delete_appointment(request,id):
      else:
        return HttpResponseNotAllowed(['DELETE'])
         
-
-
+@login_required(login_url='login')
 def update_patient(request):
     if request.method == 'POST':
         # Get the rowId from the POST data
@@ -860,11 +858,12 @@ def approve_prescription(request):
     else:
         return JsonResponse({'success': 'false', 'error': 'Invalid request method'})
 
+@login_required(login_url='login')
 def filter_patient(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         isPrivate = data.get('Bill')
-       
+        logger.info(isPrivate)
         print(isPrivate)
 
         if isPrivate == False:
@@ -879,6 +878,7 @@ def filter_patient(request):
     else:
         return JsonResponse({'success': False, 'error': 'Invalid request method'})
    
+@login_required(login_url='login')
 def filter_appointments(request):
     if request.method =='POST':
         data = json.loads(request.body)
@@ -899,10 +899,7 @@ def filter_appointments(request):
     else:
         return JsonResponse({'success': False, 'error': 'Invalid request method'})
     
-        
-         
-
-
+@login_required(login_url='login')
 def Logout(request):
     """
     Function to handle user logout
@@ -916,6 +913,7 @@ def Logout(request):
     logout(request)
     return redirect('/login') 
 
+@login_required(login_url='login')
 def check_session(request):
     """
     Function to check the session status
@@ -1049,7 +1047,8 @@ def prescription_pending_approval(request):
         data = {'success': 'false', 'error': 'User is not a doctor or Nurse'}
     return JsonResponse(data)
 
-
+@login_required(login_url='login')
+@custom_user_passes_test(is_admin)
 def mark_invoice_as_paid(request):
     """
     Function to mark an invoice as paid
@@ -1066,13 +1065,13 @@ def mark_invoice_as_paid(request):
         admin_user = request.user
 
         if is_admin(admin_user):
-            logger.info("Marking invoice as paid")
+           
             invoice_id = request.POST.get('invoice_id')
             invoice = Invoice.objects.get(invoiceID=invoice_id)
-            logger.info(f"Marking invoice as paid: {invoice_id}")
+           
             invoice.status = 1
             invoice.approved = 1
-            logger.info(f"Saving invoice")
+          
             invoice.save()
 
             data = {'success': 'true'}
@@ -1174,6 +1173,7 @@ def ADM_delete_appointment(request,id):
             return HttpResponse(status=404)  # 404 Not Found
      else:
        return HttpResponseNotAllowed(['DELETE'])
+     
 @login_required(login_url='login')
 @custom_user_passes_test(is_admin)
 def generate_report(request):
