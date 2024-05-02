@@ -13,6 +13,7 @@ from django.contrib.auth import authenticate, login , logout
 from django.middleware.csrf import get_token
 from django.template import RequestContext
 from django.utils import timezone
+from django.utils.encoding import smart_str
 
 from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponseNotFound
@@ -20,7 +21,7 @@ from django.shortcuts import get_object_or_404, Http404
 from .forms import UserRegisterForm, DoctorNurseRegistrationForm, PrescriptionForm
 from datetime import date
 
-from .models import DoctorProfile, NurseProfile, UserProfile, Service, Appointment, PatientProfile, Prescription, Invoice, PatientProfile, DoctorServiceRate, NurseServiceRate, Medication
+from .models import DoctorProfile, NurseProfile, UserProfile, Service, Appointment, PatientProfile, Prescription, Invoice, PatientProfile, DoctorServiceRate, NurseServiceRate, Address, Medication
 from .forms import UserRegisterForm, DoctorNurseRegistrationForm, AppointmentBookingForm, PrescriptionForm
 
 from .db_utility import get_user_profile_by_user_id, get_invoices_awaiting_payment, get_invoice_information_by_user_id, \
@@ -29,7 +30,7 @@ from .db_utility import get_user_profile_by_user_id, get_invoices_awaiting_payme
                     get_patient_appointments_by_user_id, APPOINTMENT_TIMES, get_all_medications, create_invoice_for_appointment
 from .utility import parse_times_for_view, generate_invoice_file_content, \
                     generate_patient_forwarding_file_content, get_prescriptions_for_practitioner, \
-                    get_patient_appointments_by_user_id, parse_times_for_view, get_prescriptions_for_practitioner, generate_invoice_file_content
+                    get_patient_appointments_by_user_id, parse_times_for_view, get_prescriptions_for_practitioner, generate_invoice_file_content, create_report
 
 logger = logging.getLogger(__name__)
 
@@ -109,18 +110,31 @@ def register(request):
         form = UserRegisterForm(request.POST)
         if form.is_valid():
             user = form.save()
-            age = form.cleaned_data.get('age')
 
-            user_profile = UserProfile(user=user)
+            gender = form.cleaned_data['gender']
+            date_of_birth = form.cleaned_data['date_of_birth']
+
+            user_profile = UserProfile(user=user, date_of_birth=date_of_birth, gender = gender)
             user_profile.save()
 
-            patient_profile = PatientProfile(user_profile=user_profile, age = age)
+            allergies = form.cleaned_data['allergies']
+            isPrivate = form.cleaned_data['isPrivate']
+
+            patient_profile = PatientProfile(user_profile=user_profile, allergies = allergies, isPrivate = isPrivate)
             patient_profile.save()
 
             login(request, user)
-            firstname = form.cleaned_data['firstname']
-            lastname = form.cleaned_data['lastname']
-            
+
+            firstname = form.cleaned_data['first_name']
+            lastname = form.cleaned_data['last_name']
+                        
+            number = form.cleaned_data['address_number']
+            streetName = form.cleaned_data['address_street']
+            city = form.cleaned_data['address_city']
+            postcode = form.cleaned_data['address_postcode']
+            address = Address.objects.create(number=number, streetName=streetName, city=city, postcode=postcode, user=user_profile)
+            address.save()
+
             user_name = f"{firstname} {lastname}"
             request.session['user_name'] = user_name
             return redirect('auth')
@@ -629,8 +643,10 @@ def currentAppt(request):
         current_date = date.today()
         nurse = request.user.id 
         appointments = Appointment.objects.filter(date=current_date, nurse=nurse)
-
-        return render(request, 'nurse_dashboard.html', {'Appointments': appointments,'clicked2':True})
+        user = request.user
+        user_name = user.get_full_name
+        user_type = 'nurse'
+        return render(request, 'nurse_dashboard.html', {'Appointments': appointments,'clicked2':True, 'user_name':user_name, 'user_type':user_type})
 
 @login_required(login_url='login')
 @custom_user_passes_test(is_doctor_or_nurse)
@@ -976,7 +992,7 @@ def mark_invoice_as_paid(request):
             return redirect(Http404)
     else:
         data = {'success': 'false'}
-    return redirect('dashboard') 
+    return JsonResponse(data)
 
 
 
@@ -1040,5 +1056,23 @@ def update_nurse_service_rate(request):
         nurse_service_rate.rate = new_rate
         nurse_service_rate.save()
         return redirect('admDash')
+    else:
+        pass
+
+@login_required(login_url='login')
+@custom_user_passes_test(is_admin)
+def generate_report(request):
+    file_name = None
+    if request.method == 'POST':
+        start_date_input = request.POST.get('start_date')
+        end_date_input = request.POST.get('end_date')
+
+        start_date = datetime.strptime(start_date_input, '%Y-%m-%d').date()
+        end_date = datetime.strptime(end_date_input, '%Y-%m-%d').date()
+
+        file_name = create_report(start_date, end_date)
+
+        file_path = f"/code/SmartCare/Reports/{file_name}"
+        return FileResponse(open(file_path, 'rb'))
     else:
         pass
