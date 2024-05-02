@@ -115,15 +115,15 @@ def register_doctor_nurse(request):
                 nurse_group = Group.objects.get(name='nurse_group')
                 nurse_group.user_set.add(user)
 
-                monday = True
-                tuesday = True
-                wednesday = True
-                thursday = True
-                friday = True
-                saturday = False
-                sunday = False
-                timetable = Timetable.objects.create(practitioner = user_profile, monday = monday, tuesday = tuesday, wednesday = wednesday, thursday = thursday, friday = friday, saturday = saturday, sunday = sunday)
-                timetable.save()
+            monday = True
+            tuesday = True
+            wednesday = True
+            thursday = True
+            friday = True
+            saturday = False
+            sunday = False
+            timetable = Timetable.objects.create(practitioner = user_profile, monday = monday, tuesday = tuesday, wednesday = wednesday, thursday = thursday, friday = friday, saturday = saturday, sunday = sunday)
+            timetable.save()
 
 
             return redirect('dashboard')  # Ensure 'home' is the name of your home page's URL pattern
