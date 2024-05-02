@@ -1179,7 +1179,7 @@ def ADM_delete_appointment(request,id):
      else:
        return HttpResponseNotAllowed(['DELETE'])
      
- def password_reset(request):
+def password_reset(request):
     csrf_token = get_token(request)
     if request.method == 'POST':
         try:
