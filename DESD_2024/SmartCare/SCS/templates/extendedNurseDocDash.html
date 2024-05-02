@@ -103,8 +103,8 @@
     <table class="table table-hover">
         <thead>
             <tr class="table-info">
-                <th>Appointment </th>
                 <th>Date</th>
+                <th>Time</th>
                 <th>Patient</th>
                 <th>Service</th>
                 <th>Description </th>
@@ -120,8 +120,8 @@
 
             <tr class="table-dark">
 
-                <td>{{appointment.time}}</td>
-                <td>{{ appointment.date }}</td>
+                <td>{{appointment.date}}</td>
+                <td>{{ appointment.time }}</td>
                 <td>{{appointment.patient.user_profile }}</td>
                 <td>{{appointment.service}}</td>
                 <td>{{appointment.service.description }}</td>
