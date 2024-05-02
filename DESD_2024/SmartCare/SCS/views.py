@@ -13,8 +13,9 @@ from django.middleware.csrf import get_token
 from django.template import RequestContext
 from django.utils import timezone
 from django.utils.encoding import smart_str
+from django.contrib.auth.models import Group
 
-from .models import DoctorProfile, NurseProfile, UserProfile, Service, Appointment, Address, PatientProfile, Prescription, Invoice, PatientProfile, DoctorServiceRate, NurseServiceRate
+from .models import DoctorProfile, NurseProfile, Timetable, UserProfile, Service, Appointment, Address, PatientProfile, Prescription, Invoice, PatientProfile, DoctorServiceRate, NurseServiceRate
 from .forms import UserRegisterForm, DoctorNurseRegistrationForm, AppointmentBookingForm, PrescriptionForm
 
 from .db_utility import get_user_profile_by_user_id, get_invoices_awaiting_payment, get_invoice_information_by_user_id, \
@@ -64,33 +65,50 @@ def register_doctor_nurse(request):
             user = form.save()  # Saves the User instance
             user_type = form.cleaned_data.get('user_type')  # Fixed typo from cleaned.data to cleaned_data
 
+            # Create UserProfile
+            gender = form.cleaned_data['gender']
             date_of_birth = form.cleaned_data['date_of_birth']
 
-            # Create UserProfile
-            user_profile = UserProfile.objects.create(user=user, user_type=user_type, date_of_birth=date_of_birth)
+            user_profile = UserProfile(user=user, user_type = user_type, date_of_birth=date_of_birth, gender = gender)
             user_profile.save()
 
-            Doctor_profile = DoctorProfile(user_profile=user_profile, user_type = user_type)
-            Doctor_profile.save()
-
-            Nurse_profile = NurseProfile(user_profile=user_profile, user_type = user_type)
-            Nurse_profile.save()
+            number = form.cleaned_data['address_number']
+            streetName = form.cleaned_data['address_street']
+            city = form.cleaned_data['address_city']
+            postcode = form.cleaned_data['address_postcode']
+            address = Address.objects.create(number=number, streetName=streetName, city=city, postcode=postcode, user=user_profile)
+            address.save()
 
             # Depending on the user_type, create the corresponding profile
             if user_type == 'doctor':
-                DoctorProfile.objects.create(
+                doctor_profile = DoctorProfile.objects.create(
                     user_profile=user_profile,  # Refer to the just created user_profile
                     specialization=form.cleaned_data['specialization'],
                     isPartTime=form.cleaned_data['isPartTime']
                 )
+                doctor_profile.save()
+                doctor_group = Group.objects.get(name='doctor_group')
+                doctor_group.user_set.add(user)
             elif user_type == 'nurse':
-                NurseProfile.objects.create(
+                nurse_profile = NurseProfile.objects.create(
                     user_profile=user_profile  # Refer to the just created user_profile
                 )
+                nurse_profile.save()
+                nurse_group = Group.objects.get(name='nurse_group')
+                nurse_group.user_set.add(user)
 
-            # Assuming you want the user to be logged in after registration
-            login(request, user)
-            return redirect('/login')  # Ensure 'home' is the name of your home page's URL pattern
+                monday = True
+                tuesday = True
+                wednesday = True
+                thursday = True
+                friday = True
+                saturday = False
+                sunday = False
+                timetable = Timetable.objects.create(practitioner = user_profile, monday = monday, tuesday = tuesday, wednesday = wednesday, thursday = thursday, friday = friday, saturday = saturday, sunday = sunday)
+                timetable.save()
+
+
+            return redirect('dashboard')  # Ensure 'home' is the name of your home page's URL pattern
     else:
         form = DoctorNurseRegistrationForm()
 
@@ -266,15 +284,6 @@ def Login(request):
             
             
             login(request, user)
-        
-            if user_type == 'doctor':
-                return redirect('docDash')
-            elif user_type == 'patient':
-                return redirect('patDash')
-            elif user_type == 'nurse':
-                return redirect('nursDash')
-            elif user_type == 'admin':
-                return redirect('admin_dash')
             
             return redirect('dashboard')
             
