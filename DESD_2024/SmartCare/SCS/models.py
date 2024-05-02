@@ -12,6 +12,8 @@ class UserProfile(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES)
+    date_of_birth = models.DateField()
+    gender = models.CharField(max_length = 10)
     
     def __str__(self):
         return self.user.username
@@ -67,14 +69,10 @@ class ContactNumber(models.Model):
 
 class Address(models.Model):
     addressID = models.AutoField(primary_key = True)
-    number = models.IntegerField(null = True)
-    buildingName = models.CharField(max_length = 100, null = True)
+    number = models.IntegerField()
     streetName = models.CharField(max_length = 100)
     city = models.CharField(max_length = 100)
-    county = models.CharField(max_length = 100)
     postcode = models.CharField(max_length = 8)
-    country = models.CharField(max_length = 16)
-    description = models.CharField(max_length = 100)
     user = models.ForeignKey(UserProfile, on_delete = models.CASCADE, 
                              related_name = 'addresses')
     

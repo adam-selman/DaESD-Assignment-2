@@ -1,2 +1,2 @@
-username,password,first_name,last_name,email,specialization,isPartTime
-d.first,SmartCareDoctor,Dr,First,j.first,Pediatrician,false
+username,password,first_name,last_name,email,specialization,isPartTime,date_of_birth,gender
+d.first,SmartCareDoctor,Dr,First,j.first,Pediatrician,false,2024-01-01,Male

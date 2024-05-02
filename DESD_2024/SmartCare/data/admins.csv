@@ -1,2 +1,2 @@
-username,password,first_name,last_name,email
-admin,SmartCareAdmin,John,Smith,admin@smartcare.com
+username,password,first_name,last_name,email,date_of_birth,gender
+admin,SmartCareAdmin,John,Smith,admin@smartcare.com,2024-01-01,Male
