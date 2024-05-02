@@ -146,7 +146,7 @@ def create_invoice_for_appointment(appointment_id: int, billing_party: str) -> N
 
     # check if invoice exists for given appointment
     if previous_invoice is not None:
-        logger.info(f"An invoice for appointment {appointment_id} already exists")
+        
         raise ValueError("An invoice for this appointment already exists")
         return
     else:
@@ -217,7 +217,7 @@ def get_invoice_information_by_user_id(user_id: int) -> list:
     Returns:
         list: The invoices for the user
     """
-    logger.info(f"user_id: {user_id}")
+    
     patient_profile = get_patient_profile_by_user_id(user_id)
     invoices = Invoice.objects.filter(patient_id=patient_profile.id).all()
     invoice_info = []
@@ -263,7 +263,7 @@ def get_invoices_awaiting_payment() -> list:
         if invoice.approved == 0:
             invoice_info.append([service_name, amount, issue_date, invoice.invoiceID, invoice.status, invoice.approved])
     
-    logger.info(invoice_info)
+    
     return invoice_info
 
 def get_patient_profile_by_user_profile(user_profile: int) -> PatientProfile:
@@ -370,7 +370,7 @@ def get_patient_appointments_by_user_id(user_id: int, future=False, past=False) 
     """
     
     user_profile = get_user_profile_by_user_id(user_id)
-    logger.info(user_profile.id)
+    
     patient_profile = get_patient_profile_by_user_profile(user_profile)
     appointments = get_all_appointments_by_patient_profile(patient_profile)
     appointment_info = []
@@ -575,9 +575,6 @@ def make_patient_appointment_booking(patient, booking_date, service_id, practiti
                                                             service_id=service_id)
 
             new_appointment.save()
-            logger.info("New appointment created successfully for patient: " + str(patient.id) + \
-                        " with practitioner: " + str(practitioner) + " on date: "  + str(booking_date) + \
-                        " at time: " + str(time) + " for service: " + str(service_id) + " with reason: " + str(reason))
             data = {'success': 'true'}
         else:
             data = {'success': 'false', 'error': 'Appointment already exists'}
