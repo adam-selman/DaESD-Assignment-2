@@ -920,7 +920,6 @@ logger = logging.getLogger(__name__)
 def admin_dash(request):
     registration_form = DoctorNurseRegistrationForm()
     appointments = Appointment.objects.all()
-
     if request.method == 'POST':
         registration_form = DoctorNurseRegistrationForm(request.POST)
         if registration_form.is_valid():
@@ -938,7 +937,7 @@ def admin_dash(request):
                 NurseProfile.objects.create(
                     user_profile=user.profile 
                 )
-            return redirect('admin_dash')
+            return redirect('dashboard')
 
     context = {
         'registration_form': registration_form,
@@ -1017,7 +1016,7 @@ def register(request):
             gender = form.cleaned_data['gender']
             date_of_birth = form.cleaned_data['date_of_birth']
 
-            user_profile = UserProfile(user=user, date_of_birth=date_of_birth, gender = gender)
+            user_profile = UserProfile(user=user, user_type = 'patient', date_of_birth=date_of_birth, gender = gender)
             user_profile.save()
 
             allergies = form.cleaned_data['allergies']
@@ -1025,6 +1024,9 @@ def register(request):
 
             patient_profile = PatientProfile(user_profile=user_profile, allergies = allergies, isPrivate = isPrivate)
             patient_profile.save()
+
+            patient_group = Group.objects.get(name='patient_group')
+            patient_group.user_set.add(user)
 
             login(request, user)
 
@@ -1117,7 +1119,7 @@ def complete_appointment(request):
             medication = request.POST.get('medication')
 
             logger.info(f"Medication: {medication}")
-            if medication is not None:
+            if medication != 'none':
                 medication = Medication.objects.get(medicationID=medication)
                 dosage = request.POST.get('dosage')
                 dosage = str(dosage) + "mg"
@@ -1125,9 +1127,10 @@ def complete_appointment(request):
                 quantity = request.POST.get('quantity')
                 instructions = request.POST.get('instructions')
                 repeatable = request.POST.get('repeatable')
-                if repeatable :
+                if repeatable:
                     repeatable = True
-               
+                else: 
+                    repeatable = False
 
             practitioner = request.user.id
 
@@ -1140,7 +1143,7 @@ def complete_appointment(request):
 
             practitioner_type = get_user_type(practitioner)
 
-            if medication is not None:
+            if medication != 'none':
                 if practitioner_type == 'doctor':
                     doctor = DoctorProfile.objects.get(user_profile__user=request.user)
                     doctor_user_profile = doctor.user_profile
@@ -1682,14 +1685,12 @@ def update_patient(request):
 def prescription_approval(request):
     if is_doctor(request.user):
         doctor = request.user.id
-        pending_prescriptions = Prescription.objects.filter(doctor=doctor, approved=False)
-
+        pending_prescriptions = Prescription.objects.filter(approved=False)
         return render(request, 'doctor_dashboard.html', {'pending_prescriptions': pending_prescriptions, 'clicked4':True})
     
     elif is_nurse(request.user):
         nurse = request.user.id
-        pending_prescriptions = Prescription.objects.filter(nurse=nurse, approved=False)
-
+        pending_prescriptions = Prescription.objects.filter(approved=False)
         return render(request, 'nurse_dashboard.html', {'pending_prescriptions': pending_prescriptions, 'clicked4':True})
 
 
@@ -1698,13 +1699,13 @@ def prescription_approval(request):
 def historic_prescriptions(request):
     if is_doctor(request.user):
         doctor = request.user.id
-        historic_prescriptions = Prescription.objects.filter(doctor=doctor)
+        historic_prescriptions = Prescription.objects.all()
 
         return render(request, 'doctor_dashboard.html', {'historic_prescriptions': historic_prescriptions, 'clicked5':True})
     
     elif is_nurse(request.user):
         nurse = request.user.id
-        historic_prescriptions = Prescription.objects.filter(nurse=nurse)
+        historic_prescriptions = Prescription.objects.all()
 
         return render(request, 'nurse_dashboard.html', {'historic_prescriptions': historic_prescriptions, 'clicked5':True})
 
@@ -1973,7 +1974,7 @@ def request_repeat_prescription(request):
             'doctor': existing_prescription.doctor,
             'nurse': existing_prescription.nurse,
             'approved': False,
-            'issueDate': datetime.date.now(),
+            'issueDate': date.today(),
             'reissueDate': None,
             'appointment': existing_prescription.appointment,
         }
@@ -1984,7 +1985,9 @@ def request_repeat_prescription(request):
             existing_prescription.save()
 
             prescription = form.save()
-            return redirect('patDash')  # Redirect to another page after object creation
+
+
+            return redirect('dashboard')  # Redirect to another page after object creation
         else:
             # Return a JsonResponse with the form errors
             return JsonResponse({'success': False, 'errors': form.errors})
@@ -2002,7 +2005,7 @@ def update_doctor_service_rate(request):
         doctor_service_rate = get_object_or_404(DoctorServiceRate, doctorServiceRateID=doctorServiceRateID)
         doctor_service_rate.rate = new_rate
         doctor_service_rate.save()
-        return redirect('admDash')
+        return redirect('dashboard')
     else:
         pass
 
@@ -2016,7 +2019,7 @@ def update_nurse_service_rate(request):
         nurse_service_rate = get_object_or_404(NurseServiceRate, nurseServiceRateID=nurseServiceRateID)
         nurse_service_rate.rate = new_rate
         nurse_service_rate.save()
-        return redirect('admDash')
+        return redirect('dashboard')
     else:
         pass
 

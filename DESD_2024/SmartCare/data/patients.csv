@@ -2,7 +2,7 @@ username,password,first_name,last_name,email,gender,date_of_birth,allergies,isPr
 r.smith,SmartCarePatient,Robert,Smith,r.smith@email.com,Male,2024-01-01,peanuts,False
 r.peterson,SmartCarePatient,Remington,Peterson,r.peterson@email.com,Male,2024-01-01,Gluten,False
 m.sharpe,SmartCarePatient,Max,Sharpe,m.sharpe@email.com,Male,2024-01-01,None,False
-j.hesitant,SmartCarePatient,John,Hesitant,j.hesitant@email.com,Male,2024-01-01,Soy,False
+j.hesitant,SmartCarePatient,John,Hesitant,j.hesitant@email.com,Male,2024-01-01,Soy,True
 l.brown,SmartCarePatient,Liz,Brown,l.brown@email.com,Female,2024-01-01,Pollen,False
 k.rodriguez,SmartCarePatient,Kayla,Rodriguez,k.rodriguez@email.com,Female,2024-01-01,Shellfish,True
 j.madison,SmartCarePatient,Jesse,Madison,j.madison@email.com,Male,2024-01-01,Dairy,True

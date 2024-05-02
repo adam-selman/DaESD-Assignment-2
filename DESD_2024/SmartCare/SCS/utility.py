@@ -111,9 +111,8 @@ def create_invoice_file(invoice_id: int) -> tuple:
     # patient info
     user_profile = invoice.patient
     patient_user_profile = PatientProfile.objects.get(id=user_profile.id)
-    # patient_address = Address.objects.get(user_id=patient_user_profile.user_id) #! FIX FOR ADDRESS
-    # address_string = str(patient_address)
-    address_string = "123 Fake Street, Fake Town, Fake City, Fake Country, F4K3 123" #! REPLACE WITH ACTUAL ADDRESS
+    patient_address = Address.objects.get(user_id=patient_user_profile.user_profile_id)
+    address_string = str(patient_address)
     user = User.objects.get(id=patient_user_profile.user_profile_id)
 
     # getting files ready
@@ -208,10 +207,8 @@ def create_patient_forwarding_file(patient: PatientProfile) -> tuple:
             prescription_string += f"{prescription.dosage} dose of {prescription.medication.name}. Prescribed on {date_prescribed} by {practitioner_name}\n"
 
     # Patient info
-    #! GET ADDRESS FROM USER PROFILE
-    # patient_address = Address.objects.get(user_id=patient.user_id)
-    # address_string = str(patient_address)
-    address_string = "123 Fake Street, Fake Town, Fake City, Fake Country, F4K3 123" #! REPLACE WITH ACTUAL ADDRESS
+    patient_address = Address.objects.get(user_id=patient.user_profile_id)
+    address_string = str(patient_address)
     user_profile = UserProfile.objects.get(id=patient.user_profile_id)
     user = get_user_by_user_profile(user_profile)
 
@@ -271,6 +268,9 @@ def create_report(start_date, end_date):
                          'Unpaid Invoices'])
     
     csv_writer.writerow(appointment_data)
+
+    if not os.path.exists("/code/SmartCare/Reports"):
+        os.makedirs("/code/SmartCare/Reports")
 
     base_file_name = f"report_{start_date}_to_{end_date}.csv"
     file_name = base_file_name

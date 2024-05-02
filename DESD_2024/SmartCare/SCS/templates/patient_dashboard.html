@@ -25,14 +25,15 @@
   {% if historic_appointments %}
   <div class="row">
     <div class="col-md-12">
-      <h2>Appointment History</h2>
-      <table class="table table-hover">
+      <h2 class="toggle-table">Appointment History</h2>
+      <table class="table table-hover" style="display: none">
         <thead>
           <tr class="table-info">
             <th>Appointment </th>
             <th>Date</th>
             <th>Time</th>
             <th>Service</th>
+            <th>Practitioner</th>
             <th>Details</th>
           </tr>
         </thead>
@@ -46,6 +47,12 @@
             <td>{{ appointment.date }}</td>
             <td>{{ appointment.time }}</td>
             <td>{{ appointment.service}}</td>
+            <td>
+              {% if not appointment.doctor %}
+              {{ appointment.nurse }}
+              {% else %}
+              {{ appointment.doctor }}
+              {% endif %}
 
             <td><button type="button" class="btn btn-primary" data-bs-toggle="modal"
                 data-bs-target="#modal1{{appointment.appointmentID}}">Details</button>
@@ -78,8 +85,8 @@
   <div class="row">
     {% if invoices %}
     <div class="col-md-12">
-      <h2>My Invoices</h2>
-      <table class="table">
+      <h2 class="toggle-table">My Invoices</h2>
+      <table class="table" style="display: none">
         <thead class="table-info">
           <tr class="table-info">
             <th>Service</th>
@@ -131,8 +138,8 @@
   <div class="row">
     <div class="col-md-12">
       {% if historic_prescriptions %}
-      <h2>Historic Prescriptions</h2>
-      <table class="table table-hover">
+      <h2 class="toggle-table">Historic Prescriptions</h2>
+      <table class="table table-hover" style="display: none">
         <thead>
           <tr class="table-info">
             <th>Medication</th>
@@ -178,8 +185,8 @@
 <div class="container">
   <div class="row">
     {% if historic_prescriptions %}
-    <h2>Repeatable Prescriptions</h2>
-    <table class="table table-hover">
+    <h2 class="toggle-table">Repeatable Prescriptions</h2>
+    <table class="table table-hover" style="display: none">
       <thead>
         <tr class="table-info">
           <th>Patient name </th>
@@ -231,8 +238,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="modal1{{appointment.appointmentID}}Label">Details for Appointment {{
-          appointment.appointmentID }}</h5>
+        <h5 class="modal-title" id="modal1{{appointment.appointmentID}}Label">Details for Appointment</h5>
         <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -241,20 +247,13 @@
         <table class="table table-hover">
           <thead>
             <tr class="table-info">
-
               <th>Service</th>
               <th>Note</th>
               <th>Practitioner</th>
-
-
             </tr>
           </thead>
           <tbody>
-
-
             <tr class="table-dark" data1-row-id="{{appointment.appointmentID}}">
-
-
               <td>{{ appointment.service.service }}</td>
               <td>{{ appointment.notes }}</td>
               <td>
@@ -264,10 +263,6 @@
                 {{ appointment.doctor }}
                 {% endif %}
               </td>
-
-
-
-
             </tr>
           </tbody>
         </table>
@@ -285,8 +280,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="modal{{ appointment.appointmentID }}Label">Details of appointment {{
-          appointment.appointmentID}}</h5>
+        <h5 class="modal-title" id="modal{{ appointment.appointmentID }}Label">Details of appointment</h5>
         <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -307,8 +301,8 @@
 
 <div class="container">
   {% if historic_prescriptions %}
-  <h2>Pending Prescription Requests</h2>
-  <table class="table table-hover">
+  <h2 class="toggle-table">Pending Prescription Requests</h2>
+  <table class="table table-hover" style="display: none">
     <thead>
       <tr class="table-info">
         <th>Patient name </th>
@@ -515,6 +509,24 @@
             console.error('Failed to delete row', error);
             alert('Failed to delete row: ' + error.message);
           });
+      });
+    });
+  </script>
+
+  <!-- JavaScript to toggle table visibility-->
+  <script>
+    $(document).ready(function () {
+      $(".toggle-table").click(function () {
+        $(this).next('table').toggle();
+      });
+    });
+  </script>
+
+  <!-- JavaScript to toggle form visibility-->
+  <script>
+    $(document).ready(function () {
+      $(".toggle-form").click(function () {
+        $(this).next('form').toggle();
       });
     });
   </script>
