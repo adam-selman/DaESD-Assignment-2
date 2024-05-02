@@ -548,8 +548,10 @@ def currentAppt(request):
         current_date = date.today()
         nurse = request.user.id 
         appointments = Appointment.objects.filter(date=current_date, nurse=nurse)
-
-        return render(request, 'nurse_dashboard.html', {'Appointments': appointments,'clicked2':True})
+        user = request.user
+        user_name = user.get_full_name
+        user_type = 'nurse'
+        return render(request, 'nurse_dashboard.html', {'Appointments': appointments,'clicked2':True, 'user_name':user_name, 'user_type':user_type})
 
 @login_required(login_url='login')
 @custom_user_passes_test(is_doctor_or_nurse)
@@ -567,7 +569,7 @@ def historic_appointments(request):
         historic_appointments = Appointment.objects.filter(nurse=nurse)
         user = request.user
         user_name = user.get_full_name
-        user_type = 'doctor'
+        user_type = 'nurse'
         return render(request, 'nurse_dashboard.html', {'historic_appointments': historic_appointments, 'clicked3':True, 'user_name':user_name, 'user_type':user_type})
 
 def delete_patient(request,id):
@@ -682,14 +684,14 @@ def prescription_approval(request):
         user = request.user
         user_name = user.get_full_name
         user_type = 'doctor'
-        return render(request, 'doctor_dashboard.html', {'pending_prescriptions': pending_prescriptions, 'clicked4':True})
+        return render(request, 'doctor_dashboard.html', {'pending_prescriptions': pending_prescriptions, 'clicked4':True, 'user_name':user_name, 'user_type':user_type})
     
     elif is_nurse(request.user):
         nurse = request.user.id
         pending_prescriptions = Prescription.objects.filter(nurse=nurse, approved=False)
         user = request.user
         user_name = user.get_full_name
-        user_type = 'doctor'
+        user_type = 'nurse'
         return render(request, 'nurse_dashboard.html', {'pending_prescriptions': pending_prescriptions, 'clicked4':True, 'user_name':user_name, 'user_type':user_type})
 
 
@@ -709,7 +711,7 @@ def historic_prescriptions(request):
         historic_prescriptions = Prescription.objects.filter(nurse=nurse)
         user = request.user
         user_name = user.get_full_name
-        user_type = 'doctor'
+        user_type = 'nurse'
         return render(request, 'nurse_dashboard.html', {'historic_prescriptions': historic_prescriptions, 'clicked5':True, 'user_name':user_name, 'user_type':user_type})
 
 @login_required(login_url='login')
@@ -1724,7 +1726,7 @@ def historic_prescriptions(request):
         historic_prescriptions = Prescription.objects.all()
         user = request.user
         user_name = user.get_full_name
-        user_type = 'doctor'
+        user_type = 'nurse'
         return render(request, 'nurse_dashboard.html', {'historic_prescriptions': historic_prescriptions, 'clicked5':True, 'user_name':user_name, 'user_type':user_type})
 
 @login_required(login_url='login')
