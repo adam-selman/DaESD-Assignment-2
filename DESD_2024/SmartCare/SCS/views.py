@@ -64,8 +64,10 @@ def register_doctor_nurse(request):
             user = form.save()  # Saves the User instance
             user_type = form.cleaned_data.get('user_type')  # Fixed typo from cleaned.data to cleaned_data
 
+            date_of_birth = form.cleaned_data['date_of_birth']
+
             # Create UserProfile
-            user_profile = UserProfile.objects.create(user=user, user_type=user_type)
+            user_profile = UserProfile.objects.create(user=user, user_type=user_type, date_of_birth=date_of_birth)
             user_profile.save()
 
             Doctor_profile = DoctorProfile(user_profile=user_profile, user_type = user_type)
@@ -93,6 +95,7 @@ def register_doctor_nurse(request):
         form = DoctorNurseRegistrationForm()
 
     return render(request, 'staff_register.html', {'form': form})
+            
             
 
 #fixs for the register view which takes age and first creates a user profile 
