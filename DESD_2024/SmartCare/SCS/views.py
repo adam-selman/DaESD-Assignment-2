@@ -812,12 +812,12 @@ def update_patient(request):
 def prescription_approval(request):
     if is_doctor(request.user):
         doctor = request.user.id
-        pending_prescriptions = Prescription.objects.all()
+        pending_prescriptions = Prescription.objects.filter(approved=False)
         return render(request, 'doctor_dashboard.html', {'pending_prescriptions': pending_prescriptions, 'clicked4':True})
     
     elif is_nurse(request.user):
         nurse = request.user.id
-        pending_prescriptions = Prescription.objects.all()
+        pending_prescriptions = Prescription.objects.filter(approved=False)
         return render(request, 'nurse_dashboard.html', {'pending_prescriptions': pending_prescriptions, 'clicked4':True})
 
 
