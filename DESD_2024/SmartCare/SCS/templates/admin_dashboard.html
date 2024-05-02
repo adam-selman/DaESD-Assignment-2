@@ -330,20 +330,13 @@
                         <option value="True" {% if patient.isPrivate %}selected{% endif %}>Private</option>
                         <option value="False" {% if not patient.isPrivate %}selected{% endif %}>Public</option>
                     </select>
-
-
-
                     <button type="submit" data-id="{{ patient.id }}"
                         class="update-button btn btn-warning">Update</button>
                 </form>
             </div>
-
-
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
-
-
         </div>
     </div>
 </div>
@@ -356,28 +349,29 @@
 <div class="modal fade" id="editDoctorRateModal" tabindex="-1" role="dialog" aria-labelledby="editDoctorRateModalLabel"
     aria-hidden="true">
     <div class="modal-dialog">
-        <h5 class="modal-title" id="editDoctorRateModalLabel">Update Doctor Service Rate</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        <form id="updateDoctorServiceRateForm" method="POST" action="{% url 'updateDoctorServiceRate' %}">
-            {% csrf_token %}
-            <input type="hidden" name="doctorServiceRateID" id="doctorServiceRateID" value="">
-            <div class="mb-3">
-                <label for="doctorService" class="form-label">Service</label>
-                <input type="text" class="form-control" id="doctorService" disabled>
-            </div>
-            <div class="mb-3">
-                <label for="doctorExistingRate" class="form-label">Existing Rate</label>
-                <input type="text" class="form-control" id="doctorExistingRate" disabled>
-            </div>
-            <div class="mb-3">
-                <label for="newRate" class="form-label">New Rate</label>
-                <input type="number" class="form-control" id="newRate" name="rate" placeholder="Enter new rate"
-                    required>
-            </div>
-            <button type="submit" class="btn btn-primary">Update Rate</button>
-        </form>
+        <div class="modal-content">
+            <h5 class="modal-title" id="editDoctorRateModalLabel">Update Doctor Service Rate</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <form id="updateDoctorServiceRateForm" method="POST" action="{% url 'updateDoctorServiceRate' %}">
+                {% csrf_token %}
+                <input type="hidden" name="doctorServiceRateID" id="doctorServiceRateID" value="">
+                <div class="mb-3">
+                    <label for="doctorService" class="form-label">Service</label>
+                    <input type="text" class="form-control" id="doctorService" disabled>
+                </div>
+                <div class="mb-3">
+                    <label for="doctorExistingRate" class="form-label">Existing Rate</label>
+                    <input type="text" class="form-control" id="doctorExistingRate" disabled>
+                </div>
+                <div class="mb-3">
+                    <label for="newRate" class="form-label">New Rate</label>
+                    <input type="number" class="form-control" id="newRate" name="rate" placeholder="Enter new rate"
+                        required>
+                </div>
+                <button type="submit" class="btn btn-primary">Update Rate</button>
+            </form>
+        </div>
     </div>
-</div>
 </div>
 
 <!-- Edit Nurse Service Rate Modal -->

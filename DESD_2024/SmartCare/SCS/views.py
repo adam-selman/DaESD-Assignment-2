@@ -47,7 +47,6 @@ logger = logging.getLogger(__name__)
 def admin_dash(request):
     registration_form = DoctorNurseRegistrationForm()
     appointments = Appointment.objects.all()
-
     if request.method == 'POST':
         registration_form = DoctorNurseRegistrationForm(request.POST)
         if registration_form.is_valid():
@@ -65,7 +64,7 @@ def admin_dash(request):
                 NurseProfile.objects.create(
                     user_profile=user.profile 
                 )
-            return redirect('admin_dash')
+            return redirect('dashboard')
 
     context = {
         'registration_form': registration_form,
@@ -144,7 +143,7 @@ def register(request):
             gender = form.cleaned_data['gender']
             date_of_birth = form.cleaned_data['date_of_birth']
 
-            user_profile = UserProfile(user=user, date_of_birth=date_of_birth, gender = gender)
+            user_profile = UserProfile(user=user, user_type = 'patient', date_of_birth=date_of_birth, gender = gender)
             user_profile.save()
 
             allergies = form.cleaned_data['allergies']
@@ -252,9 +251,8 @@ def complete_appointment(request):
                 quantity = request.POST.get('quantity')
                 instructions = request.POST.get('instructions')
                 repeatable = request.POST.get('repeatable')
-                if repeatable :
+                if repeatable:
                     repeatable = True
-               
 
             practitioner = request.user.id
 
@@ -1100,7 +1098,7 @@ def request_repeat_prescription(request):
             'doctor': existing_prescription.doctor,
             'nurse': existing_prescription.nurse,
             'approved': False,
-            'issueDate': datetime.date.now(),
+            'issueDate': date.today(),
             'reissueDate': None,
             'appointment': existing_prescription.appointment,
         }
@@ -1111,7 +1109,9 @@ def request_repeat_prescription(request):
             existing_prescription.save()
 
             prescription = form.save()
-            return redirect('patDash')  # Redirect to another page after object creation
+
+
+            return redirect('dashboard')  # Redirect to another page after object creation
         else:
             # Return a JsonResponse with the form errors
             return JsonResponse({'success': False, 'errors': form.errors})
@@ -1129,7 +1129,7 @@ def update_doctor_service_rate(request):
         doctor_service_rate = get_object_or_404(DoctorServiceRate, doctorServiceRateID=doctorServiceRateID)
         doctor_service_rate.rate = new_rate
         doctor_service_rate.save()
-        return redirect('admDash')
+        return redirect('dashboard')
     else:
         pass
 
@@ -1143,7 +1143,7 @@ def update_nurse_service_rate(request):
         nurse_service_rate = get_object_or_404(NurseServiceRate, nurseServiceRateID=nurseServiceRateID)
         nurse_service_rate.rate = new_rate
         nurse_service_rate.save()
-        return redirect('admDash')
+        return redirect('dashboard')
     else:
         pass
 
