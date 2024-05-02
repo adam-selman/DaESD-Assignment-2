@@ -54,7 +54,7 @@ def admin_dash(request):
                 NurseProfile.objects.create(
                     user_profile=user.profile 
                 )
-            return redirect('admin_dash')
+            return redirect('dashboard')
 
     context = {
         'registration_form': registration_form,
@@ -1020,7 +1020,9 @@ def request_repeat_prescription(request):
             existing_prescription.save()
 
             prescription = form.save()
-            return redirect('patDash')  # Redirect to another page after object creation
+
+
+            return redirect('dashboard')  # Redirect to another page after object creation
         else:
             # Return a JsonResponse with the form errors
             return JsonResponse({'success': False, 'errors': form.errors})
@@ -1038,7 +1040,7 @@ def update_doctor_service_rate(request):
         doctor_service_rate = get_object_or_404(DoctorServiceRate, doctorServiceRateID=doctorServiceRateID)
         doctor_service_rate.rate = new_rate
         doctor_service_rate.save()
-        return redirect('admDash')
+        return redirect('dashboard')
     else:
         pass
 
@@ -1052,7 +1054,7 @@ def update_nurse_service_rate(request):
         nurse_service_rate = get_object_or_404(NurseServiceRate, nurseServiceRateID=nurseServiceRateID)
         nurse_service_rate.rate = new_rate
         nurse_service_rate.save()
-        return redirect('admDash')
+        return redirect('dashboard')
     else:
         pass
 
