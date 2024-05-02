@@ -5,7 +5,7 @@
 
 <div>
     {% if user.is_authenticated %}
-    <a href="staff_register.html" class="btn btn-primary">Staff Register</a>
+    <a href="{% url 'staff_register' %}" class="btn btn-primary">Staff Register</a>
     {% endif %}
 </div>
 
