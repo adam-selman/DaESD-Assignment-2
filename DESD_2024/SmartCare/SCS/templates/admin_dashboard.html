@@ -82,9 +82,9 @@
             <td>{{ patient.user_profile }}</td>
             <td>{{ patient.allergies }}</td>
             <td>{{ patient.isPrivate }}</td>
-            <td><button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal1{{patient.user_profile}}">History</button>
-            <button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal2{{patient.user_profile}}">Update</button>
-            <button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal3{{patient.user_profile}}">Delete</button></td>
+            <td><button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal1{{patient.id}}">History</button>
+            <button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal2{{patient.id}}">Update</button>
+            <button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal3{{patient.id}}">Delete</button></td>
         </tr>
         {% endfor %}
     </tbody>
@@ -177,7 +177,7 @@
 
 {% for patient in patients %}
 
-<div class="modal fade" id="modal1{{ patient.user_profile }}" tabindex="-1" role="dialog"
+<div class="modal fade" id="modal1{{ patient.id }}" tabindex="-1" role="dialog"
     aria-labelledby="modal{{ patient.user_profile}}Label" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -189,7 +189,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <table class="table table-hover">
+                <table class="table table-hover" >
                     <thead>
                         <tr class="table-info">
                             <th>Appointment </th>
@@ -238,8 +238,8 @@
 
 
 
-<div class="modal fade" id="modal3{{ patient.user_profile }}" tabindex="-1" role="dialog"
-    aria-labelledby="modal{{ patient.user_profile }}Label" aria-hidden="true">
+<div class="modal fade" id="modal3{{ patient.id }}" tabindex="-1" role="dialog"
+    aria-labelledby="modal{{ patient.id }}Label" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -261,12 +261,12 @@
     </div>
 </div>
 
-<div class="modal fade" id="modal2{{ patient.user_profile }}" tabindex="-1" role="dialog"
+<div class="modal fade" id="modal2{{ patient.id }}" tabindex="-1" role="dialog"
     aria-labelledby="modal{{ patient.id }}Label" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modal2{{ patient.user_profile }}Label">Details of {{ patient.user_profile }}
+                <h5 class="modal-title" id="modal2{{ patient.id}}Label">Details of {{ patient.user_profile }}
                 </h5>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
