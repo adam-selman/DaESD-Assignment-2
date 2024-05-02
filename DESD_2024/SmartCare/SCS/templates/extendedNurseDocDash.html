@@ -50,7 +50,7 @@
             <td>{{ patient.allergies }}</td>
             <td>{{ patient.isPrivate }}</td>
             <td><button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                    data-bs-target="#modal1{{patient.user_profile}}">History</button></td>
+                    data-bs-target="#modal1{{patient.id}}">History</button></td>
         </tr>
 
         {% endfor %}
@@ -201,7 +201,7 @@
 
 
 
-<div class="modal fade" id="modal1{{ patient.user_profile }}" tabindex="-1" role="dialog"
+<div class="modal fade" id="modal1{{ patient.id }}" tabindex="-1" role="dialog"
     aria-labelledby="modal{{ patient.user_profile}}Label" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -229,9 +229,6 @@
 
                         {% if appt.patient.user_profile == patient.user_profile %}
 
-
-
-
                         <tr class="table-dark" data1-row-id="{{patient.user_profile}}">
 
                             <td>{{appt.appointmentID}}</td>
@@ -239,7 +236,6 @@
                             <td>{{ appt.service}}</td>
                             <td>{{ appt.description }}</td>
                             <td>{{ appt.notes }}</td>
-
 
                             {% endif %}
                             {% endfor %}
