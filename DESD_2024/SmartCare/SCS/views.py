@@ -1,7 +1,8 @@
 from datetime import date
 import logging
 import tempfile
-
+import json
+import re 
 from datetime import datetime
 from django.db import transaction
 from django.forms.models import model_to_dict
@@ -13,7 +14,8 @@ from django.contrib.auth import authenticate, login , logout
 from django.middleware.csrf import get_token
 from django.template import RequestContext
 from django.utils import timezone
-from django.utils.encoding import smart_str
+from django.db.models import Q
+from .models import DoctorProfile, NurseProfile, UserProfile, Service, Appointment, PatientProfile, Prescription, Invoice, DoctorServiceRate, NurseServiceRate
 
 from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponseNotFound
@@ -27,7 +29,11 @@ from .forms import UserRegisterForm, DoctorNurseRegistrationForm, AppointmentBoo
 from .db_utility import get_user_profile_by_user_id, get_invoices_awaiting_payment, get_invoice_information_by_user_id, \
                     get_medical_services, get_user_profile_by_user_id, get_practitioners_by_day_and_service,  \
                     make_patient_appointment_booking, get_time_slots_by_day_and_practitioner, get_all_invoice_information, \
-                    get_patient_appointments_by_user_id, APPOINTMENT_TIMES, get_all_medications, create_invoice_for_appointment
+                    get_patient_appointments_by_user_id,get_patient_appointments_by_user_id, APPOINTMENT_TIMES, get_all_medications, create_invoice_for_appointment
+from .utility import parse_times_for_view, get_prescriptions_for_practitioner, generate_invoice_file_content
+from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
+                
 from .utility import parse_times_for_view, generate_invoice_file_content, \
                     generate_patient_forwarding_file_content, get_prescriptions_for_practitioner, \
                     get_patient_appointments_by_user_id, parse_times_for_view, get_prescriptions_for_practitioner, generate_invoice_file_content, create_report
@@ -222,10 +228,9 @@ def complete_appointment(request):
                 quantity = request.POST.get('quantity')
                 instructions = request.POST.get('instructions')
                 repeatable = request.POST.get('repeatable')
-                if repeatable == 'on':
+                if repeatable :
                     repeatable = True
-                else:
-                    repeatable = False
+               
 
             practitioner = request.user.id
 
@@ -556,9 +561,21 @@ def admin(request):
     invoices_to_be_paid = get_invoices_awaiting_payment()
     doctor_service_rate = DoctorServiceRate.objects.all()
     nurse_service_rate = NurseServiceRate.objects.all()
+    patient_details = PatientProfile.objects.all()
+    appointments=Appointment.objects.all()
+    Dates = []
+    for appt in appointments:
+        if appt.date and appt.date not in Dates:
+            Dates.append(appt.date)
+    practitioners = []
+    for appt in appointments:
+        if appt.doctor and appt.doctor not in practitioners:
+            practitioners.append(appt.doctor)
+        elif appt.nurse and appt.nurse not in practitioners:
+            practitioners.append(appt.nurse)
     return render(request, 'admin_dashboard.html', {'user_type': user_type, "user_name": user_name,
                                                      "all_invoices": all_invoices, "invoices_to_be_paid": invoices_to_be_paid,
-                                                     "doctor_service_rate": doctor_service_rate, "nurse_service_rate": nurse_service_rate})
+                                                     "doctor_service_rate": doctor_service_rate, "nurse_service_rate": nurse_service_rate,"practitioners": practitioners,"patients":patient_details,"appointments":appointments,"dates":Dates})
 
 @login_required(login_url='login')
 @custom_user_passes_test(is_nurse)
@@ -715,9 +732,17 @@ def update_patient(request):
         # Get the rowId from the POST data
         id = request.POST.get('id')
         name = request.POST.get('Name')
-        age = request.POST.get('Age')
         allergies = request.POST.get('Allergies')
         isPrivate = request.POST.get('Status')
+
+
+        if not re.match(r"^[A-Za-z.]+$", name) :
+            return JsonResponse({'success': False, 'message': 'Invalid name format'})
+
+
+        # Allergies validation 
+        elif not re.match(r"^[A-Za-z.]+$", allergies) :
+            return JsonResponse({'success': False, 'message': 'Invalid format for the allergie field'})
 
         try:
             
@@ -729,8 +754,7 @@ def update_patient(request):
             user_instance.user.save()
           
             model_instance.user_profile = user_instance
-    
-            model_instance.age = age
+
             model_instance.allergies = allergies
             model_instance.isPrivate = isPrivate
         
@@ -741,7 +765,6 @@ def update_patient(request):
             # Return a JSON response indicating success
             return JsonResponse({'success': True ,'data':{
                 'name': model_instance.user_profile.user.username,
-                 'age': model_instance.age,
                  'allergies': model_instance.allergies,
                  'status': model_instance.isPrivate }
                  }
@@ -811,7 +834,47 @@ def approve_prescription(request):
     else:
         return JsonResponse({'success': 'false', 'error': 'Invalid request method'})
 
+def filter_patient(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        isPrivate = data.get('Bill')
+       
+        print(isPrivate)
 
+        if isPrivate == False:
+            patients = PatientProfile.objects.filter(isPrivate=False)
+        elif isPrivate == True:
+            patients = PatientProfile.objects.filter(isPrivate=True)
+        else:
+            patients = PatientProfile.objects.all()
+
+        patient_data = [{'name': patient.user_profile.user.username, 'allergies': patient.allergies, 'isPrivate': patient.isPrivate } for patient in patients]
+        return JsonResponse({'success':True,'data': patient_data})
+    else:
+        return JsonResponse({'success': False, 'error': 'Invalid request method'})
+   
+def filter_appointments(request):
+    if request.method =='POST':
+        data = json.loads(request.body)
+        selectedDate = data['date']
+        selectedEmployee = data['employee']  
+        selectedDate = datetime.strptime(selectedDate, '%B %d, %Y').strftime('%Y-%m-%d')  
+        try:
+            
+            user = User.objects.get(username=selectedEmployee)
+            user_profile = UserProfile.objects.get(user=user)
+            
+
+            filtered_appointments = Appointment.objects.filter(Q(date=selectedDate) & (Q(nurse=user_profile) | Q(doctor=user_profile)))
+            filt_app = [{'ID': appt.appointmentID, 'date': appt.date, 'time': appt.time,'service':appt.service.service,'practitioner':selectedEmployee } for appt in filtered_appointments]
+            return JsonResponse({'success':True,'data': filt_app})    
+        except ObjectDoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Employee not found'})
+    else:
+        return JsonResponse({'success': False, 'error': 'Invalid request method'})
+    
+        
+         
 
 
 def Logout(request):
@@ -992,7 +1055,7 @@ def mark_invoice_as_paid(request):
             return redirect(Http404)
     else:
         data = {'success': 'false'}
-    return JsonResponse(data)
+    return redirect('dashboard')
 
 
 
@@ -1059,6 +1122,30 @@ def update_nurse_service_rate(request):
     else:
         pass
 
+
+@login_required(login_url='login')
+@custom_user_passes_test(is_admin)
+def ADM_delete_appointment(request,id):
+     
+     if request.method == 'DELETE':
+        try:
+            
+            a_details = Appointment.objects.get(appointmentID=id)
+          
+            if (a_details):
+               
+                a_details.delete()
+              
+                
+            else:
+                return HttpResponse("Could not delete the row , please try agin", status=400)
+            # Return a success response
+            return HttpResponse(status=204) 
+        except Appointment.DoesNotExist:
+            # If the row doesn't exist, return a not found response
+            return HttpResponse(status=404)  # 404 Not Found
+     else:
+       return HttpResponseNotAllowed(['DELETE'])
 @login_required(login_url='login')
 @custom_user_passes_test(is_admin)
 def generate_report(request):
