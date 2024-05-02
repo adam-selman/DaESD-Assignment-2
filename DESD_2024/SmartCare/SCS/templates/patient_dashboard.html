@@ -231,8 +231,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="modal1{{appointment.appointmentID}}Label">Details for Appointment {{
-          appointment.appointmentID }}</h5>
+        <h5 class="modal-title" id="modal1{{appointment.appointmentID}}Label">Details for Appointment</h5>
         <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -241,20 +240,13 @@
         <table class="table table-hover">
           <thead>
             <tr class="table-info">
-
               <th>Service</th>
               <th>Note</th>
               <th>Practitioner</th>
-
-
             </tr>
           </thead>
           <tbody>
-
-
             <tr class="table-dark" data1-row-id="{{appointment.appointmentID}}">
-
-
               <td>{{ appointment.service.service }}</td>
               <td>{{ appointment.notes }}</td>
               <td>
@@ -264,10 +256,6 @@
                 {{ appointment.doctor }}
                 {% endif %}
               </td>
-
-
-
-
             </tr>
           </tbody>
         </table>
@@ -285,8 +273,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="modal{{ appointment.appointmentID }}Label">Details of appointment {{
-          appointment.appointmentID}}</h5>
+        <h5 class="modal-title" id="modal{{ appointment.appointmentID }}Label">Details of appointment</h5>
         <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
